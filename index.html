@@ -29,19 +29,410 @@
             Bienvenido al espacio de actividades de la comunidad DCC.
             Aquí podrás descubrir, registrar y compartir panoramas.
         </p>
+
         <!-- los botones tienen que ir abajo de la bienvenida en el mismo cuadro, Uno de ingreso y otro de Registro -->
         <div class="botones-inicio">
 
             <!-- Botón de ingreso, que tiene el estilo de minecraft, se habla mas en el app.css-->
-            <button class="btn-minecraft"
-                onclick="window.location.href='ingreso.html'">
-        Ingreso</button>
+            <button class="btn-minecraft" onclick="abrirIngreso()">
+                Ingreso
+            </button>
 
             <!-- Botón de registro -->
-            <button class="btn-minecraft"
-                onclick="window.location.href='registro.html'">
-        Registro</button>
+            <button class="btn-minecraft" onclick="abrirRegistro()">
+                Registro
+            </button>
+
+        </div>
 
     </div>
 
 </section>
+
+<!-- Aqui tengo que poner las ventanas emergentes y diseñarlas aca. A priori quería separar todo para mayor orden pero esto haría cambiar de pagina así que no se... -->
+<div id="ventana-registro" class="ventana">
+
+    <div class="contenido-ventana">
+
+        <p>
+            Aquí podrás registrarte para acceder a todas las funcionalidades de Panoramas DCC. Completa el formulario con tus datos personales y crea tu cuenta para comenzar a descubrir y compartir panoramas con la comunidad.
+            Registrate según tu rol, ya sea estudiante, profesor o funcionario!!
+        </p>
+
+        <h2>Registro</h2>
+
+        <!-- Aqui tengo que dividir en tres tipos de persona, en ese escenario, osea 3 botones más dentro de la ventana emergente, usare la clase del minecraft para no crear tanto diseño-->
+        <button class="btn-minecraft" onclick="abrirEstudiante()">Estudiante 📚</button> <!--Le puse emojis porque una foto pequeña arriba estaba dificil-->
+        <button class="btn-minecraft" onclick="abrirProfesor()">Profesor 🧪</button>
+        <button class="btn-minecraft" onclick="abrirFuncionario()">Funcionario 👔</button>
+
+
+        <button class="btn-minecraft" onclick="cerrarVentanas()"> Cerrar </button>
+    </div>
+</div>
+
+<!-- Ahora se crea la clase ventana en css para que se vea como una ventana emergente, y después se crean las funciones para mostrar y ocultar la ventana -->
+ <script>
+
+function abrirRegistro() {
+    document.getElementById("ventana-registro").style.display = "flex";    
+    //Por el ajuste de imagenes tuve que poner flex, porque usualmente se pone block pero queda arriba a la izquierda y no pesca el centrado.
+}
+
+function cerrarVentanas() {
+    document.getElementById("ventana-registro").style.display = "none";
+}
+
+</script>
+
+<!-- Ahora tengo que hacer los formularios de ingreso según si eres estudiante, profesor o funcionario -->
+<!-- Como cada tipo necesita datos distintos, tendré que crear tres formularios en vez de uno solo, como pensé al inicio, cada uno con los campos típicos correspondientes. -->
+
+<!-- reutilizamos clase ventana en estudiante, y para validar le ponemos id a cada una ya que al apretar registrar pediremos con una funcion que los otros items tengan validaciones especificas -->
+<div id="registro-estudiante" class="ventana">
+    <div id="caja-estudiante" class="contenido-ventana">
+
+        <h2>Registro Estudiante</h2>
+
+        <input type="text" id="nombre-estudiante" placeholder="Nombre">
+        <input type="text" id="apellido-estudiante" placeholder="Apellido">
+        <input type="email" id="correo-estudiante" placeholder="Correo UChile">
+        <input type="text" id="telefono-estudiante" placeholder="+56912345678">
+        <input type="text" id="matricula-estudiante" placeholder="Matrícula Ucampus">
+        <input type="password" id="password-estudiante" placeholder="Contraseña"> <!-- repetir contraseña me da peresa al testear-->
+        <input type="text" id="año-estudiante" placeholder="Año ingreso (ej: 2023)">
+        <input type="file" id="historial-Ucampus" accept="image/*">
+
+        <div id="errores-formulario"></div>
+
+        <button class="btn-minecraft" onclick="validarRegistroEstudiante()">Registrar</button>
+        <button class="btn-minecraft" onclick="cerrarEstudiante()">Cerrar</button>
+
+    </div>
+
+</div>
+
+<!-- Por orden, para no perderme, primero desarrollare como el error que quiero que muestre la pantalla al equivocarse (Como visual, no en cada item, eso es despúes)-->
+<!-- Por lo anterior, haré que el recuadro del formulario se vuelva rojo detectando error, y naturalmente, haré el css aqui por orden. Con un add y un remove lo ire sacando-->
+
+<style>
+/* agrego transición a la caja blanca */
+.contenido-ventana {
+    transition: background-color 0.4s ease,
+                border 0.4s ease,
+                box-shadow 0.4s ease;
+}
+
+/* estado cuando hay error */
+.contenido-ventana-error {
+    background-color: #ffe5e5;
+    border: 3px solid #d32f2f;
+    box-shadow: 0 0 14px rgba(211, 47, 47, 0.35);
+}
+</style>
+<!-- Llamamos a la función para abrir el formulario-->
+<script>
+function abrirEstudiante() {
+    document.getElementById("ventana-registro").style.display = "none";
+    document.getElementById("registro-estudiante").style.display = "flex";
+}
+function cerrarEstudiante() {
+    document.getElementById("registro-estudiante").style.display = "none";
+}
+</script>
+
+<!-- Validación estudiante (igual usare estas mismas para las siguientes, aqui que definiré varias funciones)-->
+ <script>
+
+//No sabia como validar nombres, asi que hare un for y verificar que cada letra esté en los permitidos (sin numero y eso), y solo este tipo de letra, porque no sé me ocurre para los Chinos
+function validarNombre(nombre) {
+
+    // largo minimo
+    if (nombre.length < 2) {
+        return false;
+    }
+
+    let permitidos = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZáéíóúñÑ ";
+
+    for (let i = 0; i < nombre.length; i++) {
+
+        let letra = nombre[i];
+
+        if (!permitidos.includes(letra)) { //Tuve que buscar como hacer la negación, y el include es el in en phyton
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function validarCorreo(correo) {
+    if (correo.length < 5) {
+        return false;
+    }
+    if (!correo.includes("@")) {
+        return false;
+    }
+    if (!correo.includes(".")) {
+        return false;
+    }
+    return true; //Es básica, por ejemplo pense en @uchile.com para estudiantes pero ni yo tengo ese correo jaja, así que lo hice simple. El tema es que A@A.com es valido... pero la verdad no sé que hace un correo valido, osea, quizas si(?)
+}
+
+function validarTelefono(telefono) { //Lo haré con el termino Chileno, que es +56912345678, osea, 9 numeros después del +56
+    if (telefono.length != 12) {
+        return false;
+    }
+    if (telefono[0] !== "+") {
+        return false;
+    }
+    if (telefono[1] !== "5") {
+        return false;
+    }
+    if (telefono[2] !== "6") {
+        return false;
+    }
+    let permitidotelefono = "0123456789";
+
+    for (let i = 3; i < telefono.length; i++) {
+
+        let numero = telefono[i];
+        if (!permitidotelefono.includes(numero)) { //Tuve que buscar como hacer la negación, y el include es el in en phyton
+            return false;
+        }}
+    return true;
+}
+
+function validarMatricula(matricula) {
+    let permitidonumeros = "0123456789";
+
+    for (let i = 0; i < matricula.length; i++) {
+
+        let numero = matricula[i];
+        if (!permitidonumeros.includes(numero)) { //Tuve que buscar como hacer la negación, y el include es el in en phyton
+            return false;
+        }}
+    return matricula.length == 10; //Al menos en Ucampus la matrícula tiene 10 dígitos, así que lo haré así, aunque no sé si es el caso de todas las universidades, pero bueno, es un ejemplo.
+}
+
+function validarPassword(password) { //Lo haré como contraseña fuerte
+    if (password.length < 8) {
+        return false;
+    }
+    let tieneNumero = false;
+    let tieneMayuscula = false;
+    for (let i = 0; i < password.length; i++) {
+
+        let c = password[i];
+        if (c >= "0" && c <= "9") { //Vi que es mejor que el contener como lo hice arriba
+            tieneNumero = true;
+        }
+        if (c >= "A" && c <= "Z") {
+            tieneMayuscula = true;
+        }
+    }
+    return tieneNumero && tieneMayuscula;
+}
+
+function validarAnio(anio) {
+    // debe tener 4 caracteres
+    if (anio.length !== 4) {
+        return false;
+    }
+
+    // verificar que todos sean numeros
+    for (let i = 0; i < 4; i++) {
+        if (anio[i] < "0" || anio[i] > "9") {
+            return false;
+        }
+    }
+
+    // debe empezar con 199x o 20xx
+    if (
+        !(anio[0] === "1" && anio[1] === "9" && anio[2] === "9") &&
+        !(anio[0] === "2" && anio[1] === "0")
+    ) {return false;
+    }
+
+    // no puede ser mayor al año actual (Esto use ia porque no me sabía las funciones)
+    let anioActual = new Date().getFullYear();
+    if (parseInt(anio) > anioActual) {
+        return false;}
+
+    return true;
+}
+</script>
+
+<!-- Ahora lo de validar el Registro, tal que solo se pueda registrar si cumple todo, y si no, le tiro error y le digo lo malo-->
+ <script>
+function validarRegistroEstudiante() {
+
+    let nombre = document.getElementById("nombre-estudiante").value.trim();
+    let apellido = document.getElementById("apellido-estudiante").value.trim();
+    let correo = document.getElementById("correo-estudiante").value.trim();
+    let telefono = document.getElementById("telefono-estudiante").value.trim();
+    let matricula = document.getElementById("matricula-estudiante").value.trim();
+    let password = document.getElementById("password-estudiante").value.trim();
+    let anio = document.getElementById("año-estudiante").value.trim();
+let historial = document.getElementById("historial-Ucampus").files;
+
+    let caja = document.getElementById("caja-estudiante");
+    let errores = document.getElementById("errores-formulario");
+
+    let listaErrores = [];
+
+// validar usando funciones pequeñas
+if (!validarNombre(nombre)) {
+    listaErrores.push("El nombre debe tener al menos 2 letras y solo puede contener letras.");
+}
+
+if (!validarNombre(apellido)) {
+    listaErrores.push("El apellido debe tener al menos 2 letras y solo puede contener letras.");
+}
+
+if (!validarCorreo(correo)) {
+    listaErrores.push("El correo debe contener @ y un punto. Ej: nombre@correo.com");
+}
+
+if (!validarTelefono(telefono)) {
+    listaErrores.push("El teléfono debe comenzar con +56 y tener 9 números. Ej: +56912345678");
+}
+
+if (!validarMatricula(matricula)) {
+    listaErrores.push("La matrícula debe tener exactamente 10 dígitos numéricos, provenientes de la universidad.");
+}
+
+if (!validarPassword(password)) {
+    listaErrores.push("La contraseña debe ser fuerte, osea, tener mínimo 8 caracteres, una mayúscula y un número.");
+}
+if (!validarAnio(anio)) {
+    listaErrores.push("El año de ingreso debe tener 4 dígitos, comenzar con 199x o 20xx, y no puede ser mayor al año actual.");
+}
+if (historial.length === 0) { //Este hint lo pregunte a IA porque se me habia ido como verificar si no habia imagen
+    listaErrores.push("Debes subir una imagen del historial académico de Ucampus.");
+}
+
+    // si hay errores
+    if (listaErrores.length > 0) {
+        caja.classList.add("contenido-ventana-error");
+        errores.innerHTML = listaErrores.join("<br>");
+        return;
+    }
+
+    // todo correcto, removemos el estilo de error
+    caja.classList.remove("contenido-ventana-error");
+    errores.innerHTML = "Registro válido.";
+    setTimeout(function() { //Le puse un timeout para que se vea el mensaje de registro valido y se cierre la ventana, que lo encontraba malo como cerrarlo uno jajaja
+        cerrarEstudiante();
+    }, 1200);
+}
+//En realidad no sé si es necesario validar tambien con el tipico de los formularios: Alert. Pero de igual forma funciona mejor esto.
+</script>
+
+<!-- Repetimos misma lógica para el profesor, solo que añadiremos departamento, le quitamos matricula y quizas rut? porque no como no tienen matricula....-->
+<div id="registro-profesor" class="ventana">
+    <div id="caja-profesor" class="contenido-ventana">
+
+        <h2>Registro Profesor</h2>
+
+        <input type="text" id="nombre-profesor" placeholder="Nombre">
+        <input type="text" id="apellido-profesor" placeholder="Apellido">
+        <input type="email" id="correo-profesor" placeholder="Correo institucional">
+        <input type="text" id="rut-profesor" placeholder="RUT">
+        <input type="text" id="telefono-profesor" placeholder="+56912345678">
+        <input type="password" id="password-profesor" placeholder="Contraseña">
+        <!--<input type="text" id="departamento-profesor" placeholder="Departamento">-->
+        <!-- Pensé que mejor que digan el departamento darle una selección, no me los sé todos pero hago el esfuerzo-->
+         <select id="departamento-profesor" onchange="mostrarOtro()">
+            <option value="">Seleccione Departamento</option>
+
+            <option>DCC - Ciencias de la Computación</option>
+            <option>DII - Ingeniería Industrial</option>
+            <option>DIE - Ingeniería Eléctrica</option>
+            <option>DIMEC - Ingeniería Mecánica</option>
+            <option>DIM - Ingeniería Matemática</option>
+            <option>DIC - Ingeniería Civil</option>
+            <option>DIQBM - Ingeniería Química, Biotecnología y Materiales</option>
+            <option>DIMIN - Ingeniería de Minas</option>
+
+            <option>DGF - Geofísica</option>
+            <option>DGL - Geología</option>
+            <option>DAS - Astronomía</option>
+            <option>DFI - Física</option>
+
+            <option value="otro">otro departamento</option> <!--Esto me costo entenderlo y lo tuve que buscar, pero al final es porque está el valor que puedo llamar la función y preguntar si se llamó la función-->
+        </select>
+        
+
+        <input type="text" id="otro-departamento" placeholder="Si elegiste 'Otro', escribe aquí">
+
+        <div id="errores-profesor"></div>
+
+        <button class="btn-minecraft" onclick="validarRegistroProfesor()">Registrar</button>
+        <button class="btn-minecraft" onclick="cerrarProfesor()">Cerrar</button>
+
+    </div>
+</div>
+
+<script>
+function abrirProfesor() {
+    document.getElementById("ventana-registro").style.display = "none";
+    document.getElementById("registro-profesor").style.display = "flex";
+}
+function cerrarProfesor() {
+    document.getElementById("registro-profesor").style.display = "none";
+}
+
+//Me agarraré de este Script para mostrar el input de otro departamento si es que eligen esa opción, y ocultarlo si eligen otra cosa, para no llenar la pantalla de inputs
+
+// Lo oculte porque no me pescaba el display = "None"
+document.getElementById("otro-departamento").style.display = "none";
+
+// mostrar solo si se elige "otro"
+function mostrarOtro() {
+    let seleccion = document.getElementById("departamento-profesor").value;
+    let input = document.getElementById("otro-departamento");
+
+    if (seleccion == "otro") {
+        input.style.display = "block";
+    } 
+    else {
+        input.style.display = "none";
+    }
+}
+</script>
+
+
+
+<div id="registro-funcionario" class="ventana">
+    <div class="contenido-ventana">
+
+        <h2>Registro Funcionario</h2>
+
+        <input type="text" placeholder="Nombre">
+        <input type="text" placeholder="Apellido">
+        <input type="email" placeholder="Correo institucional">
+        <input type="text" placeholder="Área de trabajo">
+
+        <button class="btn-minecraft">Registrar</button>
+        <button class="btn-minecraft" onclick="cerrarFuncionario()">Cerrar</button>
+
+    </div>
+</div>
+
+<script>
+function abrirFuncionario() {
+    document.getElementById("ventana-registro").style.display = "none";
+    document.getElementById("registro-funcionario").style.display = "flex";
+}
+function cerrarFuncionario() {
+    document.getElementById("registro-funcionario").style.display = "none";
+}
+</script>
+
+
+<script>
+function abrirIngreso() {
+
+}
+</script>

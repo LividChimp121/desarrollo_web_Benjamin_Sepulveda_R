@@ -43,3 +43,9 @@ No se utilizó el atributo "required" como validación principal, sino solo como
 ## Autor
 
 Benjamin Sepúlveda
+
+
+
+## Decisiones
+
+Las primeras decisiones fue crear una imagen con IA para hacer ya la portada y los primeros botones. El tema es que en un principio estoy cree dos html que sean registro e ingreso pero eso no es una ventana emergente como debería ser de forma más limpia. 
