@@ -1,0 +1,101 @@
+/* Fondo general de la página */
+body {
+    margin: 0;
+    background-color: #f5f5f5;
+    font-family: Georgia, serif;
+}
+
+/* Encabezado superior */
+.header {
+    background-color: #2e7d32;
+    color: white;
+    text-align: center;
+    padding: 50px 20px;
+}
+
+/* Texto pequeño debajo del título */
+.texto-titulo-presentacion {
+    font-size: 22px;
+    margin-top: 10px;
+}
+
+/* Sección principal que contiene imagen y bloque */
+.inicio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding: 50px;
+    background-color: #fff3e0;
+}
+
+/* Imagen ubicada a la izquierda */
+.imagen-principal {
+    width: 45%;
+    max-width: 600px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Bloque de la derecha donde ira el formulario */
+.panel-bienvenida {
+    width: 320px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Título del bloque derecho */
+.panel-bienvenida h2 {
+    margin-top: 0;
+    color: #e65100;
+    font-size: 32px;
+}
+
+/* Texto del bloque derecho */
+.panel-bienvenida p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+}
+
+
+
+
+
+/* Recordatorio: Aqui es donde van los botones de ingreso y registro*/
+/* Contenedor de botones */
+.botones-inicio {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Botón estilo minecraft, esto lo busque con ia probando :D */
+.btn-minecraft {
+    background-color: #6ab04c;
+    color: white;
+    border: 3px solid #2e7d32;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+
+    /* efecto cuadrado minecraft */
+    box-shadow: 0 4px 0 #1b5e20;
+
+    transition: 0.1s;
+}
+
+/* efecto cuando se presiona */
+.btn-minecraft:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #1b5e20;
+}
+
+/* hover */
+.btn-minecraft:hover {
+    background-color: #7ed957;
+}

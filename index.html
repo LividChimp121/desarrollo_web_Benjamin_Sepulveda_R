@@ -1,0 +1,47 @@
+<!-- Conecto el archivo de estilos CSS a la página -->
+<link rel="stylesheet" href="app.css">
+
+
+<!-- Encabezado principal de la página -->
+<header class="header">
+    <h1>Panoramas DCC</h1>
+
+    <!-- Texto pequeño debajo del título que refiera de bienestar o calidad-->
+    <p class="texto-titulo-presentacion">
+        Calidad DCC
+    </p>
+</header>
+
+<!-- Sección principal de bienvenida, que en realidad es la imagen y al lado el formulario -->
+<section class="inicio">
+
+    <!-- Imagen principal del DCC ubicada al lado izquierdo -->
+    <img src="Imagenes/DCC.png" alt="Imagen DCC" class="imagen-principal">
+
+    <!-- Bloque derecho donde después irá el registro -->
+    <div class="panel-bienvenida">
+
+        <!-- Despúes cambio el titulo -->
+        <h2>Inicio</h2>
+
+        <!-- Texto de animo -->
+        <p>
+            Bienvenido al espacio de actividades de la comunidad DCC.
+            Aquí podrás descubrir, registrar y compartir panoramas.
+        </p>
+        <!-- los botones tienen que ir abajo de la bienvenida en el mismo cuadro, Uno de ingreso y otro de Registro -->
+        <div class="botones-inicio">
+
+            <!-- Botón de ingreso, que tiene el estilo de minecraft, se habla mas en el app.css-->
+            <button class="btn-minecraft"
+                onclick="window.location.href='ingreso.html'">
+        Ingreso</button>
+
+            <!-- Botón de registro -->
+            <button class="btn-minecraft"
+                onclick="window.location.href='registro.html'">
+        Registro</button>
+
+    </div>
+
+</section>
