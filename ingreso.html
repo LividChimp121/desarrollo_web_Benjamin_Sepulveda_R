@@ -1,0 +1,377 @@
+<link rel="stylesheet" href="ingreso.css">
+<img src="Imagenes/DccActividades.png" alt="Actividades DCC"> 
+<!-- Tuve que poner dos veces las imagenes, pero no sé que paso-->
+
+<header class="header">
+    <div class="titulo-dinamico">Calidad de Bienestar DCC</div>
+    <p class="subtitulo-header">Comparte tus actividades con la comunidad</p>
+    <h2 id="saludo-usuario"></h2>
+</header>
+
+<main class="contenedor-ingreso">
+    <section class="panel-imagen">
+        <img src="Imagenes/DccActividades.png" alt="Actividades DCC">
+    </section>
+
+    <section class="panel-formulario">
+        <h2>Registrar actividad</h2>
+        <p>¿Tienes una actividad nueva? Compártela con la comunidad!!</p>
+
+        <button class="btn-minecraft boton-principal-actividad" onclick="abrirActividad()">
+            Agregar actividad
+        </button>
+
+        <button class="btn-minecraft boton-principal-actividad" onclick="revisarActividades()">
+            Revisar Actividades
+        </button>
+
+        <button class="btn-minecraft btn-secundario boton-centrado" onclick="salir()">
+            Salir
+        </button>
+    </section>
+</main>
+
+<!-- Script que muestra el saludo según el cargo guardado -->
+<script>
+window.onload = function() {
+    let cargo = localStorage.getItem("cargoUsuario");
+    let saludo = "";
+
+    if (cargo === "estudiante") {
+        saludo = "Bienvenido Estudiante 📚";
+    }
+    else if (cargo === "profesor") {
+        saludo = "Bienvenido Profesor 🧪";
+    }
+    else if (cargo === "funcionario") {
+        saludo = "Bienvenido Funcionario 👔";
+    }
+
+    document.getElementById("saludo-usuario").textContent = saludo;
+}
+</script>
+
+<!-- Ventana emergente de actividades -->
+<div id="ventana-actividad" class="ventana">
+    <div class="contenido-ventana">
+        <h2>Nueva actividad</h2>
+
+        <label for="nombre-actividad">
+            ¿Cómo se llama la actividad que realizas? <span class="obligatorio">*</span>
+        </label>
+        <input type="text" id="nombre-actividad" placeholder="Ej: Ajedrez, Básquetbol, Patinaje">
+
+        <label>
+            ¿Qué días la realizas? <span class="obligatorio">*</span>
+        </label>
+
+        <div class="dias-semana">
+            <label><input type="checkbox" name="dias" value="Lunes"> Lunes</label>
+            <label><input type="checkbox" name="dias" value="Martes"> Martes</label>
+            <label><input type="checkbox" name="dias" value="Miércoles"> Miércoles</label>
+            <label><input type="checkbox" name="dias" value="Jueves"> Jueves</label>
+            <label><input type="checkbox" name="dias" value="Viernes"> Viernes</label>
+            <label><input type="checkbox" name="dias" value="Sábado"> Sábado</label>
+            <label><input type="checkbox" name="dias" value="Domingo"> Domingo</label>
+        </div>
+
+        <div class="bloque-horario">
+            <div>
+                <label for="hora-inicio">
+                    Hora de inicio <span class="obligatorio">*</span>
+                </label>
+                <input type="time" id="hora-inicio">
+            </div>
+
+            <div>
+                <label for="hora-fin">
+                    Hora de término <span class="obligatorio">*</span>
+                </label>
+                <input type="time" id="hora-fin">
+            </div>
+        </div>
+
+        <label for="lugar-actividad">
+            ¿Dónde se realiza? <span class="obligatorio">*</span>
+        </label>
+        <input type="text" id="lugar-actividad" placeholder="Ej: Cancha, gimnasio, parque, sala">
+
+        <label for="acompanado">¿La realizas con alguien más?</label>
+        <input type="text" id="acompanado" placeholder="Opcional">
+
+        <label for="entretencion">¿Qué tan entretenida es para ti?</label>
+        <select id="entretencion">
+            <option value="">Opcional</option>
+            <option>Muy entretenida</option>
+            <option>Entretenida</option>
+            <option>Normal</option>
+            <option>Poco entretenida</option>
+        </select>
+
+        <label for="archivo-actividad">
+            Sube una foto o video <span class="obligatorio">*</span>
+        </label>
+        <input type="file" id="archivo-actividad" accept="image/*,video/*">
+
+        <label for="link-comunidad">Enlace de comunidad o U-Cursos</label>
+        <input type="text" id="link-comunidad" placeholder="Opcional">
+
+        <label for="link-actividad">
+            Enlace obligatorio sobre la actividad <span class="obligatorio">*</span>
+        </label>
+        <input type="text" id="link-actividad" placeholder="Ej: https://...">
+
+        <div id="mensaje-actividad" class="mensaje-formulario"></div>
+
+        <div class="botones-formulario">
+            <button class="btn-minecraft" type="button" onclick="validarActividad()">Guardar</button>
+
+            <button class="btn-minecraft btn-secundario" type="button" onclick="cerrarActividad()">
+                Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Script de validación de actividad -->
+
+<script>
+function validarNombreActividad(nombre) {
+    return nombre.length >= 3; //No puedo poner que sin numeros por si hay actividades como Piscina nivel 2 o no sé
+}
+
+function validarDiasActividad() {
+    let dias = document.getElementsByName("dias");
+
+    for (let i = 0; i < dias.length; i++) {
+        if (dias[i].checked) { //Si al menos un día está seleccionado, es válido
+            return true;
+        }
+    }
+    return false;
+}
+
+function validarHora(hora) {
+    if (hora.length !== 5) {
+        return false;
+    }
+    if (hora[2] !== ":") {
+        return false;
+    }
+    if (hora[0] < "0" || hora[0] > "9") {
+        return false;
+    }
+    if (hora[1] < "0" || hora[1] > "9") {
+        return false;
+    }
+    if (hora[3] < "0" || hora[3] > "9") {
+        return false;
+    }
+    if (hora[4] < "0" || hora[4] > "9") {
+        return false;
+    }
+
+    let horas = parseInt(hora[0] + hora[1]);
+    let minutos = parseInt(hora[3] + hora[4]);
+
+    if (horas < 0 || horas > 23) {
+        return false;
+    }
+
+    if (minutos < 0 || minutos > 59) {
+        return false;
+    }
+    return true;
+}
+
+function validarOrdenHoras(horaInicio, horaFin) {
+    let horasInicio = parseInt(horaInicio[0] + horaInicio[1]);
+    let minutosInicio = parseInt(horaInicio[3] + horaInicio[4]);
+
+    let horasFin = parseInt(horaFin[0] + horaFin[1]);
+    let minutosFin = parseInt(horaFin[3] + horaFin[4]);
+
+    let totalInicio = horasInicio * 60 + minutosInicio;
+    let totalFin = horasFin * 60 + minutosFin;
+    return totalFin > totalInicio;
+}
+
+function validarLugar(lugar) {
+    return lugar.length >= 3;
+}
+function validarAcompanado(texto) {
+    return true; //No hay una validación específica para este campo, así que siempre es válido
+}
+
+function validarArchivoActividad(archivo) {
+    return archivo.length > 0; //Esto se vió en el index.html, si no se sube ningún archivo, el length es 0, si se sube al menos uno, es mayor a 0.
+}
+
+function validarLinkActividad(link) {
+    if (link.length < 8) {
+        return false;
+    }
+
+    let tienePunto = false;
+
+    for (let i = 0; i < link.length; i++) {
+        if (link[i] === ".") {
+            tienePunto = true;
+        }
+    }
+
+    if (!tienePunto) {
+        return false;
+    }
+
+    if (
+        link[0] === "h" &&
+        link[1] === "t" &&
+        link[2] === "t" &&
+        link[3] === "p"
+    ) {
+        return true;
+    }
+
+    if (
+        link[0] === "w" &&
+        link[1] === "w" &&
+        link[2] === "w"
+    ) {
+        return true;
+    }
+
+    return false;
+}
+
+function validarActividad() {
+    let nombre = document.getElementById("nombre-actividad").value.trim();
+    let horaInicio = document.getElementById("hora-inicio").value.trim();
+    let horaFin = document.getElementById("hora-fin").value.trim();
+    let lugar = document.getElementById("lugar-actividad").value.trim();
+    let acompanado = document.getElementById("acompanado").value.trim();
+    let linkComunidad = document.getElementById("link-comunidad").value.trim();
+    let entretencion = document.getElementById("entretencion").value;
+    let archivo = document.getElementById("archivo-actividad").files;
+    let linkActividad = document.getElementById("link-actividad").value.trim();
+
+    let mensaje = document.getElementById("mensaje-actividad");
+
+    let listaErrores = [];
+
+    if (!validarNombreActividad(nombre)) {
+        listaErrores.push("Debes escribir el nombre de la actividad con al menos 3 caracteres.");
+    }
+
+    if (!validarDiasActividad()) {
+        listaErrores.push("Debes seleccionar al menos un día.");
+    }
+
+    if (!validarHora(horaInicio)) {
+        listaErrores.push("Debes ingresar una hora de inicio válida.");
+    }
+
+    if (!validarHora(horaFin)) {
+        listaErrores.push("Debes ingresar una hora de término válida.");
+    }
+
+    if (validarHora(horaInicio) && validarHora(horaFin)) {
+        if (!validarOrdenHoras(horaInicio, horaFin)) {
+            listaErrores.push("La hora de término debe ser mayor a la hora de inicio.");
+        }
+    }
+
+    if (!validarLugar(lugar)) {
+        listaErrores.push("Debes indicar dónde se realiza la actividad.");
+    }
+
+    if (acompanado === "") {// válido, no hago nada
+        } else {
+            if (!validarAcompanado(acompanado)) {
+                listaErrores.push("El campo 'con quién la realizas' debe tener al menos 3 caracteres.");
+            }
+        }   
+
+    if (linkComunidad === "") {// válido
+        } else {
+            if (!validarLinkActividad(linkComunidad)) {
+                listaErrores.push("El enlace de comunidad no es válido.");
+            }
+        }
+    if (entretencion === "") { // válido
+        } else {} //Como es un select, no hay una validación específica, si no se selecciona nada, el value es "", si se selecciona algo, el value es distinto de "".
+
+    if (!validarArchivoActividad(archivo)) {
+        listaErrores.push("Debes subir una foto o video de la actividad.");
+    }
+
+    if (!validarLinkActividad(linkActividad)) {
+        listaErrores.push("Debes ingresar un enlace válido sobre la actividad, con http o www y un punto.");
+    }
+
+    if (listaErrores.length > 0) {
+        mensaje.className = "mensaje-formulario error";
+        mensaje.style.display = "block";
+        mensaje.innerHTML = listaErrores.join("<br>");
+        return;
+    }
+
+    mensaje.className = "mensaje-formulario exito";
+    mensaje.style.display = "block";
+    mensaje.innerHTML = "Actividad registrada correctamente.";
+
+    setTimeout(function() {
+        cerrarActividad();
+        limpiarFormularioActividad();
+    }, 1200);
+}
+
+function limpiarFormularioActividad() {
+    document.getElementById("nombre-actividad").value = "";
+    document.getElementById("hora-inicio").value = "";
+    document.getElementById("hora-fin").value = "";
+    document.getElementById("lugar-actividad").value = "";
+    document.getElementById("acompanado").value = "";
+    document.getElementById("entretencion").value = "";
+    document.getElementById("archivo-actividad").value = "";
+    document.getElementById("link-comunidad").value = "";
+    document.getElementById("link-actividad").value = "";
+
+    let dias = document.getElementsByName("dias");
+    for (let i = 0; i < dias.length; i++) {
+        dias[i].checked = false;
+    }
+
+    let mensaje = document.getElementById("mensaje-actividad");
+    mensaje.style.display = "none";
+    mensaje.innerHTML = "";
+    mensaje.className = "mensaje-formulario";
+}
+</script>
+
+
+
+
+<!-- Script abrir y cerrar ventana -->
+<script>
+function abrirActividad() {
+    document.getElementById("ventana-actividad").style.display = "flex";
+}
+
+function cerrarActividad() {
+    document.getElementById("ventana-actividad").style.display = "none";
+}
+</script>
+
+<!-- Script para revisar actividades -->
+
+
+
+
+<!-- Script para salir -->
+<script>
+function salir() {
+    localStorage.removeItem("cargoUsuario");
+    window.location.href = "index.html";
+}
+</script>  

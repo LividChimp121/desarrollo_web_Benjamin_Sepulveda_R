@@ -400,21 +400,131 @@ function mostrarOtro() {
         input.style.display = "none";
     }
 }
+
+//Me falta validar rut, y tal como fui aux de herramienta, lo haremos con la matematica.
+function validarRut(rut) {
+    // formato debe ser XXXXXXXX-Y
+    let partes = rut.split("-");
+    if (partes.length !== 2) {
+        return false;
+    }
+    let numeros = partes[0];
+    let digitoVerificador = partes[1].toUpperCase(); // puede ser número o K
+
+    // verificar que los números sean dígitos
+    for (let i = 0; i < numeros.length; i++) {
+        if (numeros[i] < "0" || numeros[i] > "9") {
+            return false;
+        }
+    }
+
+    // calcular dígito verificador esperado
+    let suma = 0;
+    let multiplicador = 2;
+
+    for (let i = numeros.length - 1; i >= 0; i--) {
+        suma += parseInt(numeros[i]) * multiplicador;
+        multiplicador++;
+        if (multiplicador > 7) {
+            multiplicador = 2;
+        }
+    }
+
+    let resto = suma % 11;
+    let dvEsperado;
+
+    if (resto === 1) {
+        dvEsperado = "K";
+    } else if (resto === 0) {
+        dvEsperado = "0";
+    } else {
+        dvEsperado = (11 - resto).toString();
+    }
+
+    return digitoVerificador === dvEsperado;
+}
 </script>
 
+<script>
+function validarRegistroProfesor() {
 
+    let nombre = document.getElementById("nombre-profesor").value.trim();
+    let apellido = document.getElementById("apellido-profesor").value.trim();
+    let correo = document.getElementById("correo-profesor").value.trim();
+    let rut = document.getElementById("rut-profesor").value.trim();
+    let telefono = document.getElementById("telefono-profesor").value.trim();
+    let password = document.getElementById("password-profesor").value.trim();
+    let departamento = document.getElementById("departamento-profesor").value;
+    let otro = document.getElementById("otro-departamento").value.trim();
+
+    let caja = document.getElementById("caja-profesor");
+    let errores = document.getElementById("errores-profesor");
+
+    let listaErrores = [];
+
+    if (!validarNombre(nombre)) {
+        listaErrores.push("El nombre debe tener solo letras y mínimo 2 caracteres.");
+    }
+
+    if (!validarNombre(apellido)) {
+        listaErrores.push("El apellido debe tener solo letras y mínimo 2 caracteres.");
+    }
+
+    if (!validarCorreo(correo)) {
+        listaErrores.push("El correo debe contener @ y un punto.");
+    }
+
+    if (!validarRut(rut)) {
+        listaErrores.push("El RUT debe tener formato válido. Ej: 12345678-9");
+    }
+
+    if (!validarTelefono(telefono)) {
+        listaErrores.push("El teléfono debe comenzar con +56 y tener 9 números.");
+    }
+
+    if (!validarPassword(password)) {
+        listaErrores.push("La contraseña debe tener mínimo 8 caracteres, una mayúscula y un número.");
+    }
+
+    if (departamento === "") {
+        listaErrores.push("Debes seleccionar un departamento.");
+    }
+
+    if (departamento === "otro" && otro.length < 2) {
+        listaErrores.push("Debes escribir el nombre del departamento.");
+    }
+
+    // mostrar errores
+    if (listaErrores.length > 0) {
+        caja.classList.add("contenido-ventana-error");
+        errores.innerHTML = listaErrores.join("<br>");
+        return;
+    }
+
+    // todo ok
+    caja.classList.remove("contenido-ventana-error");
+    errores.innerHTML = "Registro válido.";
+
+    setTimeout(function() {cerrarProfesor();}, 1200);
+}
+</script>
 
 <div id="registro-funcionario" class="ventana">
-    <div class="contenido-ventana">
+    <div id="caja-funcionario" class="contenido-ventana">
 
         <h2>Registro Funcionario</h2>
 
-        <input type="text" placeholder="Nombre">
-        <input type="text" placeholder="Apellido">
-        <input type="email" placeholder="Correo institucional">
-        <input type="text" placeholder="Área de trabajo">
+        <input type="text" id="nombre-funcionario" placeholder="Nombre">
+        <input type="text" id="apellido-funcionario" placeholder="Apellido">
+        <input type="text" id="rut-funcionario" placeholder="RUT">
+        <input type="email" id="correo-funcionario" placeholder="Correo institucional">
+        <input type="text" id="telefono-funcionario" placeholder="+56912345678">
+        <input type="text" id="area-funcionario" placeholder="Área de trabajo o función">
+        <input type="password" id="password-funcionario" placeholder="Contraseña">
 
-        <button class="btn-minecraft">Registrar</button>
+        <div id="errores-funcionario"></div>
+
+        <button class="btn-minecraft" onclick="validarRegistroFuncionario()">Registrar</button>
         <button class="btn-minecraft" onclick="cerrarFuncionario()">Cerrar</button>
 
     </div>
@@ -428,11 +538,146 @@ function abrirFuncionario() {
 function cerrarFuncionario() {
     document.getElementById("registro-funcionario").style.display = "none";
 }
+function validarAreaTrabajo(area) {
+    return area.length >= 3;
+}
+</script>
+
+<!-- Ahora el script de validación -->
+<script>
+function validarRegistroFuncionario() {
+
+    let nombre = document.getElementById("nombre-funcionario").value.trim();
+    let apellido = document.getElementById("apellido-funcionario").value.trim();
+    let rut = document.getElementById("rut-funcionario").value.trim();
+    let correo = document.getElementById("correo-funcionario").value.trim();
+    let telefono = document.getElementById("telefono-funcionario").value.trim();
+    let area = document.getElementById("area-funcionario").value.trim();
+    let password = document.getElementById("password-funcionario").value.trim();
+
+    let caja = document.getElementById("caja-funcionario");
+    let errores = document.getElementById("errores-funcionario");
+
+    let listaErrores = [];
+
+    if (!validarNombre(nombre)) {
+        listaErrores.push("El nombre debe tener al menos 2 letras y solo puede contener letras.");
+    }
+
+    if (!validarNombre(apellido)) {
+        listaErrores.push("El apellido debe tener al menos 2 letras y solo puede contener letras.");
+    }
+
+    if (!validarRut(rut)) {
+        listaErrores.push("El RUT debe tener un formato válido. Ej: 12345678-9");
+    }
+
+    if (!validarCorreo(correo)) {
+        listaErrores.push("El correo debe contener @ y un punto. Ej: nombre@correo.com");
+    }
+
+    if (!validarTelefono(telefono)) {
+        listaErrores.push("El teléfono debe comenzar con +56 y tener 9 números. Ej: +56912345678");
+    }
+
+    if (!validarAreaTrabajo(area)) {
+        listaErrores.push("Debes indicar el área de trabajo o función con al menos 3 caracteres.");
+    }
+
+    if (!validarPassword(password)) {
+        listaErrores.push("La contraseña debe ser fuerte, osea, tener mínimo 8 caracteres, una mayúscula y un número.");
+    }
+
+    if (listaErrores.length > 0) {
+        caja.classList.add("contenido-ventana-error");
+        errores.innerHTML = listaErrores.join("<br>");
+        return;
+    }
+
+    caja.classList.remove("contenido-ventana-error");
+    errores.innerHTML = "Registro válido.";
+
+    setTimeout(function() {cerrarFuncionario();}, 1200);
+}
 </script>
 
 
+<!-- Ahora vamos con el botón de ingreso y poder ingresar la actividad, aqui no creo que sea necesario separar por funcionario o estudiante. 
+ Será lo mismo pensando que en el fondo o en la base de datos seran diferentes-->
+
+ <!-- Primero pediremos Cargo, luego correo y contraseña y validaremos eso con que este el sistema (ahora imaginario)
+  despúes tendremos que llevarlos a otro html donde trabajaremos las actividades y todo eso, sé podran ver estadisticas, todo por el estilo-->
+
+<div id="ventana-ingreso" class="ventana">
+    <div id="caja-ingreso" class="contenido-ventana">
+        <h2>Ingreso</h2>
+
+        <select id="cargo-ingreso">
+            <option value="">Seleccione cargo</option>
+            <option value="estudiante">Estudiante</option>
+            <option value="profesor">Profesor</option>
+            <option value="funcionario">Funcionario</option>
+        </select>
+
+        <input type="email" id="correo-ingreso" placeholder="Correo">
+        <input type="password" id="password-ingreso" placeholder="Contraseña">
+
+        <div id="errores-ingreso"></div>
+
+        <button class="btn-minecraft" onclick="validarIngreso()">Ingresar</button>
+        <button class="btn-minecraft" onclick="cerrarIngreso()">Cerrar</button>
+
+    </div>
+</div>
+
 <script>
 function abrirIngreso() {
-
+    document.getElementById("ventana-ingreso").style.display = "flex";
 }
+
+function cerrarIngreso() {
+    document.getElementById("ventana-ingreso").style.display = "none";
+}
+</script>
+
+<!-- Y ahora validar rapidamente-->
+ <script>
+function validarIngreso() {
+
+    let cargo = document.getElementById("cargo-ingreso").value;
+    let correo = document.getElementById("correo-ingreso").value.trim();
+    let password = document.getElementById("password-ingreso").value.trim();
+
+    let caja = document.getElementById("caja-ingreso");
+    let errores = document.getElementById("errores-ingreso");
+
+    let listaErrores = [];
+
+    if (cargo === "") {
+        listaErrores.push("Debes seleccionar a que perteneces.");
+    }
+
+    if (!validarCorreo(correo)) {
+        listaErrores.push("El correo debe contener @ y un punto. Ej: nombre@correo.com");
+    }
+
+    if (!validarPassword(password)) {
+        listaErrores.push("La contraseña debe tener mínimo 8 caracteres, una mayúscula y un número.");
+    }
+
+    if (listaErrores.length > 0) {
+        caja.classList.add("contenido-ventana-error");
+        errores.innerHTML = listaErrores.join("<br>");
+        return;
+    }
+
+    caja.classList.remove("contenido-ventana-error");
+    errores.innerHTML = "Ingreso válido.";
+
+    setTimeout(function() {localStorage.setItem("cargoUsuario", cargo);
+        window.location.href = "ingreso.html";
+    }, 1200);
+}
+
+//Esto es para que al ingresar, dependiendo del cargo que eligieron, les muestre un mensaje de bienvenida distinto, lo hice con un localStorage para no tener que hacer cosas raras con el html, y así poder mostrar el mensaje sin importar si recargan la página o algo así; lo que si tuve que averiguar un poco.
 </script>
