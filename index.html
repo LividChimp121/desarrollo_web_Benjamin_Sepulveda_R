@@ -42,12 +42,12 @@
         <div class="botones-inicio">
 
             <!-- Botón de ingreso, que tiene el estilo de minecraft, se habla mas en el app.css-->
-            <button class="btn-minecraft" onclick="abrirIngreso()">
+            <button type="button" class="btn-minecraft" onclick="abrirIngreso()">
                 Ingreso
             </button>
 
             <!-- Botón de registro -->
-            <button class="btn-minecraft" onclick="abrirRegistro()">
+            <button type="button" class="btn-minecraft" onclick="abrirRegistro()">
                 Registro
             </button>
         </div>
@@ -68,12 +68,12 @@
         <h2>Registro</h2>
 
         <!-- Aqui tengo que dividir en tres tipos de persona, en ese escenario, osea 3 botones más dentro de la ventana emergente, usare la clase del minecraft para no crear tanto diseño-->
-        <button class="btn-minecraft" onclick="abrirEstudiante()">Estudiante 📚</button> <!--Le puse emojis porque una foto pequeña arriba estaba dificil-->
-        <button class="btn-minecraft" onclick="abrirProfesor()">Profesor 🧪</button>
-        <button class="btn-minecraft" onclick="abrirFuncionario()">Funcionario 👔</button>
+        <button type="button" class="btn-minecraft" onclick="abrirEstudiante()">Estudiante 📚</button> <!--Le puse emojis porque una foto pequeña arriba estaba dificil-->
+        <button type="button" class="btn-minecraft" onclick="abrirProfesor()">Profesor 🧪</button>
+        <button type="button" class="btn-minecraft" onclick="abrirFuncionario()">Funcionario 👔</button>
 
 
-        <button class="btn-minecraft" onclick="cerrarVentanas()"> Cerrar </button>
+        <button type="button" class="btn-minecraft" onclick="cerrarVentanas()"> Cerrar </button>
     </div>
 </div>
 
@@ -96,7 +96,7 @@ function cerrarVentanas() {
 
 <!-- reutilizamos clase ventana en estudiante, y para validar le ponemos id a cada una ya que al apretar registrar pediremos con una funcion que los otros items tengan validaciones especificas -->
 <div id="registro-estudiante" class="ventana">
-    <div id="caja-estudiante" class="contenido-ventana">
+    <form id="caja-estudiante" class="contenido-ventana">
 
         <h2>Registro Estudiante</h2>
 
@@ -112,10 +112,10 @@ function cerrarVentanas() {
 
         <div id="errores-formulario"></div>
 
-        <button class="btn-minecraft" onclick="validarRegistroEstudiante()">Registrar</button>
-        <button class="btn-minecraft" onclick="cerrarEstudiante()">Cerrar</button>
+        <button type="button" class="btn-minecraft" onclick="validarRegistroEstudiante()">Registrar</button>
+        <button type="button" class="btn-minecraft" onclick="cerrarEstudiante()">Cerrar</button>
 
-    </div>
+    </form>
 
 </div>
 
@@ -324,7 +324,7 @@ if (historial.length === 0) { //Este hint lo pregunte a IA porque se me habia id
 
 <!-- Repetimos misma lógica para el profesor, solo que añadiremos departamento, le quitamos matricula y quizas rut? porque no como no tienen matricula....-->
 <div id="registro-profesor" class="ventana">
-    <div id="caja-profesor" class="contenido-ventana">
+    <form id="caja-profesor" class="contenido-ventana">
 
         <h2>Registro Profesor</h2>
 
@@ -361,10 +361,10 @@ if (historial.length === 0) { //Este hint lo pregunte a IA porque se me habia id
 
         <div id="errores-profesor"></div>
 
-        <button class="btn-minecraft" onclick="validarRegistroProfesor()">Registrar</button>
-        <button class="btn-minecraft" onclick="cerrarProfesor()">Cerrar</button>
+        <button type="button" class="btn-minecraft" onclick="validarRegistroProfesor()">Registrar</button>
+        <button type="button" class="btn-minecraft" onclick="cerrarProfesor()">Cerrar</button>
 
-    </div>
+    </form>
 </div>
 
 <script>
@@ -503,7 +503,7 @@ function validarRegistroProfesor() {
 </script>
 
 <div id="registro-funcionario" class="ventana">
-    <div id="caja-funcionario" class="contenido-ventana">
+    <form id="caja-funcionario" class="contenido-ventana">
 
         <h2>Registro Funcionario</h2>
 
@@ -517,10 +517,10 @@ function validarRegistroProfesor() {
 
         <div id="errores-funcionario"></div>
 
-        <button class="btn-minecraft" onclick="validarRegistroFuncionario()">Registrar</button>
-        <button class="btn-minecraft" onclick="cerrarFuncionario()">Cerrar</button>
+        <button type="button" class="btn-minecraft" onclick="validarRegistroFuncionario()">Registrar</button>
+        <button type="button" class="btn-minecraft" onclick="cerrarFuncionario()">Cerrar</button>
 
-    </div>
+    </form>
 </div>
 
 <script>
@@ -602,7 +602,7 @@ function validarRegistroFuncionario() {
   despúes tendremos que llevarlos a otro html donde trabajaremos las actividades y todo eso, sé podran ver estadisticas, todo por el estilo-->
 
 <div id="ventana-ingreso" class="ventana">
-    <div id="caja-ingreso" class="contenido-ventana">
+    <form id="caja-ingreso" class="contenido-ventana">
         <h2>Ingreso</h2>
 
         <select id="cargo-ingreso">
@@ -617,10 +617,10 @@ function validarRegistroFuncionario() {
 
         <div id="errores-ingreso"></div>
 
-        <button class="btn-minecraft" onclick="validarIngreso()">Ingresar</button>
-        <button class="btn-minecraft" onclick="cerrarIngreso()">Cerrar</button>
+        <button type="button" class="btn-minecraft" onclick="validarIngreso()">Ingresar</button>
+        <button type="button" class="btn-minecraft" onclick="cerrarIngreso()">Cerrar</button>
 
-    </div>
+    </form>
 </div>
 
 <script>

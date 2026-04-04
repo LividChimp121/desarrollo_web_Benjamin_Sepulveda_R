@@ -17,9 +17,9 @@
 </header>
 <!--Usamos el mismo titulo, y ahora el contenedor tipico. Esto es bien parecido a lo anterior-->
 <main class="contenedor-ingreso">
-    <section class="panel-imagen">
-        <img src="Imagenes/DccActividades.png" alt="Actividades DCC">
-    </section>
+    <div class="panel-imagen">
+    <img src="Imagenes/DccActividades.png" alt="Actividades DCC">
+    </div>
 
     <section class="panel-formulario">
         <h2>Registrar actividad</h2>
@@ -64,7 +64,7 @@ window.onload = function() {
 
 <!-- Ventana emergente de actividades -->
 <div id="ventana-actividad" class="ventana">
-    <div class="contenido-ventana">
+    <form class="contenido-ventana">
         <h2>Nueva actividad</h2>
 
         <label for="nombre-actividad">
@@ -146,7 +146,7 @@ window.onload = function() {
                 Cerrar
             </button>
         </div>
-    </div>
+    </form>
 </div>
 
 <!-- Script de validación de actividad -->
