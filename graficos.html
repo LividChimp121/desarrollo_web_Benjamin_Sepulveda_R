@@ -1,0 +1,345 @@
+<link rel="stylesheet" href="ingreso.css">
+
+
+<!-- Si bien no sé de que trata la siguiente tarea, en un principio hice como las graficas manuales. Le pregunté a la ia si 
+ podría simular guardar datos o algo parecido usando que en miembros hice ejemplos de tarjetas, que
+ con el tarjeta.dataset.tipo y un for construir como la base y crear los graficos dinamicos.
+ 
+ Espero que esto me ayude en la siguiente tarea :c-->
+<header class="header">
+    <div class="titulo-dinamico">Calidad de Bienestar DCC</div>
+    <p class="subtitulo-header">Indicadores y métricas en la comunidad</p>
+</header>
+
+<main class="contenedor-miembros">
+
+    <div class="bloque-deporte">
+        <img id="imagen-deporte" src="Imagenes/basquet.png" alt="Deporte decorativo">
+    </div> <!-- Uso la misma lógica que miembros, con la imagen rotativa-->
+
+    <section class="panel-miembros">
+        <h2>Gráficos de miembros y actividades</h2>
+        <p>Resumen visual de miembros registrados y actividades que realizan.</p>
+
+        <div class="seccion-grafico">
+            <h3>Miembros registrados por tipo</h3>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Estudiantes</span>
+                <div class="barra-contenedor">
+                    <!-- Antes tenía esto pero en el numero que sigue lo hacia inventado, ahora seteamos en cero porque despúes lo actualizamos según id-->
+                    <div id="graf-estudiantes" class="barra-grafico">0</div> 
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Profesores</span>
+                <div class="barra-contenedor">
+                    <div id="graf-profesores" class="barra-grafico">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Funcionarios</span>
+                <div class="barra-contenedor">
+                    <div id="graf-funcionarios" class="barra-grafico">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="seccion-grafico">
+            <h3>Actividades más realizadas</h3>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Ajedrez</span>
+                <div class="barra-contenedor">
+                    <div id="graf-ajedrez" class="barra-grafico barra-grafico-2">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Voleibol</span>
+                <div class="barra-contenedor">
+                    <div id="graf-voleibol" class="barra-grafico barra-grafico-2">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Basquetbol</span>
+                <div class="barra-contenedor">
+                    <div id="graf-basquetbol" class="barra-grafico barra-grafico-2">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Patinaje</span>
+                <div class="barra-contenedor">
+                    <div id="graf-patinaje" class="barra-grafico barra-grafico-2">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="seccion-grafico">
+            <h3>Actividades por día</h3>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Lunes</span>
+                <div class="barra-contenedor">
+                    <div id="graf-lunes" class="barra-grafico barra-grafico-3">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Martes</span>
+                <div class="barra-contenedor">
+                    <div id="graf-martes" class="barra-grafico barra-grafico-3">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Miércoles</span>
+                <div class="barra-contenedor">
+                    <div id="graf-miercoles" class="barra-grafico barra-grafico-3">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Jueves</span>
+                <div class="barra-contenedor">
+                    <div id="graf-jueves" class="barra-grafico barra-grafico-3">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Viernes</span>
+                <div class="barra-contenedor">
+                    <div id="graf-viernes" class="barra-grafico barra-grafico-3">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Sábado</span>
+                <div class="barra-contenedor">
+                    <div id="graf-sabado" class="barra-grafico barra-grafico-3">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Domingo</span>
+                <div class="barra-contenedor">
+                    <div id="graf-domingo" class="barra-grafico barra-grafico-3">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="seccion-grafico">
+            <h3>Porcentaje de la comunidad</h3>
+
+            <div class="grafico-torta-contenedor">
+
+                <div id="grafico-torta" class="grafico-torta"></div>
+
+                <div class="leyenda-torta">
+                    <div class="item-leyenda">
+                        <span class="color-leyenda estudiantes"></span>
+                        <span id="leyenda-estudiantes">Estudiantes — 0%</span>
+                    </div>
+
+                    <div class="item-leyenda">
+                        <span class="color-leyenda profesores"></span>
+                        <span id="leyenda-profesores">Profesores — 0%</span>
+                    </div>
+
+                    <div class="item-leyenda">
+                        <span class="color-leyenda funcionarios"></span>
+                        <span id="leyenda-funcionarios">Funcionarios — 0%</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <button class="btn-minecraft btn-secundario boton-centrado" type="button"
+        onclick="window.location.href='ingreso.html'">
+            Volver
+        </button>
+    </section>
+</main>
+
+<script>
+//Esto mantiene la imagen rotando, igual que en miembros
+let imagenes = [
+    "Imagenes/basquet.png",
+    "Imagenes/volei.png",
+    "Imagenes/ajedrez.png",
+    "Imagenes/patinaje.png"
+];
+
+let indice = 0;
+function cambiarImagen() {
+    indice++;
+
+    if (indice >= imagenes.length) {
+        indice = 0;
+    }
+    document.getElementById("imagen-deporte").src = imagenes[indice];
+}
+
+setInterval(cambiarImagen, 2000);
+</script>
+
+<script>
+//La idea ahora es leer desde localStorage los miembros que guardé en miembros.html
+//y construir los gráficos de forma dinámica.
+
+//Primero con la idea de actualizar la barra, que es la parte más básica. La función recibe el id de la barra, la cantidad a mostrar y el máximo para calcular la proporcionalidad.
+function actualizarBarra(idBarra, cantidad, maximo) {
+    let barra = document.getElementById(idBarra);
+
+    //Trabajaremos cada barra en función del máximo para que se vea proporcional. Si el máximo es cero, entonces no hay miembros y la barra se queda vacía.
+    if (maximo === 0) { //Si no hay miembros, no hay nada que mostrar
+        barra.style.width = "0%";
+        barra.textContent = "0";
+        return;
+    }
+
+    //definimos proporcionalidad
+    let porcentaje = (cantidad / maximo) * 100;
+    barra.style.width = porcentaje + "%";
+    barra.textContent = cantidad;
+}
+
+
+//Generamos los graficos ahora leyendo el storage
+function generarGraficos() {
+    let texto = localStorage.getItem("miembros");
+
+    //Pero si algo esta vacio me rompe el for, entonces
+    let miembros;
+    if (texto !== null) {
+        miembros = JSON.parse(texto); //Los separo y ensamblo en lista
+    } else {
+        miembros = []; //vacio
+    }
+
+    let estudiantes = 0;
+    let profesores = 0;
+    let funcionarios = 0;
+
+    let ajedrez = 0;
+    let voleibol = 0;
+    let basquetbol = 0;
+    let patinaje = 0;
+
+    let lunes = 0;
+    let martes = 0;
+    let miercoles = 0;
+    let jueves = 0;
+    let viernes = 0;
+    let sabado = 0;
+    let domingo = 0;
+
+    for (let i = 0; i < miembros.length; i++) {
+        let tipo = miembros[i].tipo;
+        let actividad = miembros[i].actividad;
+        let dias = miembros[i].dias.toLowerCase().split(" ");
+
+        if (tipo === "estudiante") {
+            estudiantes++;
+        }
+        else if (tipo === "profesor") {
+            profesores++;
+        }
+        else if (tipo === "funcionario") {
+            funcionarios++;
+        }
+
+        if (actividad === "ajedrez") {
+            ajedrez++;
+        }
+        else if (actividad === "voleibol") {
+            voleibol++;
+        }
+        else if (actividad === "basquetbol") {
+            basquetbol++;
+        }
+        else if (actividad === "patinaje") {
+            patinaje++;
+        }
+
+        for (let j = 0; j < dias.length; j++) {
+            if (dias[j] === "lunes") {
+                lunes++;
+            }
+            else if (dias[j] === "martes") {
+                martes++;
+            }
+            else if (dias[j] === "miercoles") {
+                miercoles++;
+            }
+            else if (dias[j] === "jueves") {
+                jueves++;
+            }
+            else if (dias[j] === "viernes") {
+                viernes++;
+            }
+            else if (dias[j] === "sabado") {
+                sabado++;
+            }
+            else if (dias[j] === "domingo") {
+                domingo++;
+            }
+        }
+    }
+
+    let maxTipo = Math.max(estudiantes, profesores, funcionarios);
+    let maxActividad = Math.max(ajedrez, voleibol, basquetbol, patinaje);
+    let maxDia = Math.max(lunes, martes, miercoles, jueves, viernes, sabado, domingo);
+
+    actualizarBarra("graf-estudiantes", estudiantes, maxTipo);
+    actualizarBarra("graf-profesores", profesores, maxTipo);
+    actualizarBarra("graf-funcionarios", funcionarios, maxTipo);
+
+    actualizarBarra("graf-ajedrez", ajedrez, maxActividad);
+    actualizarBarra("graf-voleibol", voleibol, maxActividad);
+    actualizarBarra("graf-basquetbol", basquetbol, maxActividad);
+    actualizarBarra("graf-patinaje", patinaje, maxActividad);
+
+    actualizarBarra("graf-lunes", lunes, maxDia);
+    actualizarBarra("graf-martes", martes, maxDia);
+    actualizarBarra("graf-miercoles", miercoles, maxDia);
+    actualizarBarra("graf-jueves", jueves, maxDia);
+    actualizarBarra("graf-viernes", viernes, maxDia);
+    actualizarBarra("graf-sabado", sabado, maxDia);
+    actualizarBarra("graf-domingo", domingo, maxDia);
+
+    let totalMiembros = estudiantes + profesores + funcionarios;
+    //Pensaremos que siempre hay alguien, para no dividir por cero
+
+    //me arrepentí
+    if (totalMiembros === 0) {
+        totalMiembros = 1;
+    }
+
+    let porcentajeEstudiantes = (estudiantes / totalMiembros) * 100;
+    let porcentajeProfesores = (profesores / totalMiembros) * 100;
+    let porcentajeFuncionarios = (funcionarios / totalMiembros) * 100;
+
+    let torta = document.getElementById("grafico-torta"); //actualizamos el grafico de torta dandole las propiedades de color por cada tipo de (estudiante, profe, funcionario)
+    torta.style.background = "conic-gradient(" +
+        "#43a047 " + porcentajeEstudiantes + "%, " +
+        "#fb8c00 " + porcentajeEstudiantes + "% " + (porcentajeEstudiantes + porcentajeProfesores) + "%, " +
+        "#5e35b1 " + (porcentajeEstudiantes + porcentajeProfesores) + "% 100%)";
+
+    document.getElementById("leyenda-estudiantes").textContent =
+        "Estudiantes — " + Math.round(porcentajeEstudiantes) + "%";
+
+    document.getElementById("leyenda-profesores").textContent =
+        "Profesores — " + Math.round(porcentajeProfesores) + "%";
+
+    document.getElementById("leyenda-funcionarios").textContent =
+        "Funcionarios — " + Math.round(porcentajeFuncionarios) + "%";
+}
+
+window.onload = generarGraficos;
+</script>

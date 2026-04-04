@@ -1,13 +1,13 @@
 <link rel="stylesheet" href="ingreso.css">
 <img src="Imagenes/DccActividades.png" alt="Actividades DCC"> 
-<!-- Tuve que poner dos veces las imagenes, pero no sé que paso-->
+<!-- Tuve que poner dos veces las imagenes, porque no me la toma la primera, lo cual es raro, pero funciona (?)-->
 
 <header class="header">
     <div class="titulo-dinamico">Calidad de Bienestar DCC</div>
     <p class="subtitulo-header">Comparte tus actividades con la comunidad</p>
     <h2 id="saludo-usuario"></h2>
 </header>
-
+<!--Usamos el mismo titulo, y ahora el contenedor tipico. Esto es bien parecido a lo anterior-->
 <main class="contenedor-ingreso">
     <section class="panel-imagen">
         <img src="Imagenes/DccActividades.png" alt="Actividades DCC">
@@ -21,10 +21,12 @@
             Agregar actividad
         </button>
 
-        <button class="btn-minecraft boton-principal-actividad" onclick="revisarActividades()">
+        <button class="btn-minecraft boton-principal-actividad" onclick="window.location.href='miembros.html'">
             Revisar Actividades
         </button>
-
+        <button class="btn-minecraft boton-principal-actividad" type="button" onclick="window.location.href='graficos.html'">
+            Ver gráficos
+        </button>   
         <button class="btn-minecraft btn-secundario boton-centrado" onclick="salir()">
             Salir
         </button>
@@ -47,7 +49,8 @@ window.onload = function() {
         saludo = "Bienvenido Funcionario 👔";
     }
 
-    document.getElementById("saludo-usuario").textContent = saludo;
+    document.getElementById("saludo-usuario").textContent = saludo; //En el minuto de tener quien fue el cargo lo actualiza.
+    //Despúes en el cierre debo eliminar el cargo guardado para que no quede el saludo al volver a ingresar, lo cual se hará con la funcion salir()
 }
 </script>
 
@@ -58,6 +61,8 @@ window.onload = function() {
 
         <label for="nombre-actividad">
             ¿Cómo se llama la actividad que realizas? <span class="obligatorio">*</span>
+            <!-- Esto es nuevo, el span basicamente indica que solo quiero que el asterisco tenga un formato diferente para indicar obligatorio.
+             Podría ponerlo en el otro pero como tambien quiero ver la evolución de la tarea, eso no sé si lo haré-->
         </label>
         <input type="text" id="nombre-actividad" placeholder="Ej: Ajedrez, Básquetbol, Patinaje">
 
@@ -65,7 +70,8 @@ window.onload = function() {
             ¿Qué días la realizas? <span class="obligatorio">*</span>
         </label>
 
-        <div class="dias-semana">
+        <div class="dias-semana"> 
+            <!-- Esto es nuevo, el checkbox fue lo que encontré para poder marcar, como cualquier formulario, varios dias o uno. En la validación solo será que marco alguno-->
             <label><input type="checkbox" name="dias" value="Lunes"> Lunes</label>
             <label><input type="checkbox" name="dias" value="Martes"> Martes</label>
             <label><input type="checkbox" name="dias" value="Miércoles"> Miércoles</label>
@@ -87,7 +93,7 @@ window.onload = function() {
                 <label for="hora-fin">
                     Hora de término <span class="obligatorio">*</span>
                 </label>
-                <input type="time" id="hora-fin">
+                <input type="time" id="hora-fin"> <!-- Esto es nuevo, el input de tipo time me permite ingresar una hora en un formato de hora, la validación será por cantidad de segundos, lo vemos después-->
             </div>
         </div>
 
@@ -96,10 +102,10 @@ window.onload = function() {
         </label>
         <input type="text" id="lugar-actividad" placeholder="Ej: Cancha, gimnasio, parque, sala">
 
-        <label for="acompanado">¿La realizas con alguien más?</label>
+        <label for="acompanado">¿La realizas con alguien más?</label> <!-- Para que no sea tan basico, se me ocurrio-->
         <input type="text" id="acompanado" placeholder="Opcional">
 
-        <label for="entretencion">¿Qué tan entretenida es para ti?</label>
+        <label for="entretencion">¿Qué tan entretenida es para ti?</label> <!-- Lo mismo que lo anterior, es opcional y tienes que seleccionar-->
         <select id="entretencion">
             <option value="">Opcional</option>
             <option>Muy entretenida</option>
@@ -111,17 +117,19 @@ window.onload = function() {
         <label for="archivo-actividad">
             Sube una foto o video <span class="obligatorio">*</span>
         </label>
-        <input type="file" id="archivo-actividad" accept="image/*,video/*">
+        <input type="file" id="archivo-actividad" accept=".jpg,.png,.mp4">
+        <!-- Tuve que ver como hacer que solo acepte algunos tipos de archivos... El gif como que no sé si es foto o video jaja-->
 
         <label for="link-comunidad">Enlace de comunidad o U-Cursos</label>
-        <input type="text" id="link-comunidad" placeholder="Opcional">
+        <input type="text" id="link-comunidad" placeholder="Opcional"> <!-- En la validación con el siguiente html será chistoso-->
 
         <label for="link-actividad">
             Enlace obligatorio sobre la actividad <span class="obligatorio">*</span>
         </label>
         <input type="text" id="link-actividad" placeholder="Ej: https://...">
 
-        <div id="mensaje-actividad" class="mensaje-formulario"></div>
+        <div id="mensaje-actividad" class="mensaje-formulario"></div> 
+        <!-- Este div mostrará mensajes de error o éxito al validar el formulario -->
 
         <div class="botones-formulario">
             <button class="btn-minecraft" type="button" onclick="validarActividad()">Guardar</button>
@@ -140,17 +148,16 @@ function validarNombreActividad(nombre) {
     return nombre.length >= 3; //No puedo poner que sin numeros por si hay actividades como Piscina nivel 2 o no sé
 }
 
+//La idea es que solo debo ver que esté seleccionado. Aqui no sabía hacerlo y descubrí que el checked es que el cuadro esté seleccionado-->
 function validarDiasActividad() {
     let dias = document.getElementsByName("dias");
-
     for (let i = 0; i < dias.length; i++) {
         if (dias[i].checked) { //Si al menos un día está seleccionado, es válido
             return true;
         }
-    }
-    return false;
+    } return false;
 }
-
+//Validar hora será basicamente revisar el formato, que a priori como es type=time no debería pero por si acaso.
 function validarHora(hora) {
     if (hora.length !== 5) {
         return false;
@@ -170,58 +177,61 @@ function validarHora(hora) {
     if (hora[4] < "0" || hora[4] > "9") {
         return false;
     }
-
+    //Lo mismo de antes, pero ahora que las horas sean correctas
     let horas = parseInt(hora[0] + hora[1]);
     let minutos = parseInt(hora[3] + hora[4]);
-
     if (horas < 0 || horas > 23) {
         return false;
     }
-
     if (minutos < 0 || minutos > 59) {
         return false;
     }
     return true;
 }
-
+//En un principio la siguiente función estaba antes pero me di cuenta que el formato se debe validar desde dos horas distintas
+//y luego ver si esas horas tienen orden, que lo haré con los minutos
 function validarOrdenHoras(horaInicio, horaFin) {
-    let horasInicio = parseInt(horaInicio[0] + horaInicio[1]);
+    let horasInicio = parseInt(horaInicio[0] + horaInicio[1]); 
     let minutosInicio = parseInt(horaInicio[3] + horaInicio[4]);
 
     let horasFin = parseInt(horaFin[0] + horaFin[1]);
     let minutosFin = parseInt(horaFin[3] + horaFin[4]);
 
+    //Pasamos a minutos
     let totalInicio = horasInicio * 60 + minutosInicio;
     let totalFin = horasFin * 60 + minutosFin;
     return totalFin > totalInicio;
 }
 
-function validarLugar(lugar) {
+function validarLugar(lugar) { //Numeros puede tener como beucheff 850
     return lugar.length >= 3;
 }
 function validarAcompanado(texto) {
-    return true; //No hay una validación específica para este campo, así que siempre es válido
+    return true; //No hay una validación específica para este campo, así que siempre es válido.
+    //Se confia que el usuario escribirá algo con sentido, al ser opcional...
 }
 
 function validarArchivoActividad(archivo) {
     return archivo.length > 0; //Esto se vió en el index.html, si no se sube ningún archivo, el length es 0, si se sube al menos uno, es mayor a 0.
 }
 
+//La lógica es que el link sea largo, https o www y .com ya es de largo minimo 6-7 así que deberia de estar bien
+//Además que esten el http o www y algún punto, no sé como más validarlo.
+
 function validarLinkActividad(link) {
     if (link.length < 8) {
         return false;
     }
 
-    let tienePunto = false;
-
+    let tienePunto = false; //Comenzamos de la base que no tiene, si de verdad no tiene retornamos false al final
     for (let i = 0; i < link.length; i++) {
         if (link[i] === ".") {
             tienePunto = true;
         }
     }
 
-    if (!tienePunto) {
-        return false;
+    if (tienePunto === false) { //Entonces es invalido
+    return false;
     }
 
     if (
@@ -229,21 +239,21 @@ function validarLinkActividad(link) {
         link[1] === "t" &&
         link[2] === "t" &&
         link[3] === "p"
-    ) {
-        return true;
+    ) { return true;
     }
 
     if (
         link[0] === "w" &&
         link[1] === "w" &&
         link[2] === "w"
-    ) {
-        return true;
+    ) { return true;
     }
 
-    return false;
+    return false; //O tiene www o http.
 }
 
+
+//Usamos funciones anteriores y validamos
 function validarActividad() {
     let nombre = document.getElementById("nombre-actividad").value.trim();
     let horaInicio = document.getElementById("hora-inicio").value.trim();
@@ -255,7 +265,7 @@ function validarActividad() {
     let archivo = document.getElementById("archivo-actividad").files;
     let linkActividad = document.getElementById("link-actividad").value.trim();
 
-    let mensaje = document.getElementById("mensaje-actividad");
+    let mensaje = document.getElementById("mensaje-actividad"); //Mostrar éxito o no
 
     let listaErrores = [];
 
@@ -285,7 +295,7 @@ function validarActividad() {
         listaErrores.push("Debes indicar dónde se realiza la actividad.");
     }
 
-    if (acompanado === "") {// válido, no hago nada
+    if (acompanado === "") {// válido, no hago nada, si el usuario puso algo lo valido
         } else {
             if (!validarAcompanado(acompanado)) {
                 listaErrores.push("El campo 'con quién la realizas' debe tener al menos 3 caracteres.");
@@ -316,6 +326,7 @@ function validarActividad() {
         return;
     }
 
+    //Para mostrar el mensaje de éxito, limpio el mensaje de errores, cambio la clase para que sea de éxito y luego cierro la ventana y limpio el formulario después de un tiempo para que se alcance a ver el mensaje.
     mensaje.className = "mensaje-formulario exito";
     mensaje.style.display = "block";
     mensaje.innerHTML = "Actividad registrada correctamente.";
@@ -325,7 +336,35 @@ function validarActividad() {
         limpiarFormularioActividad();
     }, 1200);
 }
+</script>
 
+
+<!-- Script abrir y cerrar ventana -->
+<script>
+function abrirActividad() {
+    document.getElementById("ventana-actividad").style.display = "flex";
+}
+
+function cerrarActividad() {
+    document.getElementById("ventana-actividad").style.display = "none";
+}
+</script>
+
+
+<!-- Script para salir -->
+<script>
+function salir() {
+    localStorage.removeItem("cargoUsuario"); //Estas pequeñeces tengo que estar atento, creo que lo complique innecesariamente
+    window.location.href = "index.html";
+}
+</script>  
+
+<!-- Ahora saltamos a revisar actividades, nos movemos a miembros.html-->
+
+<script>
+//Me di cuenta que, no como ingresar o registrarte que es un gusto cerrar la ventana y poder ver que no se borró,
+//Cuando es poner una actividad nueva, como puedes mandar varios formularios o hacer varias actividadesc en la misma sesión
+//era mejor borrar todo.
 function limpiarFormularioActividad() {
     document.getElementById("nombre-actividad").value = "";
     document.getElementById("hora-inicio").value = "";
@@ -341,37 +380,9 @@ function limpiarFormularioActividad() {
     for (let i = 0; i < dias.length; i++) {
         dias[i].checked = false;
     }
-
     let mensaje = document.getElementById("mensaje-actividad");
     mensaje.style.display = "none";
     mensaje.innerHTML = "";
     mensaje.className = "mensaje-formulario";
 }
 </script>
-
-
-
-
-<!-- Script abrir y cerrar ventana -->
-<script>
-function abrirActividad() {
-    document.getElementById("ventana-actividad").style.display = "flex";
-}
-
-function cerrarActividad() {
-    document.getElementById("ventana-actividad").style.display = "none";
-}
-</script>
-
-<!-- Script para revisar actividades -->
-
-
-
-
-<!-- Script para salir -->
-<script>
-function salir() {
-    localStorage.removeItem("cargoUsuario");
-    window.location.href = "index.html";
-}
-</script>  

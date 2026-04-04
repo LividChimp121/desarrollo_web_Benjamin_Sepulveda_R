@@ -16,7 +16,7 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Título que se mueve */
+/* Aqui para hacer algo distinto puse un titulo que se mueva tipo ease-in-out*/
 .titulo-dinamico {
     display: inline-block;
     font-size: 36px;
@@ -25,17 +25,16 @@ body {
     animation: moverTitulo 6s ease-in-out infinite alternate;
 }
 
-/* Movimiento del título */
+/* Definimos el movimiento de moverTitulo con un movimiento de coordenadas */
 @keyframes moverTitulo {
     from {
         transform: translateX(-35px);
-    }
-    to {
+    } to {
         transform: translateX(35px);
     }
 }
 
-/* Texto pequeño debajo */
+/* Texto pequeño debajo del título */
 .subtitulo-header {
     margin-top: 10px;
     font-size: 18px;
@@ -47,7 +46,7 @@ body {
     color: #fffde7;
 }
 
-/* Zona principal */
+/* Contenedor principal de ingreso, con imagen a la izquierda y bloque de formulario a la derecha */
 .contenedor-ingreso {
     display: flex;
     justify-content: center;
@@ -57,13 +56,16 @@ body {
     flex-wrap: wrap;
 }
 
-/* Imagen del lado izquierdo */
+/* Imagen del lado izquierdo:
+contenedor */
 .panel-imagen {
     flex: 1;
     min-width: 280px;
     max-width: 520px;
 }
 
+
+/* La imagen */
 .panel-imagen img {
     width: 100%;
     height: 100%;
@@ -161,10 +163,11 @@ body {
     background-color: #fcfff8;
 }
 
-/* Efecto al tocar campos */
+/* Efecto al tocar campos 
+Esto lo consulte porque quería que las solicitudes del formulario tuvieran esa forma, y como por ejemplo el select no es un bloque que pones como tal
+Consulte a ia para ver como se hacia, que basicamente era rescatar los input, select y los textos que dejas y aplicas lo mismo*/
 .contenido-ventana input:focus,
-.contenido-ventana select:focus,
-.contenido-ventana textarea:focus {
+.contenido-ventana select:focus {
     outline: none;
     border-color: #66bb6a;
     box-shadow: 0 0 6px rgba(102, 187, 106, 0.35);
@@ -177,13 +180,15 @@ body {
     margin-top: 24px;
     flex-wrap: wrap;
 }
-/* Boton principal estilo minecraft, pero más grande */
+
+/* Boton principal estilo minecraft, pero más grande :D */
 .boton-principal-actividad {
     width: 100%;
     padding: 18px;
     font-size: 24px;
     margin-top: 20px;
 }
+
 /* Estilo minecraft */
 .btn-minecraft {
     flex: 1;
@@ -209,7 +214,7 @@ body {
     box-shadow: 0 1px 0 #1b5e20;
 }
 
-/* Botón secundario */
+/* Botón secundario, lo usaré para el cerrar (Y luego en mostrar en que pag estas) */
 .btn-secundario {
     background-color: #ffb74d;
     border-color: #ef6c00;
@@ -220,7 +225,7 @@ body {
     background-color: #ffcc80;
 }
 
-/*aqui lo usare para centrar */
+/* aqui lo usare para centrar */
 .boton-centrado {
     display: block;
     margin: 20px auto 0 auto;
@@ -230,14 +235,14 @@ body {
 
 /* Días seleccionables */
 .dias-semana {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    display: flex; /* para ponerlos en fila */
+    flex-wrap: wrap;/* para que si no entran en una fila, pasen a la siguiente */
+    gap: 10px;/* espacio entre los días */
     margin-top: 8px;
 }
 
-.dias-semana label {
-    margin: 0;
+.dias-semana label {/* estilo de los días, como si fueran botones, pero sin ser botones, para que se pueda seleccionar el día y quede marcado */
+    margin: 0; 
     background-color: #f1f8e9;
     border: 2px solid #aed581;
     border-radius: 10px;
@@ -248,12 +253,14 @@ body {
     font-weight: normal;
 }
 
-.dias-semana input {
+.dias-semana input { /* corregimos tamaño del checkbox porque quedaron con la clase de arriba y quedaban
+    ocupando mucho espacio*/
     width: auto;
     margin-right: 6px;
 }
 
-/* Hora en fila */
+/* Quiero que esté el formato de hora en fila, pero si achican la pantalla, que 
+se acomode en columnas, entonces uso flex-wrap */
 .bloque-horario {
     display: flex;
     gap: 10px;
@@ -261,7 +268,7 @@ body {
 }
 
 .bloque-horario div {
-    flex: 1;
+    flex: 1; /*Reparten el ancho */
     min-width: 140px;
 }
 
@@ -298,7 +305,7 @@ body {
     color: #c62828;
 }
 
-/* Responsive */
+/* Al achicarlo mucho me di cuenta que tengo que bajarle, se ajusta a los pixeles*/
 @media (max-width: 800px) {
     .titulo-dinamico {
         font-size: 28px;
@@ -317,4 +324,245 @@ body {
         width: 92%;
         padding: 22px;
     }
+}
+
+
+
+
+/* Estilo para el html de miembros*/
+
+/* Contenedor principal de miembros */
+.contenedor-miembros {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px 20px;
+}
+
+/* Bloque imagen rotando */
+.bloque-deporte {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* Imagen final grande, para agrandar las imagenes que van rotando*/
+.bloque-deporte img {
+    width: 360px;
+    height: 360px;
+    object-fit: contain;
+    background-color: #f9fff4;
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    transition: 0.3s;
+}
+
+/* Panel central */
+.panel-miembros {
+    width: 100%;
+    max-width: 850px;
+    background-color: white;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+    border: 3px solid #dcedc8;
+}
+
+.panel-miembros h2 {
+    margin-top: 0;
+    text-align: center;
+    color: #e65100;
+    font-size: 30px;
+}
+
+.panel-miembros p {
+    text-align: center;
+    font-size: 17px;
+    color: #444;
+    margin-bottom: 25px;
+}
+
+/* Filtros */
+.filtros-miembros {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.filtros-miembros div {
+    flex: 1;
+    min-width: 220px;
+}
+
+.filtros-miembros label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+.filtros-miembros select,
+.filtros-miembros input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-family: Georgia, serif;
+    border: 2px solid #c5e1a5;
+    border-radius: 10px;
+    box-sizing: border-box;
+    background-color: #fcfff8;
+}
+
+/* Lista */
+.lista-miembros {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Tarjetas */
+.tarjeta-miembro {
+    background-color: #f9fff4;
+    border: 2px solid #dcedc8;
+    border-radius: 14px;
+    padding: 18px;
+}
+
+.tarjeta-miembro h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #2e7d32;
+}
+
+.tarjeta-miembro p {
+    margin: 6px 0;
+    text-align: left;
+}
+
+/* Paginación */
+.paginacion {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 28px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+
+
+
+
+/* graficos.html */
+.seccion-grafico {
+    background-color: #f9fff4;
+    border: 2px solid #dcedc8;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.seccion-grafico h3 {
+    margin-top: 0;
+    margin-bottom: 18px;
+    text-align: center;
+    color: #2e7d32;
+}
+
+.fila-grafico {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.etiqueta-grafico {
+    width: 110px;
+    font-weight: bold;
+    color: #333;
+}
+
+.barra-contenedor {
+    flex: 1;
+    min-width: 180px;
+    background-color: #e8f5e9;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #c5e1a5;
+}
+
+.barra-grafico {
+    background-color: #43a047;
+    color: white;
+    font-weight: bold;
+    text-align: right;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+.barra-grafico-2 {
+    background-color: #fb8c00;
+}
+
+.barra-grafico-3 {
+    background-color: #5e35b1;
+}
+
+.grafico-torta-contenedor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.grafico-torta {
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+
+    background: conic-gradient(
+        #43a047 0% 50%,
+        #fb8c00 50% 75%,
+        #5e35b1 75% 100%
+    );
+
+    box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+}
+
+/* Leyenda de la torta */
+.leyenda-torta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.item-leyenda {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+}
+
+.color-leyenda {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+}
+
+.estudiantes {
+    background-color: #43a047;
+}
+
+.profesores {
+    background-color: #fb8c00;
+}
+
+.funcionarios {
+    background-color: #5e35b1;
 }

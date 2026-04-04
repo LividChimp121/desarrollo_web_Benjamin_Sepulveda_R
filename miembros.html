@@ -1,0 +1,404 @@
+<link rel="stylesheet" href="ingreso.css"> <!-- para poder volver, y quiero reutilizar el css de ingreso-->
+
+<header class="header">
+    <div class="titulo-dinamico">Calidad de Bienestar DCC</div>
+    <p class="subtitulo-header">Consulta de miembros registrados</p>
+</header>
+
+<main class="contenedor-miembros">
+    <div class="bloque-deporte">
+        <img id="imagen-deporte" src="Imagenes/basquet.png" alt="Deporte decorativo">
+    </div>
+
+    <section class="panel-miembros">
+        <h2>Listado de miembros</h2>
+        <p>Filtra y ordena a los integrantes de la comunidad.</p>
+
+        <div class="filtros-miembros">
+            <div>
+                <!-- Creamos el filtro seleccionable, la función se nos ocurre despúes-->
+                <label for="filtro-tipo">Filtrar por tipo</label>
+                <select id="filtro-tipo" onchange="filtrarMiembros()">
+                    <option value="todos">Todos</option>
+                    <option value="estudiante">Estudiante</option>
+                    <option value="profesor">Profesor</option>
+                    <option value="funcionario">Funcionario</option>
+                </select>
+            </div>
+
+            <div>
+                <!-- Como no sé me ocurrio como hacer que se libere un select de todas las personas
+                 era más facil escribir a quien buscas pero por tipo como pide la tarea, entiendo que cumple
+                 primero ponemos los filtros tipicos y en texto-busqueda hacemos la busqueda real-->
+                <label for="filtro-campo">Buscar por</label>
+                <select id="filtro-campo" onchange="filtrarMiembros()">
+                    <option value="nombre">Nombre</option>
+                    <option value="correo">Correo</option>
+                    <option value="contacto">Datos contacto</option>
+                    <option value="actividad">Actividad</option>
+                    <option value="lugar">Lugar</option>
+                    <option value="dias">Días</option>
+                    <option value="hora">Hora</option>
+                </select>
+            </div>
+            <!-- En estricto rigor deberían ser varios filtros como por hora o dia, filtros por separados, pero igual entiendo que si 
+             solo quieres buscar que profe hace que, más que buscar que actividad puedo hacer a tal hora, sirve.-->
+            <div>
+                <label for="texto-busqueda">Texto</label>
+                <input type="text" id="texto-busqueda" onkeyup="filtrarMiembros()" placeholder="Escribe para filtrar">
+                <!-- Onkeyup es lo que usualmente se usa para filtrar, va actualizando la función o llamandola
+                 apenas escribes o eliminas caracteres, lo que es perfecto para la busqueda-->
+            </div>
+        </div>
+        <!-- Si bien las funciones estan abajo, por orden pondré los ejemplos de las tarjetas  -->
+        <div class="lista-miembros">
+
+            <!-- Primero ponemos los datos que usaremos pero para ocupar los filtros.
+             Algo importante, el data-tipo fue una sugerencia de ia ya que habia hecho 
+             en el futuro for:
+             let nombre = tarjetas[i].getElementsByClassName("nombre")[0]
+             pero esto de alguna me sugerio que en vez de hacer un for por cada tarjeta y un for por cada item, pero se hace data-algo y hacer for por cada tarjeta nomas, pudiendo rescatar información rapida
+             
+             por el ejemplo el tipo se accede como tarjeta.dataset.tipo y listo, haciendo for en tarjeta.-->
+            <div class="tarjeta-miembro"
+                 data-tipo="estudiante"
+                 data-nombre="ana soto"
+                 data-correo="ana@uchile.cl"
+                 data-contacto="56911111111"
+                 data-actividad="ajedrez"
+                 data-lugar="sala de estudio dcc"
+                 data-dias="lunes miercoles"
+                 data-hora="18:00 - 20:00">
+                <h3>Ana Soto</h3>
+                <!-- Y luego la misma información pero en pantalla. así haremos las tarjetas-->
+                <p><strong>Tipo:</strong> Estudiante</p> <!-- El strong es para poner en negrita el tipo, correo, etc, para que se vea mejor-->
+                <p><strong>Correo:</strong> ana@uchile.cl</p>
+                <p><strong>Teléfono:</strong> +56911111111</p>
+                <p><strong>Actividad:</strong> Ajedrez</p>
+                <p><strong>Días:</strong> Lunes, Miércoles</p>
+                <p><strong>Hora:</strong> 18:00 - 20:00</p>
+                <p><strong>Lugar:</strong> Sala de estudio DCC</p>
+                <p><strong>Con quién la realiza:</strong> Con amigos de la generación</p>
+                <p><strong>Qué tan entretenida es:</strong> Muy entretenida</p>
+            </div>
+
+            <div class="tarjeta-miembro"
+                 data-tipo="profesor"
+                 data-nombre="carlos perez"
+                 data-correo="carlos@uchile.cl"
+                 data-contacto="56922222222"
+                 data-actividad="voleibol"
+                 data-lugar="cancha beauchef"
+                 data-dias="martes jueves"
+                 data-hora="17:00 - 19:00">
+                <h3>Carlos Pérez</h3>
+                <p><strong>Tipo:</strong> Profesor</p>
+                <p><strong>Correo:</strong> carlos@uchile.cl</p>
+                <p><strong>Teléfono:</strong> +56922222222</p>
+                <p><strong>Actividad:</strong> Voleibol</p>
+                <p><strong>Días:</strong> Martes, Jueves</p>
+                <p><strong>Hora:</strong> 17:00 - 19:00</p>
+                <p><strong>Lugar:</strong> Cancha Beauchef</p>
+            </div>
+
+            <div class="tarjeta-miembro"
+                 data-tipo="estudiante"
+                 data-nombre="maria diaz"
+                 data-correo="maria@uchile.cl"
+                 data-contacto="56933333333"
+                 data-actividad="patinaje"
+                 data-lugar="parque o higgins"
+                 data-dias="sabado domingo"
+                 data-hora="10:00 - 12:00">
+                <h3>María Díaz</h3>
+                <p><strong>Tipo:</strong> Estudiante</p>
+                <p><strong>Correo:</strong> maria@uchile.cl</p>
+                <p><strong>Teléfono:</strong> +56933333333</p>
+                <p><strong>Actividad:</strong> Patinaje</p>
+                <p><strong>Días:</strong> Sábado, Domingo</p>
+                <p><strong>Hora:</strong> 10:00 - 12:00</p>
+                <p><strong>Lugar:</strong> Parque O'Higgins</p>
+                <p><strong>Qué tan entretenida es:</strong> Entretenida</p>
+            </div>
+
+            <div class="tarjeta-miembro"
+                 data-tipo="estudiante"
+                 data-nombre="javier muñoz"
+                 data-correo="javier@uchile.cl"
+                 data-contacto="56944444444"
+                 data-actividad="basquetbol"
+                 data-lugar="gimnasio beauchef"
+                 data-dias="lunes viernes"
+                 data-hora="19:00 - 21:00">
+                <h3>Javier Muñoz</h3>
+                <p><strong>Tipo:</strong> Estudiante</p>
+                <p><strong>Correo:</strong> javier@uchile.cl</p>
+                <p><strong>Teléfono:</strong> +56944444444</p>
+                <p><strong>Actividad:</strong> Basquetbol</p>
+                <p><strong>Días:</strong> Lunes, Viernes</p>
+                <p><strong>Hora:</strong> 19:00 - 21:00</p>
+                <p><strong>Lugar:</strong> Gimnasio Beauchef</p>
+                <p><strong>Con quién la realiza:</strong> Con compañeros del DCC</p>
+            </div>
+
+            <div class="tarjeta-miembro"
+                 data-tipo="profesor"
+                 data-nombre="laura gomez"
+                 data-correo="laura@uchile.cl"
+                 data-contacto="56955555555"
+                 data-actividad="ajedrez"
+                 data-lugar="biblioteca central"
+                 data-dias="miercoles"
+                 data-hora="16:00 - 18:00">
+                <h3>Laura Gómez</h3>
+                <p><strong>Tipo:</strong> Profesor</p>
+                <p><strong>Correo:</strong> laura@uchile.cl</p>
+                <p><strong>Teléfono:</strong> +56955555555</p>
+                <p><strong>Actividad:</strong> Ajedrez</p>
+                <p><strong>Días:</strong> Miércoles</p>
+                <p><strong>Hora:</strong> 16:00 - 18:00</p>
+                <p><strong>Lugar:</strong> Biblioteca Central</p>
+            </div>
+
+            <div class="tarjeta-miembro"
+                 data-tipo="funcionario"
+                 data-nombre="diego salas"
+                 data-correo="diego@uchile.cl"
+                 data-contacto="56966666666"
+                 data-actividad="voleibol"
+                 data-lugar="multicancha dcc"
+                 data-dias="martes sabado"
+                 data-hora="18:30 - 20:00">
+                <h3>Diego Salas</h3>
+                <p><strong>Tipo:</strong> Funcionario</p>
+                <p><strong>Correo:</strong> diego@uchile.cl</p>
+                <p><strong>Teléfono:</strong> +56966666666</p>
+                <p><strong>Actividad:</strong> Voleibol</p>
+                <p><strong>Días:</strong> Martes, Sábado</p>
+                <p><strong>Hora:</strong> 18:30 - 20:00</p>
+                <p><strong>Lugar:</strong> Multicancha DCC</p>
+                <p><strong>Con quién la realiza:</strong> Con su familia</p>
+                <p><strong>Qué tan entretenida es:</strong> Muy entretenida</p>
+            </div>
+        </div>
+
+        <!--Al final de las tarjetas piden el formato de ir pagina por pagina mostrando algunas tarjetas. y despúes de eso el botón de volver al anterior html-->
+        <div class="paginacion" id="paginacion-miembros"></div>
+        <button class="btn-minecraft btn-secundario boton-centrado" type="button"
+        onclick="window.location.href='ingreso.html'">
+            Volver
+        </button>
+    </section>
+</main>
+
+<script>
+//Primero hacemos el filtrado, osea que al escribir que filtras, se revelen las tarjetas que queremos mostrar.
+function obtenerTarjetasVisibles() {
+    let tipo = document.getElementById("filtro-tipo").value;
+    let campo = document.getElementById("filtro-campo").value;
+    let texto = document.getElementById("texto-busqueda").value.toLowerCase(); //Porque el id es en minuscula
+
+    let tarjetas = document.getElementsByClassName("tarjeta-miembro"); //accedemos y recorremos
+    let visibles = [];
+    // Recorremos solo por tarjeta accediendo a los atributos, en un principio, habia pensado hacer un for por cada tarjeta y dentro otro for por cada item, pero con los data-algo es más facil acceder a la información sin necesidad de recorrer cada item, solo recorriendo las tarjetas como dije arriba.
+
+    // El filtro de tipo es el más directo, si el tipo de la tarjeta no coincide con el tipo seleccionado, no se muestra. Si el tipo seleccionado es "todos", se muestran todas las tarjetas sin importar su tipo.
+    for (let i = 0; i < tarjetas.length; i++) {
+        let tarjeta = tarjetas[i];
+        let tipoTarjeta = tarjeta.dataset.tipo;
+        let valorCampo = tarjeta.dataset[campo];
+
+        //En un principio mostramos todas, y vamos ocultando las que no hacen match
+        let mostrar = true;
+
+        if (tipo !== "todos") {
+            if (tipoTarjeta !== tipo) {
+                mostrar = false;
+            }
+        }
+        // El filtro de texto es un poco más complejo, si el campo seleccionado es "nombre", se busca el texto ingresado en el nombre de cada tarjeta, si es "correo", se busca en el correo, etc. Si el texto ingresado no está presente en el campo correspondiente de la tarjeta, esa tarjeta no se muestra.
+        if (texto !== "") {
+            if (!valorCampo.includes(texto)) { 
+                mostrar = false;
+            }
+        }
+
+        if (mostrar) {
+            visibles.push(tarjeta); //metemos las tarjetas en el arreglo
+        }
+    }
+    return visibles;
+}
+//Sabemos cuantos miembros mostrar según el filtro, pero en un principio como son por paginas queremos mostrar unos cuantos, y luego con botones, ir cambiando por pagina.
+
+//Mostrar pagina es la encargada de mostrar las tarjetas correspondientes a la página actual, calculando obviamente por el filtro y por tamaño, cuantas deberian mostrarse. 
+
+let paginaActual = 1;
+let miembrosPorPagina = 2;
+
+function mostrarPagina() {
+    let tarjetas = document.getElementsByClassName("tarjeta-miembro");
+
+    for (let i = 0; i < tarjetas.length; i++) {
+        tarjetas[i].style.display = "none";
+    }
+
+    let visibles = obtenerTarjetasVisibles();
+    let totalPaginas = Math.ceil(visibles.length / miembrosPorPagina); //Cajón para arriba, por si hay miembros impares.
+
+    if (totalPaginas === 0) {
+        totalPaginas = 1;
+    }
+
+    //Esto fue necesario por si se me ocurria filtrar en una pagina que luego con el filtro reduce el total de paginas. O sino no mostraba nada
+    if (paginaActual > totalPaginas) {
+        paginaActual = totalPaginas;
+    }
+    // Calculamos el rango de miembros a mostrar según la página actual y el número de miembros por página. Luego, mostramos solo las tarjetas que corresponden a ese rango.
+    let inicio = (paginaActual - 1) * miembrosPorPagina;
+    let fin = inicio + miembrosPorPagina;
+
+    //Cabe decir que es un instante
+
+    for (let i = inicio; i < fin && i < visibles.length; i++) {
+        visibles[i].style.display = "block";
+    }
+    //Y ahora a crear los botones de la paginación, el número de botones dependerá del número de miembros visibles, osea del filtro, y del número de miembros por página. 
+    crearBotonesPaginacion(visibles.length);
+}
+
+//Entonces como dijimos antes, el número de botones dependerá del número de miembros visibles, osea del filtro, y del número de miembros por página. La función crearBotonesPaginacion se encarga de generar los botones de paginación dinámicamente según el número total de miembros visibles. Además crear el tipico boton de anterior y siguiente para navegar, como tambien resaltar de alguna forma la pag actual.
+function crearBotonesPaginacion(totalMiembros) {
+    let contenedor = document.getElementById("paginacion-miembros");
+    contenedor.innerHTML = ""; //Limpiamos el contenedor por cada vez que se llama la función, y se crean de nuevo los botones
+
+    let totalPaginas = Math.ceil(totalMiembros / miembrosPorPagina);
+
+    if (totalPaginas === 0) {
+        totalPaginas = 1;
+    }
+
+    let botonAnterior = document.createElement("button");
+    botonAnterior.textContent = "Anterior";
+    botonAnterior.className = "btn-minecraft";
+    botonAnterior.type = "button";
+    botonAnterior.onclick = irPaginaAnterior; //Si apreto el boton anterior, se ejecuta la función de disminuir la pagina actual y actualizar todo
+
+    
+    
+
+    contenedor.appendChild(botonAnterior);
+    function irPaginaAnterior() {
+    if (paginaActual > 1) { //Pensé en desaparecer el boton anterior si estoy en la pagina 1, pero es más sencillo hacer que al apretar no haga nada por la condición
+        paginaActual--;
+        mostrarPagina(); }//actualizamos
+    }
+    //Ahora creamos los botones de cada página, el número de botones dependerá del número total de páginas que lo calculamos antes, y al apretar cada botón, se actualizará la página actual y se mostrará la página correspondiente.
+    for (let i = 1; i <= totalPaginas; i++) {
+        let botonPagina = document.createElement("button");
+        botonPagina.textContent = i;
+        botonPagina.type = "button";
+
+        if (i === paginaActual) {
+            botonPagina.className = "btn-minecraft btn-secundario"; //Para marcar la pag actual, que usamos el boton amarillo mismo de cerrar en el anterior html
+        }
+        else {
+            botonPagina.className = "btn-minecraft";
+        }
+        botonPagina.dataset.pagina = i; //Guardamos numero de pagina en el dataset del boton, para luego acceder a él en la función irPagina, y actualizar la pagina actual según el botón que se apretó.
+        botonPagina.onclick = irPagina;
+
+        contenedor.appendChild(botonPagina); //Agregamos el boton al contenedor de paginación porque con id como que lo creamos pero faltaba ponerlo dentro del div
+    }
+
+    function irPagina() {
+        let paginaSeleccionada = parseInt(this.dataset.pagina); //lee el botón que se apretó, accede a su dataset para obtener el número de página asociado a ese botón, y lo convierte a un número entero con parseInt. Luego, si la página seleccionada es diferente de la página actual, actualiza la página actual a la página seleccionada y llama a mostrarPagina() para actualizar la visualización de las tarjetas según la nueva página seleccionada.
+        if (paginaSeleccionada !== paginaActual) {
+            paginaActual = paginaSeleccionada;
+            mostrarPagina(); //actualizamos
+        }
+    }
+    //Hacemos la misma logica que anterior pero en siguiente
+    let botonSiguiente = document.createElement("button");
+    botonSiguiente.textContent = "Siguiente";
+    botonSiguiente.className = "btn-minecraft";
+    botonSiguiente.type = "button";
+    botonSiguiente.onclick = irPaginaSiguiente;
+    function irPaginaSiguiente() {
+    if (paginaActual < totalPaginas) {
+        paginaActual++;
+        mostrarPagina();}
+    }
+ 
+    contenedor.appendChild(botonSiguiente); //Agregamos el boton al contenedor de paginación
+}
+
+//Cada que escribimos algo en el campo de filtro, se llama a la función filtrarMiembros, que actualiza la página actual a 1 y llama a mostrarPagina para actualizar la visualización de las tarjetas según el nuevo filtro aplicado.
+function filtrarMiembros() {
+    paginaActual = 1;
+    mostrarPagina();
+}
+
+window.onload = iniciarPagina;
+function iniciarPagina() { // Cuando carga la página por primera vez, mostramos la primera página
+    // y creamos los botones de paginación correspondientes.
+    mostrarPagina();
+    guardarMiembros()
+
+}
+</script>
+
+
+<script>
+    //Esto es solo diseño, para que cada 2 segundos cambie la imagen del deporte, haciendo un pequeño carrusel de imágenes, esto se ve en el diseño de imagen.deporte.
+let imagenes = [
+    "Imagenes/basquet.png",
+    "Imagenes/volei.png",
+    "Imagenes/ajedrez.png",
+    "Imagenes/patinaje.png"
+];
+
+let indice = 0;
+
+function cambiarImagen() {
+    indice++;
+
+    if (indice >= imagenes.length) {
+        indice = 0;
+    }
+
+    document.getElementById("imagen-deporte").src = imagenes[indice];
+}
+
+setInterval(cambiarImagen, 2000);
+
+</script>
+
+
+
+<!-- Para hacer los graficos aproveche de usar el localstorage que pensé que era innecesrio para poner si ingresas como profe alumno o funcionario, pero en esta oportunidad para crear graficos que sean utiles (pensando en el curso y aprovechando de interiorizarlo ahora). Guardaré las tarjetas en un diccionario y de ahi al localstorage-->
+
+
+<script>
+//Me quedaa pendiente la función guardarMiembros, Que es guardar la instancia de las tarjetas actuales y trabajarla como datos
+function guardarMiembros() {
+    let tarjetas = document.getElementsByClassName("tarjeta-miembro");
+    let miembros = []; //Y esto es rellenarlo con un for, en una lista de objetos...
+
+    for (let i = 0; i < tarjetas.length; i++) {
+        let tipo = tarjetas[i].dataset.tipo;
+        let actividad = tarjetas[i].dataset.actividad;
+        let dias = tarjetas[i].dataset.dias;
+        miembros.push({
+            tipo: tipo,
+            actividad: actividad,
+            dias: dias
+        });
+    }
+    //Aqui tuve el problema de como usar el local storage. como me di cuenta son objetos, entonces no puedo guardarlos directamente.
+    //Pensé en let texto = ""; texto += tipo + "," + actividad + "," + dias + "\n"; pero esa no debía ser la forma tipica
+    //busque y se usa stringify para convertir el array de objetos a un string:
+    localStorage.setItem("miembros", JSON.stringify(miembros));
+}
+
+</script>

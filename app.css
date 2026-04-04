@@ -1,11 +1,11 @@
-/* Fondo general de la página */
+/* Fondo general de la página, lo tipico*/
 body {
     margin: 0;
     background-color: #f5f5f5;
     font-family: Georgia, serif;
 }
 
-/* Encabezado superior */
+/* Encabezado*/
 .header {
     background-color: #2e7d32;
     color: white;
@@ -13,7 +13,7 @@ body {
     padding: 50px 20px;
 }
 
-/* Texto pequeño debajo del título */
+/* Texto de presentacion */
 .texto-titulo-presentacion {
     font-size: 22px;
     margin-top: 10px;
@@ -46,14 +46,14 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Título del bloque derecho */
+/* Título bloque derecho */
 .panel-bienvenida h2 {
     margin-top: 0;
     color: #e65100;
     font-size: 32px;
 }
 
-/* Texto del bloque derecho */
+/* Texto bloque der*/
 .panel-bienvenida p {
     font-size: 18px;
     line-height: 1.6;
@@ -64,8 +64,7 @@ body {
 
 
 
-/* Recordatorio: Aqui es donde van los botones de ingreso y registro*/
-/* Contenedor de botones */
+/* Ponemos botones en un contenedor de botones */
 .botones-inicio {
     margin-top: 20px;
     display: flex;
@@ -139,6 +138,9 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     width: 300px;
     text-align: center;
+
+    max-height: 80vh;    
+    overflow-y: auto;     /*scroll interno */
 }
 /* Me vi a oblidado a poner este contenido-Ventana sin poder usar otra clase anterior. La verdad no sé si era completamente necesario
 pero o sino el display o menu en profesores se escapaba de la ventana, quedando horrible */
