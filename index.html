@@ -1,6 +1,14 @@
-<!-- Conecto el archivo de estilos CSS a la página -->
-<link rel="stylesheet" href="app.css">
 
+<!-- Me habia faltado decir el tupo, lenguaje, utf-8-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Panoramas DCC</title>
+    <meta charset="UTF-8"> <!-- recordatorio de meter el meta dentro del head-->
+    <!-- Conecto el archivo de estilos CSS a la página -->
+    <link rel="stylesheet" href="app.css">
+</head>
+<body>
 
 <!-- Encabezado principal de la página -->
 <header class="header">
@@ -42,12 +50,10 @@
             <button class="btn-minecraft" onclick="abrirRegistro()">
                 Registro
             </button>
-
         </div>
-
     </div>
-
 </section>
+
 
 <!-- Aqui tengo que poner las ventanas emergentes y diseñarlas aca. A priori quería separar todo para mayor orden pero esto haría cambiar de pagina así que no se... -->
 <div id="ventana-registro" class="ventana">
@@ -114,23 +120,9 @@ function cerrarVentanas() {
 </div>
 
 <!-- Por orden, para no perderme, primero desarrollare como el error que quiero que muestre la pantalla al equivocarse (Como visual, no en cada item, eso es despúes)-->
-<!-- Por lo anterior, haré que el recuadro del formulario se vuelva rojo detectando error, y naturalmente, haré el css aqui por orden. Con un add y un remove lo ire sacando-->
+<!-- Por lo anterior, haré que el recuadro del formulario se vuelva rojo detectando error (todo en el de app.css)-->
 
-<style>
-/* agrego transición a la caja blanca */
-.contenido-ventana {
-    transition: background-color 0.4s ease,
-                border 0.4s ease,
-                box-shadow 0.4s ease;
-}
 
-/* estado cuando hay error */
-.contenido-ventana-error {
-    background-color: #ffe5e5;
-    border: 3px solid #d32f2f;
-    box-shadow: 0 0 14px rgba(211, 47, 47, 0.35);
-}
-</style>
 <!-- Llamamos a la función para abrir el formulario-->
 <script>
 function abrirEstudiante() {
@@ -682,3 +674,6 @@ function validarIngreso() {
 
 //Esto es para que al ingresar, dependiendo del cargo que eligieron, les muestre un mensaje de bienvenida distinto, lo hice con un localStorage para no tener que hacer cosas raras con el html, y así poder mostrar el mensaje sin importar si recargan la página o algo así; lo que si tuve que averiguar un poco.
 </script>
+
+</body>
+</html>

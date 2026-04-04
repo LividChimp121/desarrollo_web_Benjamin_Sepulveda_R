@@ -153,3 +153,17 @@ pero o sino el display o menu en profesores se escapaba de la ventana, quedando 
     font-size: 16px;
     box-sizing: border-box;
 }
+/*Pasé del html para aca */
+/* agrego transición a la caja blanca */
+.contenido-ventana {
+    transition: background-color 0.4s ease,
+                border 0.4s ease,
+                box-shadow 0.4s ease;
+}
+
+/* estado cuando hay error */
+.contenido-ventana-error {
+    background-color: #ffe5e5;
+    border: 3px solid #d32f2f;
+    box-shadow: 0 0 14px rgba(211, 47, 47, 0.35);
+}
