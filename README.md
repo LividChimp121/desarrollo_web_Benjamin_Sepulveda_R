@@ -4,96 +4,73 @@
 
 La idea del sistema es poder registrar actividades que realizan miembros del DCC (estudiantes, profesores y funcionarios) y luego poder consultarlas, filtrarlas y ver algunos gráficos simples.
 
+El flujo general del sistema permite registrarse según tipo de usuario, ingresar, registrar actividades, visualizar miembros, aplicar filtros, paginar resultados y finalmente ver gráficos simples.
+
 ---
 
 ## Decisiones de diseño
 
-Tal como dije arriba, hice html separados tratando cada etapa por separado. En un principio, el registro de cada tipo de persona pide cosas distintas que hay que tener ojo, como los estudiantes la matricula, o los profesores el departamento de trabajo entre otros.
+La aplicación se separó en distintos HTML para cada etapa del flujo. Esto permite mantener el código más ordenado y diferenciar claramente cada parte del sistema.
 
-Luego al ingresar es "importante" poner con que se ingresa, porque tiene un estilo al ingresar con profesor o con estudiante o funcionario. Esto en realidad no es evidente, solo cambia la bienvenida, pero lo hice dado el contexto de la tarea y con un guardado temporal del html (data) que tuve que averiguar.
+Cada tipo de usuario tiene formularios distintos, ya que requieren datos diferentes. Por ejemplo, los estudiantes deben ingresar matrícula y año, los profesores seleccionan departamento y los funcionarios indican su área de trabajo.
 
-Lo siguiente fue crear el filtro y las tarjetas. Estas tarjetas tienen información ejemplificada tipica que se espera de un input de alguien que entrega una actividad, reutilizando en todo momento botones clasicos (minecraft que use mucho) y otros formatos de diseño que le dan color. 
+También se usaron dos archivos CSS. Uno principal y otro para la segunda parte del sistema. Esto se hizo porque el desarrollo fue progresivo y se quiso mantener esa separación para practicar.
 
-Tambien decir que como fue el avance de una tarea, se vera cambios notorios entre html en cuanto al uso del css o reglas de como pedir obligatorio, todo eso en la otra sección-
-
-En resumen: Todo se conecto con los html, se hizo uso de 2 css, el primero que pensé en globalizarlo pero luego, dado que igual quería ir practicando, cree el segundo para la "segunda parte de la tarea", evidenciando siempre como se desarrollo el aprendizaje de la tarea, todo bien comentado con fin de poder aprender bien.
+El sistema se conecta entre páginas usando `localStorage`, lo que permite guardar información temporal como el tipo de usuario y los datos necesarios para los gráficos, esto lo vemos despúes el por qué lo usé.
 
 ---
+
+## Formularios
+
+Los formularios cambian según el tipo de persona. Todas las validaciones se hicieron con JavaScript, sin usar `required`, para tener control total del comportamiento y poder practicar.
+
+Los campos obligatorios se validan al intentar enviar el formulario y se muestran mensajes indicando exactamente qué falta. Los campos opcionales pueden quedar vacíos, pero si el usuario escribe algo, se validan igualmente. En el segundo html (ingreso), los campos obligatorios se ven con asteriscos, pero de igual forma saltan los mensajes.
+
+Inicialmente los formularios estaban hechos con `div`, pero luego se cambiaron a `form` para mejorar la semántica. Como no se utiliza submit, todos los botones son `type="button"` para evitar recargas de página y mantener el control con JavaScript.
+
+---
+
 ## Filtros y paginación
 
-El listado permite:
+El listado permite filtrar por tipo de miembro, buscar por nombre, correo, actividad u otros campos, actualizar en tiempo real mientras se escribe y mostrar resultados paginados.
 
-* Filtrar por tipo de miembro
-* Buscar por nombre, correo, actividad, etc.
-* Actualizar en tiempo real mientras se escribe
-* Mostrar resultados paginados
+Se entiende en esta tarea que lo que se pide en la tarea se cumple: Filtrado por tipo existe por si solo al poder filtrar por estudiante, profesores o funcionarios; pero tambien la busqueda por texto actualizado por los caracteres permite, al mismo usuario, ordenar y buscar según correo o nombre o todo, según como quiera buscar.
 
-La paginación se genera dinámicamente según lo que quede después del filtro, osea, es una busqueda por texto según el item que quieras buscar. Por ejemplo, puedes poner que quieres buscar por correo y si pones "a" te enseña todas las tarjetas con correo que incluya la letra a. Esto es importante, no se hace viendo de izquierda a derecha sino con un include() basico que ve si está dentro del filtro. 
+Este mismo filtro por texto funciona con `includes()`, permitiendo búsquedas parciales. Por ejemplo, si se busca por correo y se escribe una letra, se muestran todos los que contienen esa letra, siendo el usuario quien vea como prefiera buscar. Esto porque igual se pensó y si no te sabes el correo de un profesor, bueno pones correo y el nombre del profe, quizas tendrá numeros o una institución distinta, pero la busqueda será exitosa igual!
 
-Esto con dos fines, uno que quizas no se recuerda o los correos tienen numeros o cosas distintas que pueden molestar al momento de hacer la busqueda, y otro, que diferencia dos tipos de filtro, el filtro clasico por tipo que es por alumno, profe o funcionario que te los diferencia y siempre se sobreaplica al filtro especifico, y el ultimo que filtra por texto con tal de hacerlo más rapido. SIENDO UNO QUIEN DA ORDEN A QUE QUIERE BUSCAR, pues el sentido de poner de A-Z igual estorpece la busqueda a mi parecer. 
+Entonces: Se combinan dos filtros, uno por tipo de miembro y otro por texto. Además la paginación se genera dinámicamente según los resultados del filtro, calculando cuántas tarjetas mostrar y cuántos botones crear al minuto y según el filtro, creando o borrando botones y actualizando en todo minuto.
 
-Y por ultimo las tarjetas, que se guardan dentro solo para poder calcular al minuto cuantas tarjetas mostrar, como crear la paginización (cuantos botones crear o eliminar según filtro) y así. 
----
-## A tener en cuenta
-
-Le pregunté al profesor/auxiliar sobre el ordenamiento porque no estaba seguro si mi forma de hacerlo era la correcta, pero no tuve una respuesta clara para esa parte. Por eso asumí que debía bastar con la justificación que di arriba, donde explico que se puede ordenar por distintos tipos y que el criterio se entiende según lo que el usuario escriba o seleccione.
-
-Esto sí está implementado, solo hay que usar los filtros o escribir los valores para que se ordene según corresponda. Espero que con esa justificación sea suficiente y que esto no me baje la nota.
-
-Y tambien como dije anteriormente, como esto fue un proceso de dias, se verá en los comentarios como fui avanzando o copiando y pegando partes anteriores, siempre comentando con un fin acádemico mio para priorizar el aprendizaje. Pero es eso, va progresivamente mejorando el trabajo :D
-
-Otra cosa de ultima hora, antes tenía los <form> con <div>, esto porque como no iba a usar submit quería hacer los formularios y toda la mecanica con solo .js para aprender bien y todo eso. Lo arregle al final, según yo esta todo racional, pero por si acaso lo comento por si ven que está raro el codigo si es un form, o por ejemplo que todos los forms tienen botones con tipo botones y no con type submitt que tiene por defecto, y que eso en su minuto me rompio el codigo y casi lloré.
-
-Pero debería estar todo bien :D
 ---
 
 ## Gráficos
 
-Los gráficos los hice leyendo los datos desde las tarjetas. Esto porque encontraba muy básico mostrar un grafico generico o uno inventado sin aplicación propia (en las limitaciones de no disponer de una base de datos y con fe que esto sirva para las siguientes tareas :c)
+Con la idea de generar un gráfico dinamico y esperando que esto pueda (o no :c) servirme más adelante, hice uso de `localStorage` con la idea de guardar las tarjetas creadas en Miembros y usarlo en una especie de mini base de datos, simplemente cargando las tarjetas con el dataset.tipo de cada tipo, y con un for y contador, logrando calcular y generar gráficos que dependen de la experiencia de la pagina (Sentía muy básico crear graficos simples, como poner una barra o un grafico de torta inventado, aunque me esperaba que esto se tenía que hacer para la tarea)
 
-Primero guardo la información en `localStorage` recorriendo las tarjetas con un for, y guardando:
+Entonces:
+Los gráficos se generan leyendo los datos desde las tarjetas. Para esto se guarda la información en `localStorage` recorriendo las tarjetas y almacenando tipo, actividad y días.
 
-* tipo
-* actividad
-* días
-
-Que son las actividades obligatorias que la gente pone.
-Luego en la página de gráficos leo eso, cuento con contadores y actualizo:
-
-* barras por tipo
-* barras por actividad
-* barras por día
-* gráfico de torta
+Luego la página de gráficos lee esos datos y genera gráficos de barras por tipo, gráficos por actividad, gráficos por días y un gráfico de torta. Esto permite que los gráficos dependan de los datos visibles y no sean estáticos.
 
 ---
 
 ## Validaciones
 
-Las validaciones se hicieron con JavaScript sin nunuca ocupar required al ser muy basico y ya que me encargue de no poder mandar el formulario hasta validar todo :D
-* campos obligatorios
-* tipo de miembro
-* actividad
-* días seleccionados
-* horario
-* archivo obligatorio
-* enlace
-* datos de contacto
-* etc
+Las validaciones se hicieron completamente con JavaScript. 
 
-Cada validación está escrita en los comentarios de lo que opine que era lo mejor.
-En los gmail no puse obligatoriamente el @uchile.com porque ni yo tengo el correo. Y tambien hay items no obligatorios pero que si los escribes tienen su correspondiente validación
+No se obligó el uso de `@uchile.cl` en los correos para no restringir demasiado, aunque en el placeholder se les pide un correo institucional (sería la idea pero ni yo tengo el correo o lo uso). Los campos opcionales solo se validan si el usuario escribe algo.
+
 ---
 
-## Cosas que agregué para que se viera mejor
+## Extras agregados
 
-* imagen rotativa al costado
-* tarjetas con diseño simple
-* botones minecraft
-* gráficos dinamicos :D
-* Y empeño :D
+No hay archivos separados .js. La decisión fue porque quería tener conectado cada html y luego las funciones que usaba para tener completa claridad del proceso de aprendizaje, no así .css que puede permitirse un poco de desorden.
 
-Intenté no complicar mucho el diseño y priorizar funcionalidad.
+Además, todo los archivos están comentados por mi persona con el fin de mostrar como fue el proceso de aprendizaje y creación del prototipo. Y tambien para mí, para ver como fue el proceso o acordarme de que iba tal cosa :D
+
+Tambien para mejorar la visualización se agregaron imágenes rotativas decorativas, tarjetas con diseño simple, botones estilo minecraft, gráficos dinámicos, paginación y filtros en tiempo real.
+
 ---
+
 ## Autor
 
 Benjamin Sepúlveda
