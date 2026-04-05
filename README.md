@@ -20,6 +20,11 @@ El sistema se conecta entre páginas usando `localStorage`, lo que permite guard
 
 ---
 
+## INGRESO.HTML
+
+Al ingresar a este html, hay una imagen gigante, deben de bajar con la ruedita y está todo abajo :D
+---
+
 ## Formularios
 
 Los formularios cambian según el tipo de persona. Todas las validaciones se hicieron con JavaScript, sin usar `required`, para tener control total del comportamiento y poder practicar.
