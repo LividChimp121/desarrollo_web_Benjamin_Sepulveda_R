@@ -1,0 +1,859 @@
+<!-- Me habia faltado decir el tipo, lenguaje, utf-8-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Panoramas DCC</title>
+    <meta charset="UTF-8">
+
+    <!-- Conecto el archivo de estilos CSS a la página -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+
+<header class="header">
+    <h1>Panoramas DCC</h1>
+
+    <p class="texto-titulo-presentacion">
+        Calidad DCC
+    </p>
+</header>
+
+<section class="inicio inicio-con-dinamicos">
+
+    <div class="panel-dinamico-inicio">
+        <h2>Últimos miembros ingresados</h2>
+
+        {% if ultimos_miembros|length > 0 %}
+            {% for miembro in ultimos_miembros %}
+                <div class="item-dinamico-inicio">
+                    <p>
+                        <strong>{{ miembro.tipo|capitalize }}:</strong>
+                        {{ miembro.nombre }} {{ miembro.apellido }}
+                    </p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay miembros registrados todavía.</p>
+        {% endif %}
+    </div>
+
+    <img src="{{ url_for('static', filename='Imagenes/DCC.png') }}"
+    alt="Imagen DCC" class="imagen-principal">
+
+    <div class="panel-bienvenida">
+        <h2>Inicio</h2>
+
+        <p>
+            Bienvenido al espacio de actividades de la comunidad DCC.
+            Aquí podrás descubrir, registrar y compartir panoramas.
+        </p>
+
+        <div class="botones-inicio">
+            <button type="button" class="btn-minecraft" onclick="abrirIngreso()">
+                Ingresa para registrar actividades!
+            </button>
+
+            <button type="button" class="btn-minecraft" onclick="abrirRegistro()">
+                Registro
+            </button>
+
+            <!-- Ahora avisamos que venimos desde el inicio -->
+            <button type="button" class="btn-minecraft" onclick="window.location.href='/miembros?volver=inicio'">
+                Ver miembros
+            </button>
+
+            <button type="button" class="btn-minecraft" onclick="window.location.href='/graficos?volver=inicio'">
+                Estadísticas
+            </button>
+        </div>
+    </div>
+
+    <div class="panel-actividades-horizontal">
+        <h2>Últimas actividades registradas</h2>
+
+        <!-- Solo muestra las últimas actividades registradas, si no hay, no mostraría nada a priori-->
+        <div class="lista-actividades-horizontal">
+            {% if ultimas_actividades|length > 0 %}
+                {% for actividad in ultimas_actividades %}
+                    <div class="item-dinamico-inicio">
+                        <p>
+                            <strong>{{ actividad.nombre }}</strong>
+                        </p>
+
+                        <p>
+                            {{ actividad.miembro.nombre }} {{ actividad.miembro.apellido }}
+                        </p>
+
+                        <p class="texto-pequeno-inicio">
+                            {{ actividad.dias }} — {{ actividad.lugar }}
+                        </p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No hay actividades registradas todavía.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</section>
+
+
+<!-- Ventana para elegir tipo de registro -->
+<div id="ventana-registro" class="ventana">
+
+    <div class="contenido-ventana">
+        <p>
+            Aquí podrás registrarte para acceder a todas las funcionalidades de Panoramas DCC.
+            Completa el formulario con tus datos personales y crea tu cuenta.
+            Regístrate según tu rol, ya sea estudiante, profesor o funcionario.
+        </p>
+
+        <h2>Registro</h2>
+
+        <button type="button" class="btn-minecraft" onclick="abrirEstudiante()">Estudiante 📚</button>
+        <button type="button" class="btn-minecraft" onclick="abrirProfesor()">Profesor 🧪</button>
+        <button type="button" class="btn-minecraft" onclick="abrirFuncionario()">Funcionario 👔</button>
+
+        <button type="button" class="btn-minecraft" onclick="cerrarVentanas()">Cerrar</button>
+    </div>
+</div>
+
+<script>
+function abrirRegistro() {
+    document.getElementById("ventana-registro").style.display = "flex";
+}
+
+function cerrarVentanas() {
+    document.getElementById("ventana-registro").style.display = "none";
+    window.history.replaceState({}, document.title, "/");
+}
+</script>
+
+
+<!-- Registro estudiante -->
+<div id="registro-estudiante" class="ventana">
+
+    <form id="caja-estudiante" class="contenido-ventana" method="POST" action="/registrar-estudiante" enctype="multipart/form-data">
+
+        <h2>Registro Estudiante</h2>
+
+        <input type="text" id="nombre-estudiante" name="nombre-estudiante" placeholder="Nombre">
+        <input type="text" id="apellido-estudiante" name="apellido-estudiante" placeholder="Apellido">
+        <input type="email" id="correo-estudiante" name="correo-estudiante" placeholder="Correo UChile">
+        <input type="text" id="telefono-estudiante" name="telefono-estudiante" placeholder="+56912345678">
+
+        <!-- Antes región y comuna se escribían a mano.
+        Ahora las dejamos como listas porque ya las tenemos cargadas en MySQL. -->
+        <p>Región:</p>
+        <select id="region-estudiante" name="region-estudiante">
+            <option value="">Seleccione región</option>
+            {% for region in regiones %}
+                <option value="{{ region.nombre }}">{{ region.nombre }}</option>
+            {% endfor %}
+        </select>
+
+        <p>Comuna:</p>
+        <select id="comuna-estudiante" name="comuna-estudiante">
+            <option value="">Seleccione comuna</option>
+            {% for comuna in comunas %}
+                <option value="{{ comuna.nombre }}">{{ comuna.nombre }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="text" id="matricula-estudiante" name="matricula-estudiante" placeholder="Matrícula Ucampus">
+        <input type="password" id="password-estudiante" name="password-estudiante" placeholder="Contraseña">
+        <input type="text" id="anio-estudiante" name="anio-estudiante" placeholder="Año ingreso (ej: 2023)">
+
+        Ponga una imagen del historial académico de Ucampus (jpg, jpeg o png):
+        <input type="file" id="historial-Ucampus" name="historial-Ucampus" accept=".jpg,.jpeg,.png">
+
+        <div id="errores-formulario"></div>
+
+        <button type="button" class="btn-minecraft" onclick="validarRegistroEstudiante()">Registrar</button>
+        <button type="button" class="btn-minecraft" onclick="cerrarEstudiante()">Cerrar</button>
+
+    </form>
+
+</div>
+
+<script>
+function abrirEstudiante() {
+    document.getElementById("ventana-registro").style.display = "none";
+    document.getElementById("registro-estudiante").style.display = "flex";
+}
+
+function cerrarEstudiante() {
+    document.getElementById("registro-estudiante").style.display = "none";
+    window.history.replaceState({}, document.title, "/");
+}
+</script>
+
+
+<script>
+function validarNombre(nombre) {
+    if (nombre.length < 2) {
+        return false;
+    }
+
+    let permitidos = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZáéíóúñÑ ";
+
+    for (let i = 0; i < nombre.length; i++) {
+        let letra = nombre[i];
+
+        if (!permitidos.includes(letra)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function validarCorreo(correo) {
+    if (correo.length < 5) {
+        return false;
+    }
+
+    if (!correo.includes("@")) {
+        return false;
+    }
+
+    if (!correo.includes(".")) {
+        return false;
+    }
+
+    return true;
+}
+
+function validarTelefono(telefono) {
+    if (telefono.length != 12) {
+        return false;
+    }
+
+    if (telefono[0] !== "+") {
+        return false;
+    }
+
+    if (telefono[1] !== "5") {
+        return false;
+    }
+
+    if (telefono[2] !== "6") {
+        return false;
+    }
+
+    let permitidotelefono = "0123456789";
+
+    for (let i = 3; i < telefono.length; i++) {
+        let numero = telefono[i];
+
+        if (!permitidotelefono.includes(numero)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// Antes validábamos el largo del texto porque región y comuna se escribían.
+// Ahora solo revisamos que el usuario haya seleccionado una opción porque antes era muy latero.
+function validarRegionComuna(texto) {
+    if (texto === "") {
+        return false;}
+    return true;}
+
+function validarMatricula(matricula) {
+    let permitidonumeros = "0123456789";
+
+    for (let i = 0; i < matricula.length; i++) {
+        let numero = matricula[i];
+
+        if (!permitidonumeros.includes(numero)) {
+            return false;
+        }
+    }
+
+    return matricula.length == 10;
+}
+
+function validarPassword(password) {
+    if (password.length < 8) {
+        return false;
+    }
+
+    let tieneNumero = false;
+    let tieneMayuscula = false;
+
+    for (let i = 0; i < password.length; i++) {
+        let c = password[i];
+
+        if (c >= "0" && c <= "9") {
+            tieneNumero = true;
+        }
+
+        if (c >= "A" && c <= "Z") {
+            tieneMayuscula = true;
+        }
+    }
+
+    return tieneNumero && tieneMayuscula;
+}
+
+function validarAnio(anio) {
+    if (anio.length !== 4) {
+        return false;
+    }
+
+    for (let i = 0; i < 4; i++) {
+        if (anio[i] < "0" || anio[i] > "9") {
+            return false;
+        }
+    }
+
+    if (
+        !(anio[0] === "1" && anio[1] === "9" && anio[2] === "9") &&
+        !(anio[0] === "2" && anio[1] === "0")
+    ) {
+        return false;
+    }
+
+    let anioActual = new Date().getFullYear();
+
+    if (parseInt(anio) > anioActual) {
+        return false;
+    }
+
+    return true;
+}
+</script>
+
+
+<script>
+function validarRegistroEstudiante() {
+    let nombre = document.getElementById("nombre-estudiante").value.trim();
+    let apellido = document.getElementById("apellido-estudiante").value.trim();
+    let correo = document.getElementById("correo-estudiante").value.trim();
+    let telefono = document.getElementById("telefono-estudiante").value.trim();
+    let region = document.getElementById("region-estudiante").value;
+    let comuna = document.getElementById("comuna-estudiante").value;
+    let matricula = document.getElementById("matricula-estudiante").value.trim();
+    let password = document.getElementById("password-estudiante").value.trim();
+    let anio = document.getElementById("anio-estudiante").value.trim();
+    let historial = document.getElementById("historial-Ucampus").files;
+
+    let caja = document.getElementById("caja-estudiante");
+    let errores = document.getElementById("errores-formulario");
+
+    let listaErrores = [];
+
+    if (!validarNombre(nombre)) {
+        listaErrores.push("El nombre debe tener al menos 2 letras y solo puede contener letras.");
+    }
+
+    if (!validarNombre(apellido)) {
+        listaErrores.push("El apellido debe tener al menos 2 letras y solo puede contener letras.");
+    }
+
+    if (!validarCorreo(correo)) {
+        listaErrores.push("El correo debe contener @ y un punto. Ej: nombre@correo.com");
+    }
+
+    if (!validarTelefono(telefono)) {
+        listaErrores.push("El teléfono debe comenzar con +56 y tener 9 números. Ej: +56912345678");
+    }
+
+    if (!validarRegionComuna(region)) {
+        listaErrores.push("Debes seleccionar una región.");
+    }
+
+    if (!validarRegionComuna(comuna)) {
+        listaErrores.push("Debes seleccionar una comuna.");
+    }
+
+    if (!validarMatricula(matricula)) {
+        listaErrores.push("La matrícula debe tener exactamente 10 dígitos numéricos.");
+    }
+
+    if (!validarPassword(password)) {
+        listaErrores.push("La contraseña debe tener mínimo 8 caracteres, una mayúscula y un número.");
+    }
+
+    if (!validarAnio(anio)) {
+        listaErrores.push("El año de ingreso debe tener 4 dígitos y no puede ser mayor al año actual.");
+    }
+
+    if (historial.length === 0) {
+        listaErrores.push("Debes subir una imagen del historial académico de Ucampus.");
+    }
+
+    if (listaErrores.length > 0) {
+        caja.classList.add("contenido-ventana-error");
+        errores.innerHTML = listaErrores.join("<br>");
+        return;
+    }
+
+    caja.classList.remove("contenido-ventana-error");
+    errores.innerHTML = "Registro válido.";
+
+    setTimeout(function() {
+        document.getElementById("caja-estudiante").submit();
+    }, 1200);
+}
+</script>
+
+
+<!-- Registro profesor -->
+<div id="registro-profesor" class="ventana">
+
+    <form id="caja-profesor" class="contenido-ventana" method="POST" action="/registrar-profesor">
+
+        <h2>Registro Profesor</h2>
+
+        <input type="text" id="nombre-profesor" name="nombre-profesor" placeholder="Nombre">
+        <input type="text" id="apellido-profesor" name="apellido-profesor" placeholder="Apellido">
+        <input type="email" id="correo-profesor" name="correo-profesor" placeholder="Correo institucional">
+        <input type="text" id="rut-profesor" name="rut-profesor" placeholder="RUT">
+        <input type="text" id="telefono-profesor" name="telefono-profesor" placeholder="+56912345678">
+
+        <!-- También aplicamos lo mismo para profesores:
+        las opciones vienen desde la base y no se escriben manualmente. -->
+        <p>Región:</p>
+        <select id="region-profesor" name="region-profesor">
+            <option value="">Seleccione región</option>
+            {% for region in regiones %}
+                <option value="{{ region.nombre }}">{{ region.nombre }}</option>
+            {% endfor %}
+        </select>
+
+        <p>Comuna:</p>
+        <select id="comuna-profesor" name="comuna-profesor">
+            <option value="">Seleccione comuna</option>
+            {% for comuna in comunas %}
+                <option value="{{ comuna.nombre }}">{{ comuna.nombre }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="password" id="password-profesor" name="password-profesor" placeholder="Contraseña">
+
+        <select id="departamento-profesor" name="departamento-profesor" onchange="mostrarOtro()">
+            <option value="">Seleccione Departamento</option>
+            <option>DCC - Ciencias de la Computación</option>
+            <option>DII - Ingeniería Industrial</option>
+            <option>DIE - Ingeniería Eléctrica</option>
+            <option>DIMEC - Ingeniería Mecánica</option>
+            <option>DIM - Ingeniería Matemática</option>
+            <option>DIC - Ingeniería Civil</option>
+            <option>DIQBM - Ingeniería Química, Biotecnología y Materiales</option>
+            <option>DIMIN - Ingeniería de Minas</option>
+            <option>DGF - Geofísica</option>
+            <option>DGL - Geología</option>
+            <option>DAS - Astronomía</option>
+            <option>DFI - Física</option>
+            <option value="otro">otro departamento</option>
+        </select>
+
+        <input type="text" id="otro-departamento" name="otro-departamento" placeholder="Si elegiste 'Otro', escribe aquí">
+
+        <div id="errores-profesor"></div>
+
+        <button type="button" class="btn-minecraft" onclick="validarRegistroProfesor()">Registrar</button>
+        <button type="button" class="btn-minecraft" onclick="cerrarProfesor()">Cerrar</button>
+
+    </form>
+</div>
+
+<script>
+function abrirProfesor() {
+    document.getElementById("ventana-registro").style.display = "none";
+    document.getElementById("registro-profesor").style.display = "flex";
+}
+
+function cerrarProfesor() {
+    document.getElementById("registro-profesor").style.display = "none";
+    window.history.replaceState({}, document.title, "/");
+}
+
+document.getElementById("otro-departamento").style.display = "none";
+
+function mostrarOtro() {
+    let seleccion = document.getElementById("departamento-profesor").value;
+    let input = document.getElementById("otro-departamento");
+
+    if (seleccion == "otro") {
+        input.style.display = "block";
+    }
+    else {
+        input.style.display = "none";
+    }
+}
+
+function validarRut(rut) {
+    let partes = rut.split("-");
+
+    if (partes.length !== 2) {
+        return false;
+    }
+
+    let numeros = partes[0];
+    let digitoVerificador = partes[1].toUpperCase();
+
+    for (let i = 0; i < numeros.length; i++) {
+        if (numeros[i] < "0" || numeros[i] > "9") {
+            return false;
+        }
+    }
+
+    let suma = 0;
+    let multiplicador = 2;
+
+    for (let i = numeros.length - 1; i >= 0; i--) {
+        suma += parseInt(numeros[i]) * multiplicador;
+        multiplicador++;
+
+        if (multiplicador > 7) {
+            multiplicador = 2;
+        }
+    }
+
+    let resto = suma % 11;
+    let dvEsperado;
+
+    if (resto === 1) {
+        dvEsperado = "K";
+    }
+    else if (resto === 0) {
+        dvEsperado = "0";
+    }
+    else {
+        dvEsperado = (11 - resto).toString();
+    }
+
+    return digitoVerificador === dvEsperado;
+}
+</script>
+
+<script>
+function validarRegistroProfesor() {
+    let nombre = document.getElementById("nombre-profesor").value.trim();
+    let apellido = document.getElementById("apellido-profesor").value.trim();
+    let correo = document.getElementById("correo-profesor").value.trim();
+    let rut = document.getElementById("rut-profesor").value.trim();
+    let telefono = document.getElementById("telefono-profesor").value.trim();
+    let region = document.getElementById("region-profesor").value;
+    let comuna = document.getElementById("comuna-profesor").value;
+    let password = document.getElementById("password-profesor").value.trim();
+    let departamento = document.getElementById("departamento-profesor").value;
+    let otro = document.getElementById("otro-departamento").value.trim();
+
+    let caja = document.getElementById("caja-profesor");
+    let errores = document.getElementById("errores-profesor");
+
+    let listaErrores = [];
+
+    if (!validarNombre(nombre)) {
+        listaErrores.push("El nombre debe tener solo letras y mínimo 2 caracteres.");
+    }
+
+    if (!validarNombre(apellido)) {
+        listaErrores.push("El apellido debe tener solo letras y mínimo 2 caracteres.");
+    }
+
+    if (!validarCorreo(correo)) {
+        listaErrores.push("El correo debe contener @ y un punto.");
+    }
+
+    if (!validarRut(rut)) {
+        listaErrores.push("El RUT debe tener formato válido. Ej: 12345678-9");
+    }
+
+    if (!validarTelefono(telefono)) {
+        listaErrores.push("El teléfono debe comenzar con +56 y tener 9 números.");
+    }
+
+    if (!validarRegionComuna(region)) {
+        listaErrores.push("Debes seleccionar una región.");
+    }
+
+    if (!validarRegionComuna(comuna)) {
+        listaErrores.push("Debes seleccionar una comuna.");
+    }
+
+    if (!validarPassword(password)) {
+        listaErrores.push("La contraseña debe tener mínimo 8 caracteres, una mayúscula y un número.");
+    }
+
+    if (departamento === "") {
+        listaErrores.push("Debes seleccionar un departamento.");
+    }
+
+    if (departamento === "otro" && otro.length < 2) {
+        listaErrores.push("Debes escribir el nombre del departamento.");
+    }
+
+    if (listaErrores.length > 0) {
+        caja.classList.add("contenido-ventana-error");
+        errores.innerHTML = listaErrores.join("<br>");
+        return;
+    }
+
+    caja.classList.remove("contenido-ventana-error");
+    errores.innerHTML = "Registro válido.";
+
+    setTimeout(function() {
+        document.getElementById("caja-profesor").submit();
+    }, 1200);
+}
+</script>
+
+
+<!-- Registro funcionario -->
+<div id="registro-funcionario" class="ventana">
+
+    <form id="caja-funcionario" class="contenido-ventana" method="POST" action="/registrar-funcionario">
+
+        <h2>Registro Funcionario</h2>
+
+        <input type="text" id="nombre-funcionario" name="nombre-funcionario" placeholder="Nombre">
+        <input type="text" id="apellido-funcionario" name="apellido-funcionario" placeholder="Apellido">
+        <input type="text" id="rut-funcionario" name="rut-funcionario" placeholder="RUT">
+        <input type="email" id="correo-funcionario" name="correo-funcionario" placeholder="Correo institucional">
+        <input type="text" id="telefono-funcionario" name="telefono-funcionario" placeholder="+56912345678">
+
+        <!-- Y lo mismo para funcionarios.
+        Así todos los registros usan las regiones y comunas reales de la base. -->
+        <p>Región:</p>
+        <select id="region-funcionario" name="region-funcionario">
+            <option value="">Seleccione región</option>
+            {% for region in regiones %}
+                <option value="{{ region.nombre }}">{{ region.nombre }}</option>
+            {% endfor %}
+        </select>
+
+        <p>Comuna:</p>
+        <select id="comuna-funcionario" name="comuna-funcionario">
+            <option value="">Seleccione comuna</option>
+            {% for comuna in comunas %}
+                <option value="{{ comuna.nombre }}">{{ comuna.nombre }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="text" id="area-funcionario" name="area-funcionario" placeholder="Área de trabajo o función">
+        <input type="password" id="password-funcionario" name="password-funcionario" placeholder="Contraseña">
+
+        <div id="errores-funcionario"></div>
+
+        <button type="button" class="btn-minecraft" onclick="validarRegistroFuncionario()">Registrar</button>
+        <button type="button" class="btn-minecraft" onclick="cerrarFuncionario()">Cerrar</button>
+
+    </form>
+</div>
+
+<script>
+function abrirFuncionario() {
+    document.getElementById("ventana-registro").style.display = "none";
+    document.getElementById("registro-funcionario").style.display = "flex";
+}
+
+function cerrarFuncionario() {
+    document.getElementById("registro-funcionario").style.display = "none";
+    window.history.replaceState({}, document.title, "/");
+}
+
+function validarAreaTrabajo(area) {
+    return area.length >= 3;
+}
+</script>
+
+<script>
+function validarRegistroFuncionario() {
+    let nombre = document.getElementById("nombre-funcionario").value.trim();
+    let apellido = document.getElementById("apellido-funcionario").value.trim();
+    let rut = document.getElementById("rut-funcionario").value.trim();
+    let correo = document.getElementById("correo-funcionario").value.trim();
+    let telefono = document.getElementById("telefono-funcionario").value.trim();
+    let region = document.getElementById("region-funcionario").value;
+    let comuna = document.getElementById("comuna-funcionario").value;
+    let area = document.getElementById("area-funcionario").value.trim();
+    let password = document.getElementById("password-funcionario").value.trim();
+
+    let caja = document.getElementById("caja-funcionario");
+    let errores = document.getElementById("errores-funcionario");
+
+    let listaErrores = [];
+
+    if (!validarNombre(nombre)) {
+        listaErrores.push("El nombre debe tener al menos 2 letras y solo puede contener letras.");
+    }
+
+    if (!validarNombre(apellido)) {
+        listaErrores.push("El apellido debe tener al menos 2 letras y solo puede contener letras.");
+    }
+
+    if (!validarRut(rut)) {
+        listaErrores.push("El RUT debe tener un formato válido. Ej: 12345678-9");
+    }
+
+    if (!validarCorreo(correo)) {
+        listaErrores.push("El correo debe contener @ y un punto. Ej: nombre@correo.com");
+    }
+
+    if (!validarTelefono(telefono)) {
+        listaErrores.push("El teléfono debe comenzar con +56 y tener 9 números. Ej: +56912345678");
+    }
+
+    if (!validarRegionComuna(region)) {
+        listaErrores.push("Debes seleccionar una región.");
+    }
+
+    if (!validarRegionComuna(comuna)) {
+        listaErrores.push("Debes seleccionar una comuna.");
+    }
+
+    if (!validarAreaTrabajo(area)) {
+        listaErrores.push("Debes indicar el área de trabajo o función con al menos 3 caracteres.");
+    }
+
+    if (!validarPassword(password)) {
+        listaErrores.push("La contraseña debe tener mínimo 8 caracteres, una mayúscula y un número.");
+    }
+
+    if (listaErrores.length > 0) {
+        caja.classList.add("contenido-ventana-error");
+        errores.innerHTML = listaErrores.join("<br>");
+        return;
+    }
+
+    caja.classList.remove("contenido-ventana-error");
+    errores.innerHTML = "Registro válido.";
+
+    setTimeout(function() {
+        document.getElementById("caja-funcionario").submit();
+    }, 1200);
+}
+</script>
+
+
+<!-- Ventana de ingreso -->
+<div id="ventana-ingreso" class="ventana">
+
+    <form id="caja-ingreso" class="contenido-ventana" method="POST" action="/login">
+
+        <h2>Ingreso</h2>
+
+        <select id="cargo-ingreso" name="cargo-ingreso">
+            <option value="">Seleccione cargo</option>
+            <option value="estudiante">Estudiante</option>
+            <option value="profesor">Profesor</option>
+            <option value="funcionario">Funcionario</option>
+        </select>
+
+        <input type="email" id="correo-ingreso" name="correo-ingreso" placeholder="Correo">
+        <input type="password" id="password-ingreso" name="password-ingreso" placeholder="Contraseña">
+
+        <div id="errores-ingreso">
+            {% if login_error %}
+                {{ login_error }}
+            {% endif %}
+
+            {% if login_exito %}
+                {{ login_exito }}
+            {% endif %}
+        </div>
+
+        <button type="button" class="btn-minecraft" onclick="validarIngreso()">Ingresa para registrar actividades!</button>
+        <button type="button" class="btn-minecraft" onclick="cerrarIngreso()">Cerrar</button>
+
+    </form>
+</div>
+
+<script>
+function abrirIngreso() {
+    document.getElementById("ventana-ingreso").style.display = "flex";
+}
+
+function cerrarIngreso() {
+    document.getElementById("ventana-ingreso").style.display = "none";
+    document.getElementById("errores-ingreso").innerHTML = "";
+    document.getElementById("caja-ingreso").classList.remove("contenido-ventana-error");
+    document.getElementById("caja-ingreso").classList.remove("contenido-ventana-exito");
+    window.history.replaceState({}, document.title, "/");
+}
+</script>
+
+<script>
+function validarIngreso() {
+    let cargo = document.getElementById("cargo-ingreso").value;
+    let correo = document.getElementById("correo-ingreso").value.trim();
+    let password = document.getElementById("password-ingreso").value.trim();
+
+    let caja = document.getElementById("caja-ingreso");
+    let errores = document.getElementById("errores-ingreso");
+
+    let listaErrores = [];
+
+    if (cargo === "") {
+        listaErrores.push("Debes seleccionar a qué perteneces.");
+    }
+
+    if (!validarCorreo(correo)) {
+        listaErrores.push("El correo debe contener @ y un punto. Ej: nombre@correo.com");
+    }
+
+    if (password.length === 0) {
+        listaErrores.push("Debes escribir tu contraseña.");
+    }
+
+    if (listaErrores.length > 0) {
+        caja.classList.remove("contenido-ventana-exito");
+        caja.classList.add("contenido-ventana-error");
+        errores.innerHTML = listaErrores.join("<br>");
+        return;
+    }
+
+    caja.classList.remove("contenido-ventana-error");
+    caja.classList.remove("contenido-ventana-exito");
+    errores.innerHTML = "";
+
+    localStorage.setItem("cargoUsuario", cargo);
+    document.getElementById("caja-ingreso").submit();
+}
+</script>
+
+
+<!-- Ahora Flask decide qué ventana abrir inicialmente
+y también permite mostrar mensajes de error o éxito
+según las acciones que haga el usuario en la página. -->
+<script>
+window.addEventListener("load", function() {
+    let abrir = "{{ abrir }}";
+    let mensajeError = "{{ login_error }}";
+    let mensajeExito = "{{ login_exito }}";
+
+    if (abrir === "registro") {
+        abrirRegistro();
+    }
+
+    if (abrir === "ingreso") {
+        abrirIngreso();
+
+        let caja = document.getElementById("caja-ingreso");
+        let mensaje = document.getElementById("errores-ingreso");
+
+        if (mensajeError !== "") {
+            caja.classList.add("contenido-ventana-error");
+            mensaje.innerHTML = mensajeError;
+        }
+
+        if (mensajeExito !== "") {
+            caja.classList.add("contenido-ventana-exito");
+            mensaje.innerHTML = mensajeExito;
+
+            setTimeout(function() {
+                window.location.href = "/ingreso";
+            }, 1000);
+        }
+    }
+});
+</script>
+
+</body>
+</html>

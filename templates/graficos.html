@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Indicadores - Panoramas DCC</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='ingreso.css') }}">
+</head>
+<body>
+
+<header class="header">
+    <div class="titulo-dinamico">Calidad de Bienestar DCC</div>
+    <p class="subtitulo-header">Indicadores y métricas en la comunidad</p>
+</header>
+
+<!-- Datos ocultos que vienen desde Flask -->
+<!-- Ahora Jinja queda en HTML y no dentro de JavaScript, para que no tire errores visuales -->
+<div style="display: none;">
+
+    {% for miembro in miembros %}
+        <span class="dato-miembro" data-tipo="{{ miembro.tipo }}"></span>
+    {% endfor %}
+
+    {% for actividad in actividades %}
+        <span class="dato-actividad"
+        data-nombre="{{ actividad.nombre }}"
+        data-dias="{{ actividad.dias }}"></span>
+    {% endfor %}
+
+</div>
+
+<main class="contenedor-miembros">
+
+    <div class="bloque-deporte">
+        <img id="imagen-deporte"
+        src="{{ url_for('static', filename='Imagenes/basquet.png') }}">
+    </div>
+
+    <section class="panel-miembros">
+        <h2>Gráficos de miembros y actividades</h2>
+        <p>Resumen visual de miembros registrados y actividades que realizan.</p>
+
+        <div class="seccion-grafico">
+            <h3>Miembros registrados por tipo</h3>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Estudiantes</span>
+                <div class="barra-contenedor">
+                    <div id="graf-estudiantes" class="barra-grafico">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Profesores</span>
+                <div class="barra-contenedor">
+                    <div id="graf-profesores" class="barra-grafico">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Funcionarios</span>
+                <div class="barra-contenedor">
+                    <div id="graf-funcionarios" class="barra-grafico">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="seccion-grafico">
+            <h3>Actividades más realizadas</h3>
+
+            <p>
+                Las actividades se cargan automáticamente desde la base de datos.
+            </p>
+        </div>
+
+        <div class="seccion-grafico">
+            <h3>Actividades por día</h3>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Lunes</span>
+                <div class="barra-contenedor">
+                    <div id="graf-lunes" class="barra-grafico barra-grafico-3">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Martes</span>
+                <div class="barra-contenedor">
+                    <div id="graf-martes" class="barra-grafico barra-grafico-3">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Miércoles</span>
+                <div class="barra-contenedor">
+                    <div id="graf-miercoles" class="barra-grafico barra-grafico-3">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Jueves</span>
+                <div class="barra-contenedor">
+                    <div id="graf-jueves" class="barra-grafico barra-grafico-3">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Viernes</span>
+                <div class="barra-contenedor">
+                    <div id="graf-viernes" class="barra-grafico barra-grafico-3">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Sábado</span>
+                <div class="barra-contenedor">
+                    <div id="graf-sabado" class="barra-grafico barra-grafico-3">0</div>
+                </div>
+            </div>
+
+            <div class="fila-grafico">
+                <span class="etiqueta-grafico">Domingo</span>
+                <div class="barra-contenedor">
+                    <div id="graf-domingo" class="barra-grafico barra-grafico-3">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="seccion-grafico">
+            <h3>Porcentaje de la comunidad</h3>
+
+            <div class="grafico-torta-contenedor">
+
+                <div id="grafico-torta" class="grafico-torta"></div>
+
+                <div class="leyenda-torta">
+                    <div class="item-leyenda">
+                        <span class="color-leyenda estudiantes"></span>
+                        <span id="leyenda-estudiantes">Estudiantes — 0%</span>
+                    </div>
+
+                    <div class="item-leyenda">
+                        <span class="color-leyenda profesores"></span>
+                        <span id="leyenda-profesores">Profesores — 0%</span>
+                    </div>
+
+                    <div class="item-leyenda">
+                        <span class="color-leyenda funcionarios"></span>
+                        <span id="leyenda-funcionarios">Funcionarios — 0%</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <button class="btn-minecraft btn-secundario boton-centrado" type="button"
+        onclick="window.location.href='{{ volver_url }}'">
+            Volver
+        </button>
+    </section>
+</main>
+
+<script>
+let imagenes = [
+    "/static/Imagenes/basquet.png",
+    "/static/Imagenes/volei.png",
+    "/static/Imagenes/ajedrez.png",
+    "/static/Imagenes/patinaje.png"
+];
+
+let indice = 0;
+
+function cambiarImagen() {
+    indice++;
+
+    if (indice >= imagenes.length) {
+        indice = 0;
+    }
+
+    document.getElementById("imagen-deporte").src = imagenes[indice];
+}
+
+setInterval(cambiarImagen, 2000);
+</script>
+
+<script>
+
+
+
+function actualizarBarra(idBarra, cantidad, maximo) {
+    let barra = document.getElementById(idBarra);
+
+    if (maximo === 0) {
+        barra.style.width = "0%";
+        barra.textContent = "0";
+        return;
+    }
+
+    let porcentaje = (cantidad / maximo) * 100;
+    barra.style.width = porcentaje + "%";
+    barra.textContent = cantidad;
+}
+
+function generarGraficos() {
+
+    let estudiantes = 0;
+    let profesores = 0;
+    let funcionarios = 0;
+
+    // Antes aquí estaban escritas a mano algunas actividades.
+    // Ahora usamos este objeto para contar cualquier actividad que venga desde la base de datos.
+    let actividadesConteo = {};
+
+    let lunes = 0;
+    let martes = 0;
+    let miercoles = 0;
+    let jueves = 0;
+    let viernes = 0;
+    let sabado = 0;
+    let domingo = 0;
+
+    // Leemos miembros desde los span ocultos.
+    let datosMiembros = document.getElementsByClassName("dato-miembro");
+
+    for (let i = 0; i < datosMiembros.length; i++) {
+
+        let tipo = datosMiembros[i].dataset.tipo;
+
+        if (tipo === "estudiante") {
+            estudiantes++;
+        }
+        else if (tipo === "profesor") {
+            profesores++;
+        }
+        else if (tipo === "funcionario") {
+            funcionarios++;
+        }
+    }
+
+    // Leemos actividades desde los span ocultos.
+    let datosActividades = document.getElementsByClassName("dato-actividad");
+
+    for (let i = 0; i < datosActividades.length; i++) {
+
+        let actividad = datosActividades[i].dataset.nombre.toLowerCase();
+        let dias = datosActividades[i].dataset.dias.toLowerCase().split(" ");
+
+        // Si la actividad todavía no existe en el contador, la creamos.
+        if (!(actividad in actividadesConteo)) {
+            actividadesConteo[actividad] = 0;
+        }
+
+        // Sumamos una actividad más.
+        actividadesConteo[actividad]++;
+
+        for (let j = 0; j < dias.length; j++) {
+
+            if (dias[j] === "lunes") {
+                lunes++;
+            }
+            else if (dias[j] === "martes") {
+                martes++;
+            }
+            else if (dias[j] === "miercoles" || dias[j] === "miércoles") {
+                miercoles++;
+            }
+            else if (dias[j] === "jueves") {
+                jueves++;
+            }
+            else if (dias[j] === "viernes") {
+                viernes++;
+            }
+            else if (dias[j] === "sabado" || dias[j] === "sábado") {
+                sabado++;
+            }
+            else if (dias[j] === "domingo") {
+                domingo++;
+            }
+        }
+    }
+
+    let maxTipo = Math.max(estudiantes, profesores, funcionarios);
+
+    let maxActividad = 0;
+
+    for (let nombreActividad in actividadesConteo) {
+
+        if (actividadesConteo[nombreActividad] > maxActividad) {
+            maxActividad = actividadesConteo[nombreActividad];
+        }
+    }
+
+    let maxDia = Math.max(lunes, martes, miercoles, jueves, viernes, sabado, domingo);
+
+    actualizarBarra("graf-estudiantes", estudiantes, maxTipo);
+    actualizarBarra("graf-profesores", profesores, maxTipo);
+    actualizarBarra("graf-funcionarios", funcionarios, maxTipo);
+
+    // Ahora creamos las barras automáticamente según las actividades reales.
+    let seccionActividades = document.querySelectorAll(".seccion-grafico")[1];
+
+    seccionActividades.innerHTML = "<h3>Actividades más realizadas</h3>";
+
+    if (datosActividades.length === 0) {
+        seccionActividades.innerHTML += "<p>No hay actividades registradas todavía.</p>";
+    }
+
+    for (let nombreActividad in actividadesConteo) {
+
+        let cantidad = actividadesConteo[nombreActividad];
+
+        let fila = document.createElement("div");
+        fila.className = "fila-grafico";
+
+        fila.innerHTML =
+            "<span class='etiqueta-grafico'>" +
+            nombreActividad +
+            "</span>" +
+            "<div class='barra-contenedor'>" +
+            "<div class='barra-grafico barra-grafico-2'>" +
+            cantidad +
+            "</div>" +
+            "</div>";
+
+        seccionActividades.appendChild(fila);
+
+        let barra = fila.querySelector(".barra-grafico");
+
+        if (maxActividad === 0) {
+            barra.style.width = "0%";
+        }
+        else {
+            let porcentaje = (cantidad / maxActividad) * 100;
+            barra.style.width = porcentaje + "%";
+        }
+    }
+
+    actualizarBarra("graf-lunes", lunes, maxDia);
+    actualizarBarra("graf-martes", martes, maxDia);
+    actualizarBarra("graf-miercoles", miercoles, maxDia);
+    actualizarBarra("graf-jueves", jueves, maxDia);
+    actualizarBarra("graf-viernes", viernes, maxDia);
+    actualizarBarra("graf-sabado", sabado, maxDia);
+    actualizarBarra("graf-domingo", domingo, maxDia);
+
+    let totalMiembros = estudiantes + profesores + funcionarios;
+
+    if (totalMiembros === 0) {
+        totalMiembros = 1;
+    }
+
+    let porcentajeEstudiantes = (estudiantes / totalMiembros) * 100;
+    let porcentajeProfesores = (profesores / totalMiembros) * 100;
+    let porcentajeFuncionarios = (funcionarios / totalMiembros) * 100;
+
+    let torta = document.getElementById("grafico-torta");
+
+    torta.style.background = "conic-gradient(" +
+        "#43a047 " + porcentajeEstudiantes + "%, " +
+        "#fb8c00 " + porcentajeEstudiantes + "% " + (porcentajeEstudiantes + porcentajeProfesores) + "%, " +
+        "#5e35b1 " + (porcentajeEstudiantes + porcentajeProfesores) + "% 100%)";
+
+    document.getElementById("leyenda-estudiantes").textContent =
+        "Estudiantes — " + Math.round(porcentajeEstudiantes) + "%";
+
+    document.getElementById("leyenda-profesores").textContent =
+        "Profesores — " + Math.round(porcentajeProfesores) + "%";
+
+    document.getElementById("leyenda-funcionarios").textContent =
+        "Funcionarios — " + Math.round(porcentajeFuncionarios) + "%";
+}
+
+window.onload = generarGraficos;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,312 @@
+/* Fondo general de la página, lo tipico*/
+body {
+    margin: 0;
+    background-color: #f5f5f5;
+    font-family: Georgia, serif;
+}
+
+/* Encabezado*/
+.header {
+    background-color: #2e7d32;
+    color: white;
+    text-align: center;
+    padding: 50px 20px;
+}
+
+/* Texto de presentacion */
+.texto-titulo-presentacion {
+    font-size: 22px;
+    margin-top: 10px;
+}
+
+/* Sección principal que contiene imagen y bloque */
+.inicio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    padding: 50px;
+    background-color: #fff3e0;
+}
+
+/* Imagen ubicada a la izquierda */
+.imagen-principal {
+    width: 45%;
+    max-width: 600px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Bloque de la derecha donde ira el formulario */
+.panel-bienvenida {
+    width: 320px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Título bloque derecho */
+.panel-bienvenida h2 {
+    margin-top: 0;
+    color: #e65100;
+    font-size: 32px;
+}
+
+/* Texto bloque der*/
+.panel-bienvenida p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
+}
+
+
+
+
+
+/* Ponemos botones en un contenedor de botones */
+.botones-inicio {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Botón estilo minecraft, esto lo busque con ia probando :D */
+.btn-minecraft {
+    background-color: #6ab04c;
+    color: white;
+    border: 3px solid #2e7d32;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+
+    /* efecto cuadrado minecraft */
+    box-shadow: 0 4px 0 #1b5e20;
+
+    transition: 0.1s;
+}
+
+/* efecto cuando se presiona */
+.btn-minecraft:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #1b5e20;
+}
+
+/* hover */
+.btn-minecraft:hover {
+    background-color: #7ed957;
+}
+
+/* hasta aqui use la ia para que quede con minecraft (que en verdad me lo imagine distinto jaja)*/
+
+
+/* Creamos aqui las ventanas, primero la ventana oculta, luego cambiamos con funciones para mostrarla en html */
+/* ventana oculta */
+.ventana {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(0,0,0,0.5);
+
+    justify-content: center;
+    align-items: center;
+
+    /* difumina al fondo para darle color */
+    backdrop-filter: blur(3px);
+}
+
+/* contenido blanco */
+.contenido-ventana button {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    font-size: 18px;
+    
+}
+
+.contenido-ventana {
+    background-color: white;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    text-align: center;
+
+    max-height: 80vh;    
+    overflow-y: auto;     /*scroll interno */
+}
+/* Me vi a oblidado a poner este contenido-Ventana sin poder usar otra clase anterior. La verdad no sé si era completamente necesario
+pero o sino el display o menu en profesores se escapaba de la ventana, quedando horrible */
+.contenido-ventana input,
+.contenido-ventana select {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+/*Pasé del html para aca */
+/* agrego transición a la caja blanca */
+.contenido-ventana {
+    transition: background-color 0.4s ease,
+                border 0.4s ease,
+                box-shadow 0.4s ease;
+}
+
+/* estado cuando hay error */
+.contenido-ventana-error {
+    background-color: #ffe5e5;
+    border: 3px solid #d32f2f;
+    box-shadow: 0 0 14px rgba(211, 47, 47, 0.35);
+}
+/* estado cuando el ingreso salió bien */
+.contenido-ventana-exito {
+    background-color: #edf7ed;
+    border: 3px solid #66bb6a;
+    box-shadow: 0 0 14px rgba(102, 187, 106, 0.35);
+}
+
+
+/* nuevo de la tarea 2 para le inicio! */
+
+/* Mensajes que llegan desde Flask */
+.contenedor-mensajes {
+    display: flex;
+    justify-content: center;
+    background-color: #fff3e0;
+    padding: 15px;
+}
+
+.mensaje-flask {
+    width: 80%;
+    max-width: 700px;
+    padding: 14px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Mensaje de error, por ejemplo login malo o usuario repetido */
+.mensaje-flask.error {
+    background-color: #ffe5e5;
+    border: 3px solid #d32f2f;
+    color: #b71c1c;
+}
+
+/* Mensaje de éxito, por ejemplo registro correcto */
+.mensaje-flask.exito {
+    background-color: #edf7ed;
+    border: 3px solid #66bb6a;
+    color: #1b5e20;
+}
+
+/* Inicio con columnas dinámicas */
+.inicio-con-dinamicos {
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+/* Panel de últimos miembros */
+.panel-dinamico-inicio {
+    width: 280px;
+    background-color: white;
+    border: 3px solid #dcedc8;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Título del panel dinámico */
+.panel-dinamico-inicio h2 {
+    color: #e65100;
+    font-size: 24px;
+    text-align: center;
+    margin-top: 0;
+}
+
+/* Cada elemento dinámico */
+.item-dinamico-inicio {
+    background-color: #f9fff4;
+    border: 2px solid #c5e1a5;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.item-dinamico-inicio p {
+    margin: 4px 0;
+    font-size: 15px;
+}
+
+.texto-pequeno-inicio {
+    color: #555;
+    font-size: 13px;
+}
+
+/* Ajuste de imagen en el inicio dinámico */
+.inicio-con-dinamicos .imagen-principal {
+    width: 38%;
+    max-width: 600px;
+}
+
+/* Panel de actividades abajo y horizontal */
+.panel-actividades-horizontal {
+    width: 90%;
+    max-width: 1200px;
+    background-color: white;
+    border: 3px solid #dcedc8;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Título del panel de actividades */
+.panel-actividades-horizontal h2 {
+    text-align: center;
+    color: #e65100;
+    margin-top: 0;
+}
+
+/* Lista horizontal de actividades */
+.lista-actividades-horizontal {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Cada actividad ocupa un ancho chico */
+.lista-actividades-horizontal .item-dinamico-inicio {
+    width: 190px;
+}
+
+/* Responsive simple */
+@media (max-width: 1000px) {
+    .inicio-con-dinamicos {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .panel-dinamico-inicio,
+    .panel-bienvenida {
+        width: 85%;
+        max-width: 500px;
+    }
+
+    .inicio-con-dinamicos .imagen-principal {
+        width: 85%;
+    }
+
+    .panel-actividades-horizontal {
+        width: 85%;
+    }
+}

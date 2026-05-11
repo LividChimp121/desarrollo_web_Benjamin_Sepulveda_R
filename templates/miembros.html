@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Miembros - Panoramas DCC</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='ingreso.css') }}"><!-- para poder volver, y quiero reutilizar el css de ingreso-->
+</head>
+<body>
+
+<header class="header">
+    <div class="titulo-dinamico">Calidad de Bienestar DCC</div>
+    <p class="subtitulo-header">Consulta de miembros registrados</p>
+</header>
+
+<main class="contenedor-miembros">
+    <div class="bloque-deporte">
+        <img id="imagen-deporte" src="{{ url_for('static', filename='Imagenes/basquet.png') }}" alt="Deporte decorativo">
+    </div>
+
+    <section class="panel-miembros">
+        <h2>Listado de miembros</h2>
+        <p>Filtra y ordena a los integrantes de la comunidad.</p>
+
+        <div class="filtros-miembros">
+            <div>
+                <label for="filtro-tipo">Filtrar por tipo</label>
+                <select id="filtro-tipo" onchange="filtrarMiembros()">
+                    <option value="todos">Todos</option>
+                    <option value="estudiante">Estudiante</option>
+                    <option value="profesor">Profesor</option>
+                    <option value="funcionario">Funcionario</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="filtro-campo">Buscar por</label>
+                <select id="filtro-campo" onchange="filtrarMiembros()">
+                    <option value="nombre">Nombre</option>
+                    <option value="correo">Correo</option>
+                    <option value="contacto">Datos contacto</option>
+                    <option value="region">Región</option>
+                    <option value="comuna">Comuna</option>
+                    <option value="fecha">Fecha registro</option>
+                    <option value="actividad">Actividad</option>
+                    <option value="lugar">Lugar</option>
+                    <option value="dias">Días</option>
+                    <option value="hora">Hora</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="texto-busqueda">Texto</label>
+                <input type="text" id="texto-busqueda" onkeyup="filtrarMiembros()" placeholder="Escribe para filtrar">
+            </div>
+        </div>
+
+        <div class="lista-miembros">
+
+            {% for miembro in miembros %}
+
+            <div class="tarjeta-miembro"
+                 onclick="abrirDetalleMiembro(this)"
+                 data-tipo="{{ miembro.tipo }}"
+                 data-nombre="{{ miembro.nombre.lower() }} {{ miembro.apellido.lower() }}"
+                 data-nombrepantalla="{{ miembro.nombre }} {{ miembro.apellido }}"
+                 data-correo="{{ miembro.correo.lower() }}"
+                 data-contacto="{{ miembro.telefono.lower() }}"
+                 data-region="{{ miembro.region.lower() }}"
+                 data-comuna="{{ miembro.comuna.lower() }}"
+                 data-fecha="{{ miembro.fecha_registro }}"
+                 data-actividad="{% for actividad in miembro.actividades %}{{ actividad.nombre.lower() }} {% endfor %}"
+                 data-lugar="{% for actividad in miembro.actividades %}{{ actividad.lugar.lower() }} {% endfor %}"
+                 data-dias="{% for actividad in miembro.actividades %}{{ actividad.dias.lower() }} {% endfor %}"
+                 data-hora="{% for actividad in miembro.actividades %}{{ actividad.hora_inicio }} {{ actividad.hora_fin }} {% endfor %}">
+                <h3>{{ miembro.nombre }} {{ miembro.apellido }}</h3>
+
+                <p><strong>Tipo:</strong> {{ miembro.tipo }}</p>
+                <p><strong>Correo:</strong> {{ miembro.correo }}</p>
+                <p><strong>Teléfono:</strong> {{ miembro.telefono }}</p>
+                <p><strong>Región:</strong> {{ miembro.region }}</p>
+                <p><strong>Comuna:</strong> {{ miembro.comuna }}</p>
+                <p><strong>Fecha registro:</strong> {{ miembro.fecha_registro }}</p>
+
+                {% if miembro.actividades|length > 0 %}
+                    {% for actividad in miembro.actividades %}
+                    <hr>
+                    <p><strong>Actividad:</strong> {{ actividad.nombre }}</p>
+                    <p><strong>Días:</strong> {{ actividad.dias }}</p>
+                    <p><strong>Hora:</strong> {{ actividad.hora_inicio }} - {{ actividad.hora_fin }}</p>
+                    <p><strong>Lugar:</strong> {{ actividad.lugar }}</p>
+
+                    {% if actividad.acompanado %}
+                    <p><strong>Con quién la realiza:</strong> {{ actividad.acompanado }}</p>
+                    {% endif %}
+
+                    {% if actividad.entretencion %}
+                    <p><strong>Qué tan entretenida es:</strong> {{ actividad.entretencion }}</p>
+                    {% endif %}
+                    {% endfor %}
+                {% else %}
+                <p><strong>Actividad:</strong> Sin actividad registrada</p>
+                {% endif %}
+
+                <div class="info-detalle-miembro" style="display: none;">
+                    <p><strong>Tipo:</strong> {{ miembro.tipo }}</p>
+                    <p><strong>Correo:</strong> {{ miembro.correo }}</p>
+                    <p><strong>Teléfono:</strong> {{ miembro.telefono }}</p>
+                    <p><strong>Región:</strong> {{ miembro.region }}</p>
+                    <p><strong>Comuna:</strong> {{ miembro.comuna }}</p>
+                    <p><strong>Fecha registro:</strong> {{ miembro.fecha_registro }}</p>
+
+                    {% if miembro.actividades|length > 0 %}
+                        {% for actividad in miembro.actividades %}
+                        <hr>
+                        <p><strong>Actividad:</strong> {{ actividad.nombre }}</p>
+                        <p><strong>Días:</strong> {{ actividad.dias }}</p>
+                        <p><strong>Hora:</strong> {{ actividad.hora_inicio }} - {{ actividad.hora_fin }}</p>
+                        <p><strong>Lugar:</strong> {{ actividad.lugar }}</p>
+
+                        {% if actividad.acompanado %}
+                        <p><strong>Con quién la realiza:</strong> {{ actividad.acompanado }}</p>
+                        {% endif %}
+
+                        {% if actividad.entretencion %}
+                        <p><strong>Qué tan entretenida es:</strong> {{ actividad.entretencion }}</p>
+                        {% endif %}
+
+                        {% if actividad.fotos|length > 0 %}
+                        <img src="/{{ actividad.fotos[0].ruta_archivo }}" alt="Foto actividad" style="width:100%; border-radius:10px; margin-top:10px;">
+                        {% else %}
+                        <p><strong>Foto:</strong> Sin foto registrada.</p>
+                        {% endif %}
+                        {% endfor %}
+                    {% else %}
+                    <p><strong>Actividad:</strong> Sin actividad registrada</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% endfor %}
+        </div>
+
+        <div class="paginacion" id="paginacion-miembros"></div>
+        <button class="btn-minecraft btn-secundario boton-centrado" type="button"
+        onclick="window.location.href='{{ volver_url }}'">
+            Volver
+        </button>
+    </section>
+</main>
+
+<div id="ventana-detalle-miembro" class="ventana">
+    <div class="contenido-ventana">
+        <h2 id="detalle-nombre">Detalle</h2>
+        <div id="detalle-contenido"></div>
+        <button type="button" class="btn-minecraft" onclick="cerrarDetalleMiembro()">Cerrar</button>
+    </div>
+</div>
+
+<script>
+function obtenerTarjetasVisibles() {
+    let tipo = document.getElementById("filtro-tipo").value;
+    let campo = document.getElementById("filtro-campo").value;
+    let texto = document.getElementById("texto-busqueda").value.toLowerCase();
+
+    let tarjetas = document.getElementsByClassName("tarjeta-miembro");
+    let visibles = [];
+
+    for (let i = 0; i < tarjetas.length; i++) {
+        let tarjeta = tarjetas[i];
+        let tipoTarjeta = tarjeta.dataset.tipo;
+        let valorCampo = tarjeta.dataset[campo];
+
+        let mostrar = true;
+
+        if (tipo !== "todos") {
+            if (tipoTarjeta !== tipo) {
+                mostrar = false;
+            }
+        }
+
+        if (texto !== "") {
+            if (!valorCampo.includes(texto)) {
+                mostrar = false;
+            }
+        }
+
+        if (mostrar) {
+            visibles.push(tarjeta);
+        }
+    }
+    return visibles;
+}
+
+let paginaActual = 1;
+let miembrosPorPagina = 2;
+
+function mostrarPagina() {
+    let tarjetas = document.getElementsByClassName("tarjeta-miembro");
+
+    for (let i = 0; i < tarjetas.length; i++) {
+        tarjetas[i].style.display = "none";
+    }
+
+    let visibles = obtenerTarjetasVisibles();
+    let totalPaginas = Math.ceil(visibles.length / miembrosPorPagina);
+
+    if (totalPaginas === 0) {
+        totalPaginas = 1;
+    }
+
+    if (paginaActual > totalPaginas) {
+        paginaActual = totalPaginas;
+    }
+
+    let inicio = (paginaActual - 1) * miembrosPorPagina;
+    let fin = inicio + miembrosPorPagina;
+
+    for (let i = inicio; i < fin && i < visibles.length; i++) {
+        visibles[i].style.display = "block";
+    }
+
+    crearBotonesPaginacion(visibles.length);
+}
+
+function crearBotonesPaginacion(totalMiembros) {
+    let contenedor = document.getElementById("paginacion-miembros");
+    contenedor.innerHTML = "";
+
+    let totalPaginas = Math.ceil(totalMiembros / miembrosPorPagina);
+
+    if (totalPaginas === 0) {
+        totalPaginas = 1;
+    }
+
+    let botonAnterior = document.createElement("button");
+    botonAnterior.textContent = "Anterior";
+    botonAnterior.className = "btn-minecraft";
+    botonAnterior.type = "button";
+    botonAnterior.onclick = irPaginaAnterior;
+
+    contenedor.appendChild(botonAnterior);
+
+    function irPaginaAnterior() {
+        if (paginaActual > 1) {
+            paginaActual--;
+            mostrarPagina();
+        }
+    }
+
+    let inicioBotones = paginaActual - 1;
+    let finBotones = paginaActual + 1;
+
+    if (inicioBotones < 1) {
+        inicioBotones = 1;
+        finBotones = 3;
+    }
+
+    if (finBotones > totalPaginas) {
+        finBotones = totalPaginas;
+        inicioBotones = totalPaginas - 2;
+    }
+
+    if (inicioBotones < 1) {
+        inicioBotones = 1;
+    }
+
+    for (let i = inicioBotones; i <= finBotones; i++) {
+        let botonPagina = document.createElement("button");
+        botonPagina.textContent = i;
+        botonPagina.type = "button";
+
+        if (i === paginaActual) {
+            botonPagina.className = "btn-minecraft btn-secundario";
+        }
+        else {
+            botonPagina.className = "btn-minecraft";
+        }
+
+        botonPagina.dataset.pagina = i;
+        botonPagina.onclick = irPagina;
+
+        contenedor.appendChild(botonPagina);
+    }
+
+    function irPagina() {
+        let paginaSeleccionada = parseInt(this.dataset.pagina);
+
+        if (paginaSeleccionada !== paginaActual) {
+            paginaActual = paginaSeleccionada;
+            mostrarPagina();
+        }
+    }
+
+    let botonSiguiente = document.createElement("button");
+    botonSiguiente.textContent = "Siguiente";
+    botonSiguiente.className = "btn-minecraft";
+    botonSiguiente.type = "button";
+    botonSiguiente.onclick = irPaginaSiguiente;
+
+    function irPaginaSiguiente() {
+        if (paginaActual < totalPaginas) {
+            paginaActual++;
+            mostrarPagina();
+        }
+    }
+
+    contenedor.appendChild(botonSiguiente);
+}
+
+function filtrarMiembros() {
+    paginaActual = 1;
+    mostrarPagina();
+}
+
+window.onload = iniciarPagina;
+
+function iniciarPagina() {
+    mostrarPagina();
+    guardarMiembros()
+}
+</script>
+
+
+<script>
+let imagenes = [
+    "/static/Imagenes/basquet.png",
+    "/static/Imagenes/volei.png",
+    "/static/Imagenes/ajedrez.png",
+    "/static/Imagenes/patinaje.png"
+];
+
+let indice = 0;
+
+function cambiarImagen() {
+    indice++;
+
+    if (indice >= imagenes.length) {
+        indice = 0;
+    }
+
+    document.getElementById("imagen-deporte").src = imagenes[indice];
+}
+
+setInterval(cambiarImagen, 2000);
+
+</script>
+
+
+<script>
+function guardarMiembros() {
+    let tarjetas = document.getElementsByClassName("tarjeta-miembro");
+    let miembros = [];
+
+    for (let i = 0; i < tarjetas.length; i++) {
+        let tipo = tarjetas[i].dataset.tipo;
+        let region = tarjetas[i].dataset.region;
+        let comuna = tarjetas[i].dataset.comuna;
+        let fecha = tarjetas[i].dataset.fecha;
+        let actividad = tarjetas[i].dataset.actividad;
+        let dias = tarjetas[i].dataset.dias;
+
+        miembros.push({
+            tipo: tipo,
+            region: region,
+            comuna: comuna,
+            fecha: fecha,
+            actividad: actividad,
+            dias: dias
+        });
+    }
+
+    localStorage.setItem("miembros", JSON.stringify(miembros));
+}
+
+</script>
+
+<script>
+function abrirDetalleMiembro(tarjeta) {
+    let nombre = tarjeta.dataset.nombrepantalla;
+    let detalle = tarjeta.getElementsByClassName("info-detalle-miembro")[0].innerHTML;
+
+    document.getElementById("detalle-nombre").textContent = nombre;
+    document.getElementById("detalle-contenido").innerHTML = detalle;
+    document.getElementById("ventana-detalle-miembro").style.display = "flex";
+}
+
+function cerrarDetalleMiembro() {
+    document.getElementById("ventana-detalle-miembro").style.display = "none";
+}
+</script>
+
+</body>
+</html>
