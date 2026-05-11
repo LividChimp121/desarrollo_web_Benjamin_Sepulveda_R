@@ -41,3 +41,5 @@ En los gráficos primero se utilizó `localStorage` porque era más rápido mien
 También se decidió reutilizar CSS entre páginas, especialmente `ingreso.css`, para mantener una estructura visual consistente y no duplicar estilos innecesariamente.
 
 En general se intentó mantener el código relativamente simple. Varias veces se probaron soluciones más complejas, pero normalmente terminaban agregando demasiadas líneas o rompiendo partes que ya funcionaban. Por eso se prefirió modificar solamente lo necesario y mantener una estructura entendible considerando la entrevista individual de la tarea.
+
+Además voy a adjuntar en sql mi actual base de datos en caso de :D (como copia)
