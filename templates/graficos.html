@@ -8,11 +8,10 @@
 <body>
 
 <header class="header">
-    <div class="titulo-dinamico">Calidad de Bienestar DCC</div>
+    <h1 class="titulo-dinamico">Calidad de Bienestar DCC</h1>
     <p class="subtitulo-header">Indicadores y métricas en la comunidad</p>
 </header>
 
-<!-- Datos ocultos que vienen desde Flask -->
 <!-- Ahora Jinja queda en HTML y no dentro de JavaScript, para que no tire errores visuales -->
 <div style="display: none;">
 
@@ -32,7 +31,7 @@
 
     <div class="bloque-deporte">
         <img id="imagen-deporte"
-        src="{{ url_for('static', filename='Imagenes/basquet.png') }}">
+        src="{{ url_for('static', filename='Imagenes/basquet.png') }}" alt="Deporte decorativo">
     </div>
 
     <section class="panel-miembros">
