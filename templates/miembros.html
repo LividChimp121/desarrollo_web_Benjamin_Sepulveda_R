@@ -88,7 +88,11 @@
                     <p><strong>Días:</strong> {{ actividad.dias }}</p>
                     <p><strong>Hora:</strong> {{ actividad.hora_inicio }} - {{ actividad.hora_fin }}</p>
                     <p><strong>Lugar:</strong> {{ actividad.lugar }}</p>
-
+                    <p>
+                        <a href="{{ url_for('detalle_actividad', actividad_id=actividad.id) }}">
+                            Ver actividad y comentarios
+                        </a>
+                    </p>
                     {% if actividad.acompanado %}
                     <p><strong>Con quién la realiza:</strong> {{ actividad.acompanado }}</p>
                     {% endif %}
@@ -116,7 +120,11 @@
                         <p><strong>Días:</strong> {{ actividad.dias }}</p>
                         <p><strong>Hora:</strong> {{ actividad.hora_inicio }} - {{ actividad.hora_fin }}</p>
                         <p><strong>Lugar:</strong> {{ actividad.lugar }}</p>
-
+                        <p>
+                            <a href="{{ url_for('detalle_actividad', actividad_id=actividad.id) }}">
+                                Ver actividad y comentarios
+                            </a>
+                        </p>
                         {% if actividad.acompanado %}
                         <p><strong>Con quién la realiza:</strong> {{ actividad.acompanado }}</p>
                         {% endif %}

@@ -76,6 +76,18 @@ window.onload = function() {
         </label>
         <input type="text" id="nombre-actividad" name="nombre-actividad" placeholder="Ej: Ajedrez, Básquetbol, Patinaje">
         <!-- El id lo usa Javascript y el name lo usará Flask para tomar el dato -->
+         <label for="tipo-actividad">
+            Tipo de actividad <span class="obligatorio">*</span>
+        </label>
+
+        <select id="tipo-actividad" name="tipo-actividad">
+            <option value="">Seleccione tipo</option>
+            <option value="deportiva">Deportiva</option>
+            <option value="artistica">Artística</option>
+            <option value="tecnologica">Tecnológica</option>
+            <option value="social">Social</option>
+            <option value="recreativa">Recreativa</option>
+        </select>
 
         <label>
             ¿Qué días la realizas? <span class="obligatorio">*</span>
@@ -268,6 +280,7 @@ function validarLinkActividad(link) {
 //Usamos funciones anteriores y validamos
 function validarActividad() {
     let nombre = document.getElementById("nombre-actividad").value.trim();
+    let tipoActividad = document.getElementById("tipo-actividad").value;
     let horaInicio = document.getElementById("hora-inicio").value.trim();
     let horaFin = document.getElementById("hora-fin").value.trim();
     let lugar = document.getElementById("lugar-actividad").value.trim();
@@ -284,6 +297,7 @@ function validarActividad() {
     if (!validarNombreActividad(nombre)) {
         listaErrores.push("Debes escribir el nombre de la actividad con al menos 3 caracteres.");
     }
+    if (tipoActividad === "") {listaErrores.push("Debe seleccionar un tipo de actividad.");}
 
     if (!validarDiasActividad()) {
         listaErrores.push("Debes seleccionar al menos un día.");
@@ -379,6 +393,7 @@ function salir() {
 //era mejor borrar todo.
 function limpiarFormularioActividad() {
     document.getElementById("nombre-actividad").value = "";
+    document.getElementById("tipo-actividad").value = "";
     document.getElementById("hora-inicio").value = "";
     document.getElementById("hora-fin").value = "";
     document.getElementById("lugar-actividad").value = "";

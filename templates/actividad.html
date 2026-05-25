@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Detalle actividad</title>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+
+<header class="header">
+    <h1>Panoramas DCC</h1>
+    <p class="texto-titulo-presentacion">Detalle de actividad</p>
+</header>
+
+<section class="inicio">
+
+    <div class="panel-bienvenida">
+
+        <h2>{{ actividad.nombre }}</h2>
+
+        <p><strong>Días:</strong> {{ actividad.dias }}</p>
+        <p><strong>Hora:</strong> {{ actividad.hora_inicio }} - {{ actividad.hora_fin }}</p>
+        <p><strong>Lugar:</strong> {{ actividad.lugar }}</p>
+        <p><strong>Tipo:</strong> {{ actividad.tipo }}</p>
+        <p><strong>Descripción:</strong> {{ actividad.descripcion }}</p>
+
+        <p>
+            <strong>Miembro:</strong>
+            {{ actividad.miembro.nombre }} {{ actividad.miembro.apellido }}
+        </p>
+
+        {% if actividad.fotos|length > 0 %}
+            <h3>Fotos</h3>
+
+            {% for foto in actividad.fotos %}
+                <img src="{{ url_for('static', filename=foto.ruta_archivo.replace('static/', '')) }}"
+                     alt="Foto actividad"
+                     class="imagen-principal">
+            {% endfor %}
+        {% endif %}
+
+        <hr>
+
+        <h3>Agregar comentario</h3>
+
+        <input type="hidden" id="actividad-id" value="{{ actividad.id }}">
+
+        <p>Nombre:</p>
+        <input type="text" id="nombre-comentario" placeholder="Tu nombre">
+
+        <p>Comentario:</p>
+        <textarea id="texto-comentario" rows="4" cols="50" placeholder="Escribe tu comentario"></textarea>
+
+        <div id="mensaje-comentario"></div>
+
+        <button type="button" class="btn-minecraft" onclick="agregarComentario()">
+            Agregar comentario
+        </button>
+
+        <hr>
+
+        <h3>Comentarios</h3>
+
+        <div id="lista-comentarios">
+            <p>Cargando comentarios...</p>
+        </div>
+
+        <br>
+
+        <button type="button" class="btn-minecraft" onclick="window.location.href='/miembros'">
+            Volver a miembros
+        </button>
+
+        <button type="button" class="btn-minecraft" onclick="window.location.href='/'">
+            Volver al inicio
+        </button>
+
+    </div>
+
+</section>
+
+<script>
+function cargarComentarios() {
+    let actividadId = document.getElementById("actividad-id").value;
+    let lista = document.getElementById("lista-comentarios");
+
+    fetch("/listar-comentarios/" + actividadId)
+        .then(function(respuesta) {
+            return respuesta.json();
+        })
+        .then(function(comentarios) {
+            lista.innerHTML = "";
+
+            if (comentarios.length === 0) {
+                lista.innerHTML = "<p>No hay comentarios todavía.</p>";
+                return;
+            }
+
+            for (let i = 0; i < comentarios.length; i++) {
+                let comentario = comentarios[i];
+
+                let caja = document.createElement("div");
+                caja.className = "item-dinamico-inicio";
+
+                let contenido = "";
+                contenido += "<p><strong>" + comentario.nombre + "</strong></p>";
+                contenido += "<p>" + comentario.texto + "</p>";
+                contenido += "<p class='texto-pequeno-inicio'>" + comentario.fecha + "</p>";
+
+                caja.innerHTML = contenido;
+                lista.appendChild(caja);
+            }
+        });
+}
+
+function agregarComentario() {
+    let actividadId = document.getElementById("actividad-id").value;
+    let nombre = document.getElementById("nombre-comentario").value.trim();
+    let texto = document.getElementById("texto-comentario").value.trim();
+    let mensaje = document.getElementById("mensaje-comentario");
+
+    mensaje.innerHTML = "";
+
+    if (nombre.length < 3) {
+        mensaje.innerHTML = "<p>El nombre debe tener al menos 3 caracteres.</p>";
+        return;
+    }
+
+    if (nombre.length > 80) {
+        mensaje.innerHTML = "<p>El nombre debe tener máximo 80 caracteres.</p>";
+        return;
+    }
+
+    if (texto.length < 5) {
+        mensaje.innerHTML = "<p>El comentario debe tener al menos 5 caracteres.</p>";
+        return;
+    }
+
+    let datos = new FormData();
+    datos.append("nombre", nombre);
+    datos.append("texto", texto);
+    datos.append("actividad_id", actividadId);
+
+    fetch("/agregar-comentario", {
+        method: "POST",
+        body: datos
+    })
+        .then(function(respuesta) {
+            return respuesta.json();
+        })
+        .then(function(resultado) {
+            if (resultado.ok === false) {
+                mensaje.innerHTML = "<p>" + resultado.mensaje + "</p>";
+                return;
+            }
+
+            document.getElementById("nombre-comentario").value = "";
+            document.getElementById("texto-comentario").value = "";
+
+            mensaje.innerHTML = "<p>Comentario agregado correctamente.</p>";
+
+            cargarComentarios();
+        });
+}
+
+window.addEventListener("DOMContentLoaded", cargarComentarios);
+</script>
+
+</body>
+</html>

@@ -1,9 +1,25 @@
+<!-- Usaremos canvas para los gráficos de Chart.js -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Indicadores - Panoramas DCC</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='ingreso.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .contenedor-canvas {
+            height: 260px;
+        }
+
+        .contenedor-canvas-torta {
+            height: 260px;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body>
 
@@ -12,31 +28,38 @@
     <p class="subtitulo-header">Indicadores y métricas en la comunidad</p>
 </header>
 
-<!-- Ahora Jinja queda en HTML y no dentro de JavaScript, para que no tire errores visuales -->
-<div style="display: none;">
-
-    {% for miembro in miembros %}
-        <span class="dato-miembro" data-tipo="{{ miembro.tipo }}"></span>
-    {% endfor %}
-
-    {% for actividad in actividades %}
-        <span class="dato-actividad"
-        data-nombre="{{ actividad.nombre }}"
-        data-dias="{{ actividad.dias }}"></span>
-    {% endfor %}
-
-</div>
-
 <main class="contenedor-miembros">
 
     <div class="bloque-deporte">
         <img id="imagen-deporte"
-        src="{{ url_for('static', filename='Imagenes/basquet.png') }}" alt="Deporte decorativo">
+        src="{{ url_for('static', filename='Imagenes/basquet.png') }}"
+        alt="Deporte decorativo">
     </div>
 
     <section class="panel-miembros">
         <h2>Gráficos de miembros y actividades</h2>
         <p>Resumen visual de miembros registrados y actividades que realizan.</p>
+
+        <div class="seccion-grafico">
+            <h3>Miembros registrados por día</h3>
+            <div class="contenedor-canvas">
+                <canvas id="grafico-miembros-dia"></canvas>
+            </div>
+        </div>
+
+        <div class="seccion-grafico">
+            <h3>Actividades por tipo</h3>
+            <div class="contenedor-canvas-torta">
+                <canvas id="grafico-actividades-tipo"></canvas>
+            </div>
+        </div>
+
+        <div class="seccion-grafico">
+            <h3>Actividades por comuna</h3>
+            <div class="contenedor-canvas">
+                <canvas id="grafico-actividades-comuna"></canvas>
+            </div>
+        </div>
 
         <div class="seccion-grafico">
             <h3>Miembros registrados por tipo</h3>
@@ -63,12 +86,9 @@
             </div>
         </div>
 
-        <div class="seccion-grafico">
+        <div class="seccion-grafico" id="seccion-actividades-mas-realizadas">
             <h3>Actividades más realizadas</h3>
-
-            <p>
-                Las actividades se cargan automáticamente desde la base de datos.
-            </p>
+            <p>Cargando actividades...</p>
         </div>
 
         <div class="seccion-grafico">
@@ -128,7 +148,6 @@
             <h3>Porcentaje de la comunidad</h3>
 
             <div class="grafico-torta-contenedor">
-
                 <div id="grafico-torta" class="grafico-torta"></div>
 
                 <div class="leyenda-torta">
@@ -147,7 +166,6 @@
                         <span id="leyenda-funcionarios">Funcionarios — 0%</span>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -169,7 +187,7 @@ let imagenes = [
 let indice = 0;
 
 function cambiarImagen() {
-    indice++;
+    indice = indice + 1;
 
     if (indice >= imagenes.length) {
         indice = 0;
@@ -182,9 +200,6 @@ setInterval(cambiarImagen, 2000);
 </script>
 
 <script>
-
-
-
 function actualizarBarra(idBarra, cantidad, maximo) {
     let barra = document.getElementById(idBarra);
 
@@ -199,157 +214,189 @@ function actualizarBarra(idBarra, cantidad, maximo) {
     barra.textContent = cantidad;
 }
 
-function generarGraficos() {
+function cargarGraficoMiembrosPorDia() {
+    fetch("/datos/miembros-por-dia")
+        .then(function(respuesta) {
+            return respuesta.json();
+        })
+        .then(function(datos) {
+            let canvas = document.getElementById("grafico-miembros-dia");
 
-    let estudiantes = 0;
-    let profesores = 0;
-    let funcionarios = 0;
+            new Chart(canvas, {
+                type: "line",
+                data: {
+                    labels: datos.etiquetas,
+                    datasets: [{
+                        label: "Miembros registrados",
+                        data: datos.valores,
+                        pointRadius: 6,
+                        borderWidth: 3,
+                        showLine: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        });
+}
 
-    // Antes aquí estaban escritas a mano algunas actividades.
-    // Ahora usamos este objeto para contar cualquier actividad que venga desde la base de datos.
-    let actividadesConteo = {};
+function cargarGraficoActividadesPorTipo() {
+    fetch("/datos/actividades-por-tipo")
+        .then(function(respuesta) {
+            return respuesta.json();
+        })
+        .then(function(datos) {
+            let canvas = document.getElementById("grafico-actividades-tipo");
 
-    let lunes = 0;
-    let martes = 0;
-    let miercoles = 0;
-    let jueves = 0;
-    let viernes = 0;
-    let sabado = 0;
-    let domingo = 0;
+            new Chart(canvas, {
+                type: "pie",
+                data: {
+                    labels: datos.etiquetas,
+                    datasets: [{
+                        label: "Actividades por tipo",
+                        data: datos.valores
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        });
+}
 
-    // Leemos miembros desde los span ocultos.
-    let datosMiembros = document.getElementsByClassName("dato-miembro");
+function cargarGraficoActividadesPorComuna() {
+    fetch("/datos/actividades-por-comuna")
+        .then(function(respuesta) {
+            return respuesta.json();
+        })
+        .then(function(datos) {
+            let canvas = document.getElementById("grafico-actividades-comuna");
 
-    for (let i = 0; i < datosMiembros.length; i++) {
+            new Chart(canvas, {
+                type: "bar",
+                data: {
+                    labels: datos.etiquetas,
+                    datasets: [{
+                        label: "Actividades",
+                        data: datos.valores
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        });
+}
 
-        let tipo = datosMiembros[i].dataset.tipo;
+function cargarMiembrosPorTipo() {
+    fetch("/datos/miembros-por-tipo")
+        .then(function(respuesta) {
+            return respuesta.json();
+        })
+        .then(function(datos) {
+            let maximo = Math.max(datos.estudiantes, datos.profesores, datos.funcionarios);
 
-        if (tipo === "estudiante") {
-            estudiantes++;
-        }
-        else if (tipo === "profesor") {
-            profesores++;
-        }
-        else if (tipo === "funcionario") {
-            funcionarios++;
-        }
+            actualizarBarra("graf-estudiantes", datos.estudiantes, maximo);
+            actualizarBarra("graf-profesores", datos.profesores, maximo);
+            actualizarBarra("graf-funcionarios", datos.funcionarios, maximo);
+
+            cargarTortaComunidad(datos.estudiantes, datos.profesores, datos.funcionarios);
+        });
+}
+
+function cargarActividadesMasRealizadas() {
+    fetch("/datos/actividades-mas-realizadas")
+        .then(function(respuesta) {
+            return respuesta.json();
+        })
+        .then(function(datos) {
+            let seccion = document.getElementById("seccion-actividades-mas-realizadas");
+            seccion.innerHTML = "<h3>Actividades más realizadas</h3>";
+
+            if (datos.etiquetas.length === 0) {
+                seccion.innerHTML = seccion.innerHTML + "<p>No hay actividades registradas todavía.</p>";
+                return;
+            }
+
+            let maximo = 0;
+
+            for (let i = 0; i < datos.valores.length; i++) {
+                if (datos.valores[i] > maximo) {
+                    maximo = datos.valores[i];
+                }
+            }
+
+            for (let i = 0; i < datos.etiquetas.length; i++) {
+                let fila = document.createElement("div");
+                fila.className = "fila-grafico";
+
+                fila.innerHTML =
+                    "<span class='etiqueta-grafico'>" +
+                    datos.etiquetas[i] +
+                    "</span>" +
+                    "<div class='barra-contenedor'>" +
+                    "<div class='barra-grafico barra-grafico-2'>" +
+                    datos.valores[i] +
+                    "</div>" +
+                    "</div>";
+
+                seccion.appendChild(fila);
+
+                let barra = fila.querySelector(".barra-grafico");
+                let porcentaje = (datos.valores[i] / maximo) * 100;
+                barra.style.width = porcentaje + "%";
+            }
+        });
+}
+
+function cargarActividadesPorDia() {
+    fetch("/datos/actividades-por-dia")
+        .then(function(respuesta) {
+            return respuesta.json();
+        })
+        .then(function(datos) {
+            let maximo = Math.max(
+                datos.lunes,
+                datos.martes,
+                datos.miercoles,
+                datos.jueves,
+                datos.viernes,
+                datos.sabado,
+                datos.domingo
+            );
+
+            actualizarBarra("graf-lunes", datos.lunes, maximo);
+            actualizarBarra("graf-martes", datos.martes, maximo);
+            actualizarBarra("graf-miercoles", datos.miercoles, maximo);
+            actualizarBarra("graf-jueves", datos.jueves, maximo);
+            actualizarBarra("graf-viernes", datos.viernes, maximo);
+            actualizarBarra("graf-sabado", datos.sabado, maximo);
+            actualizarBarra("graf-domingo", datos.domingo, maximo);
+        });
+}
+
+function cargarTortaComunidad(estudiantes, profesores, funcionarios) {
+    let total = estudiantes + profesores + funcionarios;
+
+    if (total === 0) {
+        total = 1;
     }
 
-    // Leemos actividades desde los span ocultos.
-    let datosActividades = document.getElementsByClassName("dato-actividad");
-
-    for (let i = 0; i < datosActividades.length; i++) {
-
-        let actividad = datosActividades[i].dataset.nombre.toLowerCase();
-        let dias = datosActividades[i].dataset.dias.toLowerCase().split(" ");
-
-        // Si la actividad todavía no existe en el contador, la creamos.
-        if (!(actividad in actividadesConteo)) {
-            actividadesConteo[actividad] = 0;
-        }
-
-        // Sumamos una actividad más.
-        actividadesConteo[actividad]++;
-
-        for (let j = 0; j < dias.length; j++) {
-
-            if (dias[j] === "lunes") {
-                lunes++;
-            }
-            else if (dias[j] === "martes") {
-                martes++;
-            }
-            else if (dias[j] === "miercoles" || dias[j] === "miércoles") {
-                miercoles++;
-            }
-            else if (dias[j] === "jueves") {
-                jueves++;
-            }
-            else if (dias[j] === "viernes") {
-                viernes++;
-            }
-            else if (dias[j] === "sabado" || dias[j] === "sábado") {
-                sabado++;
-            }
-            else if (dias[j] === "domingo") {
-                domingo++;
-            }
-        }
-    }
-
-    let maxTipo = Math.max(estudiantes, profesores, funcionarios);
-
-    let maxActividad = 0;
-
-    for (let nombreActividad in actividadesConteo) {
-
-        if (actividadesConteo[nombreActividad] > maxActividad) {
-            maxActividad = actividadesConteo[nombreActividad];
-        }
-    }
-
-    let maxDia = Math.max(lunes, martes, miercoles, jueves, viernes, sabado, domingo);
-
-    actualizarBarra("graf-estudiantes", estudiantes, maxTipo);
-    actualizarBarra("graf-profesores", profesores, maxTipo);
-    actualizarBarra("graf-funcionarios", funcionarios, maxTipo);
-
-    // Ahora creamos las barras automáticamente según las actividades reales.
-    let seccionActividades = document.querySelectorAll(".seccion-grafico")[1];
-
-    seccionActividades.innerHTML = "<h3>Actividades más realizadas</h3>";
-
-    if (datosActividades.length === 0) {
-        seccionActividades.innerHTML += "<p>No hay actividades registradas todavía.</p>";
-    }
-
-    for (let nombreActividad in actividadesConteo) {
-
-        let cantidad = actividadesConteo[nombreActividad];
-
-        let fila = document.createElement("div");
-        fila.className = "fila-grafico";
-
-        fila.innerHTML =
-            "<span class='etiqueta-grafico'>" +
-            nombreActividad +
-            "</span>" +
-            "<div class='barra-contenedor'>" +
-            "<div class='barra-grafico barra-grafico-2'>" +
-            cantidad +
-            "</div>" +
-            "</div>";
-
-        seccionActividades.appendChild(fila);
-
-        let barra = fila.querySelector(".barra-grafico");
-
-        if (maxActividad === 0) {
-            barra.style.width = "0%";
-        }
-        else {
-            let porcentaje = (cantidad / maxActividad) * 100;
-            barra.style.width = porcentaje + "%";
-        }
-    }
-
-    actualizarBarra("graf-lunes", lunes, maxDia);
-    actualizarBarra("graf-martes", martes, maxDia);
-    actualizarBarra("graf-miercoles", miercoles, maxDia);
-    actualizarBarra("graf-jueves", jueves, maxDia);
-    actualizarBarra("graf-viernes", viernes, maxDia);
-    actualizarBarra("graf-sabado", sabado, maxDia);
-    actualizarBarra("graf-domingo", domingo, maxDia);
-
-    let totalMiembros = estudiantes + profesores + funcionarios;
-
-    if (totalMiembros === 0) {
-        totalMiembros = 1;
-    }
-
-    let porcentajeEstudiantes = (estudiantes / totalMiembros) * 100;
-    let porcentajeProfesores = (profesores / totalMiembros) * 100;
-    let porcentajeFuncionarios = (funcionarios / totalMiembros) * 100;
+    let porcentajeEstudiantes = (estudiantes / total) * 100;
+    let porcentajeProfesores = (profesores / total) * 100;
+    let porcentajeFuncionarios = (funcionarios / total) * 100;
 
     let torta = document.getElementById("grafico-torta");
 
@@ -368,7 +415,16 @@ function generarGraficos() {
         "Funcionarios — " + Math.round(porcentajeFuncionarios) + "%";
 }
 
-window.onload = generarGraficos;
+function cargarTodosLosGraficos() {
+    cargarGraficoMiembrosPorDia();
+    cargarGraficoActividadesPorTipo();
+    cargarGraficoActividadesPorComuna();
+    cargarMiembrosPorTipo();
+    cargarActividadesMasRealizadas();
+    cargarActividadesPorDia();
+}
+
+window.addEventListener("DOMContentLoaded", cargarTodosLosGraficos);
 </script>
 
 </body>

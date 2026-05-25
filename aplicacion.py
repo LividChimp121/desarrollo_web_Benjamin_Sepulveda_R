@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import os
@@ -62,6 +62,10 @@ class Actividad(db.Model):
     entretencion = db.Column(db.String(100), nullable=True)
 
     fotos = db.relationship("Foto", backref="actividad")
+    # Una actividad puede tener muchos comentarios. Parte de la tarea 3 (nuevos)
+    # Esto permite usar actividad.comentarios si lo necesitamos.
+    comentarios = db.relationship("Comentario", backref="actividad")
+
 
 #para guardar las fotos que suben los usuarios a cada actividad, con una relación de uno a muchos (una actividad puede tener varias fotos, pero cada foto pertenece a una sola actividad).
 class Foto(db.Model):
@@ -69,6 +73,22 @@ class Foto(db.Model):
     ruta_archivo = db.Column(db.String(300), nullable=False)
     nombre_archivo = db.Column(db.String(300), nullable=False)
     actividad_id = db.Column(db.Integer, db.ForeignKey("actividad.id"), nullable=False)
+
+# Esta clase representa la tabla "comentario" de MySQL. (nuevo de la t3)
+# Cada comentario pertenece a una actividad.
+class Comentario(db.Model):
+    #recordemos que _tablename_ es el nombre de la tabla en la base de datos, y las columnas son los campos que tiene cada comentario: id, nombre de quien comenta, texto del comentario, fecha del comentario, y el id de la actividad a la que pertenece el comentario.
+    __tablename__ = "comentario"
+    id = db.Column(db.Integer, primary_key=True)
+    # Nombre de quien comenta
+    nombre = db.Column(db.String(80), nullable=False)
+    texto = db.Column(db.String(300), nullable=False)
+    fecha = db.Column(db.String(100), nullable=False)
+    actividad_id = db.Column(
+        db.Integer,
+        db.ForeignKey("actividad.id"),
+        nullable=False)
+
 
 #Devuelve la fecha y hora actual en formato MySQL. Esto es útil para registrar la fecha de registro de un nuevo miembro o la fecha de creación de una nueva actividad.
 def obtener_fecha_actual():
@@ -314,6 +334,9 @@ def cargar_datos_iniciales():
     db.session.add_all(actividades)
     db.session.commit()
 
+
+
+
 #Flask necesita activarse antes de usar la base de datos. Por eso, después de definir las tablas, ponemos esta línea que carga los datos iniciales dentro del contexto de la aplicación.
 with app.app_context():
     # Cargamos datos iniciales. Si la base de datos ya tiene miembros, no hace nada. Si está vacía, agrega un usuario de prueba y algunas actividades para que no partamos de cero.
@@ -339,8 +362,7 @@ def cargar_inicio(abrir="", login_error="", login_exito=""):
         comunas=comunas,
         abrir=abrir,
         login_error=login_error,
-        login_exito=login_exito
-    )
+        login_exito=login_exito)
 
 
 #Es bien probable que existan librerias que defiendan cosas maliciosas
@@ -525,16 +547,35 @@ def validar_archivo_actividad(archivo):
 
     # Para no complicarnos con video, dejamos imagen.
     # Así no pasa que después intentamos mostrar un mp4 dentro de un <img>.
-    if nombre.endswith(".jpg"):
+    if nombre.endswith(".jpg") or nombre.endswith(".jpeg") or nombre.endswith(".png"):
         return ""
-
-    if nombre.endswith(".jpeg"):
-        return ""
-
-    if nombre.endswith(".png"):
-        return ""
-
     return "El archivo debe ser jpg, jpeg o png."
+
+# Validamos comentarios también en Flask. (tarea 3 nuevo)
+# Aunque después validemos con el JavaScript, el servidor siempre debe revisar.
+def validar_comentario(nombre, texto):
+    nombre = nombre.strip()
+    texto = texto.strip()
+
+    if tiene_codigo_raro(nombre):
+        return "Nombre inválido."
+
+    if tiene_codigo_raro(texto):
+        return "Texto inválido."
+
+    if len(nombre) < 3:
+        return "El nombre debe tener al menos 3 caracteres."
+
+    if len(nombre) > 80:
+        return "El nombre debe tener máximo 80 caracteres."
+
+    if len(texto) < 5:
+        return "El comentario debe tener al menos 5 caracteres."
+
+    if len(texto) > 300:
+        return "El comentario es demasiado largo."
+
+    return ""
 
 
 @app.route("/")
@@ -835,6 +876,7 @@ def registrar_actividad():
         )
 
     nombre = request.form["nombre-actividad"]
+    tipo = request.form["tipo-actividad"]
     dias = request.form.getlist("dias")
     hora_inicio = request.form["hora-inicio"]
     hora_fin = request.form["hora-fin"]
@@ -924,7 +966,7 @@ def registrar_actividad():
         hora_inicio=hora_inicio,
         hora_fin=hora_fin,
         duracion=duracion,
-        tipo="otra",
+        tipo=tipo,
         lugar=lugar.strip(),
         descripcion=nombre.strip(),
         acompanado=acompanado.strip(),
@@ -960,11 +1002,234 @@ def registrar_actividad():
 
 @app.route("/salir")
 def salir():
-
     # Ahora cerramos la sesión completamente.
     session.clear()
-
     return redirect(url_for("inicio"))
+
+
+# Página de detalle de una actividad.
+@app.route("/actividad/<int:actividad_id>")
+def detalle_actividad(actividad_id):
+    actividad = Actividad.query.get(actividad_id)
+    if actividad is None:
+        abort(404)
+    return render_template("actividad.html", actividad=actividad)
+
+# Devuelve los comentarios de una actividad en formato JSON.
+@app.route("/listar-comentarios/<int:actividad_id>")
+def listar_comentarios(actividad_id):
+    comentarios = (Comentario.query.filter_by(actividad_id=actividad_id).order_by(Comentario.id.desc()).all())
+    lista = []
+    for c in comentarios:
+        lista.append({
+            "id": c.id,
+            "nombre": c.nombre,
+            "texto": c.texto,
+            "fecha": c.fecha})
+    return jsonify(lista)
+
+# Recibe un comentario desde fetch y lo guarda en MySQL. Luego devuelve el comentario con su ID y fecha asignados para mostrarlo en la página sin recargar.
+# Revisamos que el id venga solo con números. Revisamos que la actividad exista. Revisamos que el texto no tenga cosas raras. Si todo está bien, guardamos el comentario y devolvemos su información.
+# Si viene texto raro, devolvemos error. Si la actividad no existe, devolvemos error. Si el id no es un número, devolvemos error.
+#aqui es importante que esta ruta sea POST porque estamos recibiendo datos para guardar, no solo para mostrar. Además, al devolver JSON, esta ruta se puede usar fácilmente con fetch desde JavaScript para agregar comentarios sin recargar la página.
+@app.route("/agregar-comentario", methods=["POST"])
+def agregar_comentario():
+
+    nombre = request.form.get("nombre", "")
+    texto = request.form.get("texto", "")
+    actividad_id_str = request.form.get("actividad_id", "")
+
+    # Primero revisamos que el id de la actividad sea un número.
+    if actividad_id_str.isdigit() == False:
+        return jsonify({"ok": False, "mensaje": "Actividad inválida."})
+
+    actividad_id = int(actividad_id_str)
+    # Ahora revisamos que esa actividad exista en la base de datos.
+    actividad = Actividad.query.get(actividad_id)
+    if actividad is None:
+        return jsonify({"ok": False, "mensaje": "La actividad no existe."})
+    # Validamos el nombre y el texto del comentario.
+    error = validar_comentario(nombre, texto)
+
+    if error != "":
+        return jsonify({"ok": False, "mensaje": error})
+
+    # Si todo está bien, guardamos el comentario.
+    nuevo_comentario = Comentario(
+        nombre=nombre.strip(),
+        texto=texto.strip(),
+        fecha=obtener_fecha_actual(),
+        actividad_id=actividad_id
+    )
+    db.session.add(nuevo_comentario)
+    db.session.commit()
+    return jsonify({
+        "ok": True,
+        "comentario": {
+            "id": nuevo_comentario.id,
+            "nombre": nuevo_comentario.nombre,
+            "texto": nuevo_comentario.texto,
+            "fecha": nuevo_comentario.fecha
+        }})
+
+# Aqui vienen las rutas para los gráficos. Estas rutas no devuelven HTML, sino datos en formato JSON que luego el JavaScript de la página de gráficos usa para mostrar los gráficos correspondientes. 
+# Cada ruta hace una consulta a la base de datos, procesa los datos para contar lo que necesitamos, y luego devuelve un JSON con las etiquetas y valores para cada gráfico.
+# Datos para gráfico de barras: miembros registrados por día.
+@app.route("/datos/miembros-por-dia")
+def datos_miembros_por_dia():
+    miembros = Miembro.query.all()
+    conteo_por_dia = {}
+    for m in miembros:
+        fecha_dia = m.fecha_registro[0:10]
+        if fecha_dia not in conteo_por_dia:
+            conteo_por_dia[fecha_dia] = 0
+        conteo_por_dia[fecha_dia] = conteo_por_dia[fecha_dia] + 1
+    fechas_ordenadas = sorted(conteo_por_dia.keys())
+
+    etiquetas = []
+    valores = []
+    for fecha in fechas_ordenadas:
+        etiquetas.append(fecha)
+        valores.append(conteo_por_dia[fecha])
+    return jsonify({"etiquetas": etiquetas, "valores": valores})
+
+
+# Aqui es importante que esta ruta sea GET porque solo estamos pidiendo datos para mostrar, no estamos enviando datos para guardar. 
+# Además, al devolver JSON, esta ruta se puede usar fácilmente con fetch desde JavaScript para obtener los datos y mostrar el gráfico sin recargar la página.
+# Datos para gráfico de torta: actividades por tipo.
+@app.route("/datos/actividades-por-tipo")
+def datos_actividades_por_tipo():
+    actividades = Actividad.query.all()
+    conteo_por_tipo = {}
+    for a in actividades:
+        tipo = a.tipo
+        if tipo is None or tipo == "":
+            tipo = "sin tipo"
+        if tipo not in conteo_por_tipo:
+            conteo_por_tipo[tipo] = 0
+        conteo_por_tipo[tipo] = conteo_por_tipo[tipo] + 1
+
+    etiquetas = []
+    valores = []
+    for tipo in conteo_por_tipo:
+        etiquetas.append(tipo)
+        valores.append(conteo_por_tipo[tipo])
+
+    return jsonify({"etiquetas": etiquetas, "valores": valores})
+
+
+# Y luego de lo anterior, falta el gráfico de barras para actividades por comuna. La lógica es similar a la de actividades por tipo, pero ahora contamos por comuna. 
+# Además, como cada actividad pertenece a un miembro, y cada miembro tiene una comuna, debemos revisar la comuna del miembro que registró cada actividad para hacer el conteo correcto.
+# Datos para gráfico de barras: actividades por comuna.
+@app.route("/datos/actividades-por-comuna")
+def datos_actividades_por_comuna():
+    actividades = Actividad.query.all()
+    conteo_por_comuna = {}
+    for a in actividades:
+        miembro = a.miembro
+        if miembro is None:
+            continue
+        comuna = miembro.comuna
+        if comuna is None or comuna == "":
+            comuna = "sin comuna"
+        if comuna not in conteo_por_comuna:
+            conteo_por_comuna[comuna] = 0
+
+        conteo_por_comuna[comuna] = conteo_por_comuna[comuna] + 1
+
+    #por ultimo ordenamos las comunas alfabéticamente para que el gráfico se vea mejor, y preparamos las etiquetas y valores para devolver el JSON.
+    etiquetas = []
+    valores = []
+    for comuna in sorted(conteo_por_comuna.keys()):
+        etiquetas.append(comuna)
+        valores.append(conteo_por_comuna[comuna])
+
+    return jsonify({"etiquetas": etiquetas, "valores": valores})
+
+# La idea es mantener los graficos anteriores, osea miembros por día, actividades por tipo y actividades por comuna, pero agregar un gráfico de torta que muestre la proporción de miembros por tipo (estudiantes, profesores y funcionarios).
+@app.route("/datos/miembros-por-tipo")
+def datos_miembros_por_tipo():
+    miembros = Miembro.query.all()
+
+    estudiantes = 0
+    profesores = 0
+    funcionarios = 0
+
+    for m in miembros:
+        if m.tipo == "estudiante":
+            estudiantes = estudiantes + 1
+        elif m.tipo == "profesor":
+            profesores = profesores + 1
+        elif m.tipo == "funcionario":
+            funcionarios = funcionarios + 1
+
+    return jsonify({
+        "estudiantes": estudiantes,
+        "profesores": profesores,
+        "funcionarios": funcionarios
+    })
+
+# Lo mismo, mantenemos los gráficos anteriores pero agregamos un gráfico de barras que muestre las actividades más realizadas, o sea, los nombres de actividades que se repiten más en la base de datos. Para esto, contamos cuántas veces aparece cada nombre de actividad, y luego devolvemos un JSON con las etiquetas (nombres de actividades) y valores (conteo de cada actividad) para mostrar el gráfico.
+@app.route("/datos/actividades-mas-realizadas")
+def datos_actividades_mas_realizadas():
+    actividades = Actividad.query.all()
+    conteo = {}
+
+    for a in actividades:
+        nombre = a.nombre.lower()
+
+        if nombre not in conteo:
+            conteo[nombre] = 0
+
+        conteo[nombre] = conteo[nombre] + 1
+
+    etiquetas = []
+    valores = []
+
+    for nombre in conteo:
+        etiquetas.append(nombre)
+        valores.append(conteo[nombre])
+
+    return jsonify({
+        "etiquetas": etiquetas,
+        "valores": valores
+    })
+
+# Y por ultimo agregamos un gráfico de barras que muestre en qué días de la semana se realizan más actividades. Para esto, revisamos el campo "dias" de cada actividad, que puede tener varios días separados por espacios, y contamos cuántas actividades se realizan en cada día de la semana. Luego devolvemos un JSON con las etiquetas (días de la semana) y valores (conteo de actividades en cada día) para mostrar el gráfico.
+@app.route("/datos/actividades-por-dia")
+def datos_actividades_por_dia():
+    actividades = Actividad.query.all()
+
+    dias = {
+        "lunes": 0,
+        "martes": 0,
+        "miercoles": 0,
+        "jueves": 0,
+        "viernes": 0,
+        "sabado": 0,
+        "domingo": 0
+    }
+
+    for a in actividades:
+        dias_texto = a.dias.lower().split(" ")
+
+        for dia in dias_texto:
+            if dia == "lunes":
+                dias["lunes"] = dias["lunes"] + 1
+            elif dia == "martes":
+                dias["martes"] = dias["martes"] + 1
+            elif dia == "miercoles" or dia == "miércoles":
+                dias["miercoles"] = dias["miercoles"] + 1
+            elif dia == "jueves":
+                dias["jueves"] = dias["jueves"] + 1
+            elif dia == "viernes":
+                dias["viernes"] = dias["viernes"] + 1
+            elif dia == "sabado" or dia == "sábado":
+                dias["sabado"] = dias["sabado"] + 1
+            elif dia == "domingo":
+                dias["domingo"] = dias["domingo"] + 1
+
+    return jsonify(dias)
 
 
 # Esto evita que el navegador guarde páginas con sesión iniciada.
