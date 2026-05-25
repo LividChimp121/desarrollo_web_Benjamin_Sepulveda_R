@@ -1080,7 +1080,7 @@ def datos_miembros_por_dia():
     miembros = Miembro.query.all()
     conteo_por_dia = {}
     for m in miembros:
-        fecha_dia = m.fecha_registro[0:10]
+        fecha_dia = m.fecha_registro.strftime("%Y-%m-%d")
         if fecha_dia not in conteo_por_dia:
             conteo_por_dia[fecha_dia] = 0
         conteo_por_dia[fecha_dia] = conteo_por_dia[fecha_dia] + 1

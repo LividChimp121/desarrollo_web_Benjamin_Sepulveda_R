@@ -227,9 +227,10 @@ function cargarGraficoMiembrosPorDia() {
                 data: {
                     labels: datos.etiquetas,
                     datasets: [{
-                        label: "Miembros registrados",
+                        label: "Miembros registrados por fecha",
                         data: datos.valores,
-                        pointRadius: 6,
+                        pointRadius: 7,
+                        pointHoverRadius: 8,
                         borderWidth: 3,
                         showLine: true
                     }]
@@ -240,6 +241,7 @@ function cargarGraficoMiembrosPorDia() {
                     scales: {
                         y: {
                             beginAtZero: true,
+                            suggestedMax: 3,
                             ticks: {
                                 stepSize: 1
                             }
