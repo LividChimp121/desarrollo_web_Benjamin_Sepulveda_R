@@ -58,7 +58,11 @@
 
         <div class="fila-volver">
             <button type="button" class="btn-minecraft"
-                    onclick="window.location.href='/'">
+                    {% if usuario_logeado %}
+                        onclick="window.location.href='/ingreso'"
+                    {% else %}
+                        onclick="window.location.href='/'"
+                    {% endif %}>
                 Volver al inicio
             </button>
         </div>

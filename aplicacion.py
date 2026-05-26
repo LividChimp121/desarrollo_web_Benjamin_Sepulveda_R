@@ -1090,9 +1090,13 @@ def agregar_comentario():
 
 @app.route("/comentarios")
 def comentarios():
-    comentarios = Comentario.query.order_by(Comentario.id.desc()).all()
-    return render_template("comentarios.html", comentarios=comentarios)
 
+    comentarios = Comentario.query.order_by(Comentario.id.desc()).all()
+
+    # Revisamos si existe sesión iniciada para decidir
+    # a dónde debe volver el usuario.
+    usuario_logeado = "usuario_id" in session
+    return render_template("comentarios.html", comentarios=comentarios, usuario_logeado=usuario_logeado)
 
 # Aqui vienen las rutas para los gráficos. Estas rutas no devuelven HTML, sino datos en formato JSON que luego el JavaScript de la página de gráficos usa para mostrar los gráficos correspondientes. 
 # Cada ruta hace una consulta a la base de datos, procesa los datos para contar lo que necesitamos, y luego devuelve un JSON con las etiquetas y valores para cada gráfico.
