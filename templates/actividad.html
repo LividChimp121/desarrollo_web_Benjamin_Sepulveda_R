@@ -225,15 +225,20 @@ function mostrarComentarios(comentarios) {
 }
 
 // si no hay sesión mandamos al inicio; si hay rellenamos el nombre
-// si no hay sesión mandamos al inicio; si hay rellenamos el nombre
+// Si el usuario quiere "firmar" el comentario con su sesión,
+// le preguntamos a Flask si hay sesión iniciada.
+// Si no hay, le avisamos y lo mandamos al login.
+// Si sí hay, autorrellenamos el nombre y marcamos el comentario como destacado.
 function usarSesionComentario() {
     fetch("/datos/sesion-comentario")
         .then(function(respuesta) {
-            return respuesta.json();
-        })
+            return respuesta.json();})
         .then(function(datos) {
             let mensaje = document.getElementById("mensaje-sesion-comentario");
-
+            // caso 1: no hay sesión -> avisamos y redirigimos al login.
+            // el setTimeout es para que alcance a leerse el mensaje
+            // antes de saltar a /?abrir=ingreso (me dio lata que se
+            // fuera al tiro sin que el usuario cachara qué pasó).
             if (datos.ok === false) {
                 mensaje.textContent =
                     "No detectamos sesión iniciada. Inicia sesión para proceder y luego accede nuevamente a comentarios.";
@@ -243,6 +248,9 @@ function usarSesionComentario() {
                 return;
             }
 
+            // caso 2: sí hay sesión -> rellenamos el nombre con lo que
+            // vino del servidor y marcamos el flag de "destacado" en si.
+            // Después, al enviar, le pegamos el ⭐ adelante del nombre.
             document.getElementById("nombre-comentario").value = datos.nombre;
             document.getElementById("comentario-destacado").value = "si";
 

@@ -53,6 +53,35 @@ INSERT INTO `actividad` VALUES (1,1,'lunes','15:00','01:00','deporte','Fútbol',
 UNLOCK TABLES;
 
 --
+-- Table structure for table `comentario`
+--
+
+DROP TABLE IF EXISTS `comentario`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `comentario` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(80) NOT NULL,
+  `texto` varchar(300) NOT NULL,
+  `fecha` timestamp NOT NULL,
+  `actividad_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_comentario_actividad1_idx` (`actividad_id`),
+  CONSTRAINT `fk_comentario_actividad1` FOREIGN KEY (`actividad_id`) REFERENCES `actividad` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `comentario`
+--
+
+LOCK TABLES `comentario` WRITE;
+/*!40000 ALTER TABLE `comentario` DISABLE KEYS */;
+INSERT INTO `comentario` VALUES (1,'123','32121321','2026-05-25 15:59:48',1),(2,'Matias Marin','Partido facilon','2026-05-25 19:34:31',1),(3,'El presidente Luco','Hay barros luco? :D','2026-05-25 22:34:55',8),(4,'Chesumare','Intenta la apertura chesumaristica (atributo al maestro de ajedrez chileno)','2026-05-25 23:18:48',2),(5,'Karokan','Mejor la karokan :D','2026-05-25 23:19:03',2),(6,'San Martin','Hola profesor, cuando le damos su voleibol. \r\n\r\nslds Basso','2026-05-25 23:20:06',3),(7,'Shark Tank','Falta partido contra Industrias','2026-05-26 00:30:29',1),(8,'Marck de Marco','Me encantaria aprender a Patinar!','2026-05-26 02:01:15',4),(9,'⭐ Marck de Marco','Quien le gustaria?','2026-05-26 02:01:53',4),(10,'Eduardo','Podrían extender el horario?','2026-05-26 02:27:15',6);
+/*!40000 ALTER TABLE `comentario` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `comuna`
 --
 
@@ -176,4 +205,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-10 22:09:57
+-- Dump completed on 2026-05-26  0:01:38

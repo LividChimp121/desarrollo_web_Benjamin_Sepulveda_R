@@ -1100,15 +1100,17 @@ def comentarios():
     usuario_logeado = "usuario_id" in session
     return render_template("comentarios.html", comentarios=comentarios, usuario_logeado=usuario_logeado)
 
-# Aqui vienen las rutas para los gráficos. Estas rutas no devuelven HTML, sino datos en formato JSON que luego el JavaScript de la página de gráficos usa para mostrar los gráficos correspondientes. 
-# Cada ruta hace una consulta a la base de datos, procesa los datos para contar lo que necesitamos, y luego devuelve un JSON con las etiquetas y valores para cada gráfico.
-# Datos para gráfico de barras: miembros registrados por día.
+# Aqui parten las rutas de los gráficos, todas devuelven JSON con jsonify
+# para que el javascript las pille con fetch y arme el gráfico.
+# La primera es para el de líneas: miembros agrupados por día (uso el 
+# pedacito de fecha YYYY-MM-DD nomás, sin la hora).
 @app.route("/datos/miembros-por-dia")
 def datos_miembros_por_dia():
     miembros = Miembro.query.all()
     conteo_por_dia = {}
     for m in miembros:
         fecha_dia = m.fecha_registro.strftime("%Y-%m-%d")
+        #Aqui tuve que usar ia en la anterior función porque, extrañamente, fecha_dia = m.fecha_registro[0:10] no me funcionaba (?)
         if fecha_dia not in conteo_por_dia:
             conteo_por_dia[fecha_dia] = 0
         conteo_por_dia[fecha_dia] = conteo_por_dia[fecha_dia] + 1
@@ -1122,9 +1124,9 @@ def datos_miembros_por_dia():
     return jsonify({"etiquetas": etiquetas, "valores": valores})
 
 
-# Aqui es importante que esta ruta sea GET porque solo estamos pidiendo datos para mostrar, no estamos enviando datos para guardar. 
-# Además, al devolver JSON, esta ruta se puede usar fácilmente con fetch desde JavaScript para obtener los datos y mostrar el gráfico sin recargar la página.
-# Datos para gráfico de torta: actividades por tipo.
+# Para la torta. Recorro las actividades y voy contando cuántas hay de cada tipo
+# con un diccionario. Si el tipo viene vacío lo pongo como "sin tipo" para que 
+# no se pierdan en la cuenta (igual no debería pasar pero por si acaso).
 @app.route("/datos/actividades-por-tipo")
 def datos_actividades_por_tipo():
     actividades = Actividad.query.all()
@@ -1146,9 +1148,10 @@ def datos_actividades_por_tipo():
     return jsonify({"etiquetas": etiquetas, "valores": valores})
 
 
-# Y luego de lo anterior, falta el gráfico de barras para actividades por comuna. La lógica es similar a la de actividades por tipo, pero ahora contamos por comuna. 
-# Además, como cada actividad pertenece a un miembro, y cada miembro tiene una comuna, debemos revisar la comuna del miembro que registró cada actividad para hacer el conteo correcto.
-# Datos para gráfico de barras: actividades por comuna.
+# Misma idea pero contando por comuna. Como la comuna está en el miembro y no
+# en la actividad, voy a la actividad -> miembro -> comuna (gracias al backref
+# que ya tenía puesto en el modelo). Después ordeno alfabético para que el 
+# gráfico no salga con las barras en orden random.
 @app.route("/datos/actividades-por-comuna")
 def datos_actividades_por_comuna():
     actividades = Actividad.query.all()
