@@ -429,3 +429,8 @@ pero o sino el display o menu en profesores se escapaba de la ventana, quedando 
     justify-content: center;
     margin-top: 10px;
 }
+
+.tarjeta-comentario-especial {
+    border-left: 6px solid #fbc02d;
+    background-color: #fffde7;
+}
