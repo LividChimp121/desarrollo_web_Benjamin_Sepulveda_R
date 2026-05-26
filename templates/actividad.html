@@ -121,7 +121,11 @@
             </button>
 
             <button class="btn-minecraft btn-secundario" type="button"
-                    onclick="window.location.href='/'">
+                    {% if usuario_logeado %}
+                        onclick="window.location.href='/ingreso'"
+                    {% else %}
+                        onclick="window.location.href='/'"
+                    {% endif %}>
                 Volver al inicio
             </button>
         </div>
