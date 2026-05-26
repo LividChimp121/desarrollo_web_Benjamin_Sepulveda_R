@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Actividad - Panoramas DCC</title>
-
     <link rel="stylesheet" href="{{ url_for('static', filename='ingreso.css') }}">
 </head>
-
 <body>
 
 <header class="header">
@@ -20,7 +18,7 @@
 
         <h2 class="titulo-actividad">{{ actividad.nombre }}</h2>
 
-        <!-- datos principales de la actividad -->
+        <!-- datos + foto -->
         <div class="fila-info-foto">
 
             <div class="columna-info">
@@ -41,13 +39,11 @@
                     <p><strong>Qué tan entretenida es:</strong> {{ actividad.entretencion }}</p>
                 {% endif %}
 
-                <p>
-                    <strong>Miembro:</strong>
+                <p><strong>Miembro:</strong>
                     {{ actividad.miembro.nombre }} {{ actividad.miembro.apellido }}
                 </p>
             </div>
 
-            <!-- mostramos foto si existe -->
             {% if actividad.fotos|length > 0 %}
                 <div class="columna-foto">
                     <img src="/{{ actividad.fotos[0].ruta_archivo }}" alt="Foto actividad">
@@ -56,38 +52,38 @@
 
         </div>
 
-        <!-- formulario para comentar -->
+        <!-- formulario de comentario -->
         <div class="seccion-actividad">
             <h3>Agregar comentario</h3>
 
             <form id="formulario-comentario" onsubmit="return false;">
 
-                <!-- id actividad para guardar el comentario correcto -->
                 <input type="hidden" id="actividad-id" value="{{ actividad.id }}">
-
-                <!-- si vale si, el comentario se guarda con estrella -->
                 <input type="hidden" id="comentario-destacado" value="no">
 
                 <label for="nombre-comentario">
                     Nombre <span class="obligatorio">*</span>
                 </label>
 
-                <input type="text"
-                       id="nombre-comentario"
-                       maxlength="80"
-                       placeholder="Tu nombre o pseudónimo">
+                <!-- input y botón de sesión en la misma fila -->
+                <div class="fila-nombre-sesion">
+                    <input type="text"
+                           id="nombre-comentario"
+                           maxlength="80"
+                           placeholder="Tu nombre o pseudónimo">
+
+                    <button type="button"
+                            class="btn-sesion-comentario"
+                            onclick="usarSesionComentario()">
+                        Usar sesión iniciada para distintivo ⭐
+                    </button>
+                </div>
 
                 <p class="texto-ayuda">
                     Puedes escribir tu nombre o usar tu sesión iniciada.
                 </p>
 
-                <button type="button"
-                        class="btn-minecraft btn-secundario boton-sesion-comentario"
-                        onclick="usarSesionComentario()">
-                    Usar sesión iniciada ⭐
-                </button>
-
-                <p id="mensaje-sesion-comentario"></p>
+                <p id="mensaje-sesion-comentario" class="mensaje-sesion"></p>
 
                 <label for="texto-comentario">
                     Comentario <span class="obligatorio">*</span>
@@ -110,24 +106,21 @@
             </form>
         </div>
 
-        <!-- acá se cargan los comentarios con fetch -->
+        <!-- lista de comentarios -->
         <div class="seccion-actividad">
             <h3>Comentarios</h3>
-
             <div id="lista-comentarios">
                 <p class="aviso-sin-comentarios">Cargando comentarios...</p>
             </div>
         </div>
 
         <div class="botones-finales">
-            <button class="btn-minecraft"
-                    type="button"
+            <button class="btn-minecraft" type="button"
                     onclick="window.location.href='/miembros'">
                 Volver a miembros
             </button>
 
-            <button class="btn-minecraft btn-secundario"
-                    type="button"
+            <button class="btn-minecraft btn-secundario" type="button"
                     onclick="window.location.href='/'">
                 Volver al inicio
             </button>
@@ -138,38 +131,34 @@
 </main>
 
 <script>
-// cargamos comentarios al entrar
+// al entrar pedimos los comentarios
 window.onload = function() {
     cargarComentarios();
 };
 
-// revisamos largo del nombre
+// largo del nombre
 function validarNombreComentario(nombre) {
     if (nombre.length < 3) {
         return "El nombre debe tener al menos 3 caracteres.";
     }
-
     if (nombre.length > 80) {
         return "El nombre debe tener máximo 80 caracteres.";
     }
-
     return "";
 }
 
-// revisamos largo del comentario
+// largo del texto
 function validarTextoComentario(texto) {
     if (texto.length < 5) {
         return "El comentario debe tener al menos 5 caracteres.";
     }
-
     if (texto.length > 300) {
         return "El comentario es demasiado largo.";
     }
-
     return "";
 }
 
-// pedimos los comentarios al backend
+// traemos los comentarios desde flask
 function cargarComentarios() {
     let actividadId = document.getElementById("actividad-id").value;
 
@@ -182,11 +171,9 @@ function cargarComentarios() {
         });
 }
 
-// dibujamos comentarios en pantalla
+// dibujamos los comentarios
 function mostrarComentarios(comentarios) {
     let contenedor = document.getElementById("lista-comentarios");
-
-    // limpiamos lo anterior
     contenedor.innerHTML = "";
 
     if (comentarios.length === 0) {
@@ -203,7 +190,7 @@ function mostrarComentarios(comentarios) {
         let tarjeta = document.createElement("div");
         tarjeta.className = "tarjeta-comentario";
 
-        // si tiene estrella, lo mostramos distinto
+        // si parte con estrella, lo marcamos distinto
         if (c.nombre.startsWith("⭐ ")) {
             tarjeta.className = "tarjeta-comentario tarjeta-comentario-especial";
         }
@@ -213,8 +200,6 @@ function mostrarComentarios(comentarios) {
 
         let spanNombre = document.createElement("span");
         spanNombre.className = "nombre-comentario";
-
-        // textContent evita ejecutar html raro
         spanNombre.textContent = c.nombre;
 
         let spanFecha = document.createElement("span");
@@ -226,8 +211,6 @@ function mostrarComentarios(comentarios) {
 
         let texto = document.createElement("p");
         texto.className = "texto-comentario-mostrado";
-
-        // también acá evitamos html raro
         texto.textContent = c.texto;
 
         tarjeta.appendChild(cabecera);
@@ -237,27 +220,35 @@ function mostrarComentarios(comentarios) {
     }
 }
 
-// si no hay sesión, manda al inicio; si hay, rellena el nombre
+// si no hay sesión mandamos al inicio; si hay rellenamos el nombre
+// si no hay sesión mandamos al inicio; si hay rellenamos el nombre
 function usarSesionComentario() {
     fetch("/datos/sesion-comentario")
         .then(function(respuesta) {
             return respuesta.json();
         })
         .then(function(datos) {
+            let mensaje = document.getElementById("mensaje-sesion-comentario");
+
             if (datos.ok === false) {
-                window.location.href = "/";
+                mensaje.textContent =
+                    "No detectamos sesión iniciada. Inicia sesión para proceder y luego accede nuevamente a comentarios.";
+
+                setTimeout(function() {
+                    window.location.href = "/?abrir=ingreso";}, 1800);
                 return;
             }
 
             document.getElementById("nombre-comentario").value = datos.nombre;
             document.getElementById("comentario-destacado").value = "si";
 
-            document.getElementById("mensaje-sesion-comentario").textContent =
-                "Sesión detectada. El comentario saldrá marcado con estrella.";
+            mensaje.textContent =
+                "Sesión iniciada detectada. Tu comentario quedará con distintivo.";
         });
 }
 
-// mandamos el comentario al backend
+
+// enviamos el comentario
 function enviarComentario() {
     let nombre = document.getElementById("nombre-comentario").value.trim();
     let texto = document.getElementById("texto-comentario").value.trim();
@@ -267,7 +258,6 @@ function enviarComentario() {
     let divMensaje = document.getElementById("mensaje-comentario");
 
     let errorNombre = validarNombreComentario(nombre);
-
     if (errorNombre !== "") {
         divMensaje.className = "mensaje-formulario error";
         divMensaje.style.display = "block";
@@ -276,7 +266,6 @@ function enviarComentario() {
     }
 
     let errorTexto = validarTextoComentario(texto);
-
     if (errorTexto !== "") {
         divMensaje.className = "mensaje-formulario error";
         divMensaje.style.display = "block";
@@ -284,7 +273,7 @@ function enviarComentario() {
         return;
     }
 
-    // si usó sesión, se guarda con estrella
+    // si usó sesión le pegamos la estrella
     if (destacado === "si") {
         nombre = "⭐ " + nombre;
     }
@@ -318,7 +307,6 @@ function enviarComentario() {
         document.getElementById("comentario-destacado").value = "no";
         document.getElementById("mensaje-sesion-comentario").textContent = "";
 
-        // actualizamos sin recargar
         cargarComentarios();
     });
 }

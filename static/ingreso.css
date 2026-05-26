@@ -566,3 +566,190 @@ se acomode en columnas, entonces uso flex-wrap */
 .funcionarios {
     background-color: #5e35b1;
 }
+
+
+/* Nuevo estilo para actividad.html nuevo estilo para la sección de comentarios (Tarea 3)*/
+
+/* Separadores */
+.seccion-actividad {
+    border-top: 2px solid #ddd;
+    padding-top: 20px;
+    margin-top: 25px;
+}
+
+.seccion-actividad h3 {
+    margin-top: 0;
+    color: #2e7d32;
+}
+
+/* Formulario comentario */
+#formulario-comentario label {
+    display: block;
+    font-weight: bold;
+    margin: 10px 0 4px 0;
+}
+
+#formulario-comentario input[type="text"],
+#formulario-comentario textarea,
+#nombre-comentario,
+#texto-comentario {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    font-family: inherit;
+}
+
+#texto-comentario {
+    resize: vertical;
+    min-height: 110px;
+}
+
+#mensaje-comentario {
+    margin: 12px 0;
+}
+
+/* Lista comentarios */
+#lista-comentarios {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.tarjeta-comentario {
+    background: #ffffff;
+    border-left: 5px solid #43a047;
+    border-radius: 8px;
+    padding: 12px 16px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.tarjeta-comentario .cabecera-comentario {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.tarjeta-comentario .nombre-comentario {
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+.tarjeta-comentario .fecha-comentario {
+    color: #777;
+    font-size: 13px;
+}
+
+.tarjeta-comentario .texto-comentario-mostrado {
+    margin: 0;
+    line-height: 1.4;
+    color: #222;
+}
+
+/* Aviso sin comentarios */
+.aviso-sin-comentarios {
+    background: #fff3e0;
+    padding: 12px;
+    border-radius: 8px;
+    color: #6d4c41;
+    text-align: center;
+}
+
+/* Botones finales */
+.botones-finales {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.tarjeta-comentario-especial {
+    border-left: 6px solid #fbc02d;
+    background-color: #fffde7;
+}
+/* contenedor y tarjeta de actividad */
+.contenedor-actividad {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.tarjeta-actividad {
+    background: #fff7e6;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.titulo-actividad {
+    color: #d84315;
+    font-size: 30px;
+    margin: 0 0 18px 0;
+}
+
+/* info + foto */
+.fila-info-foto {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.columna-info {
+    flex: 1;
+    min-width: 280px;
+}
+
+.columna-info p {
+    margin: 6px 0;
+    font-size: 16px;
+}
+
+.columna-foto {
+    width: 260px;
+    flex: none;
+}
+
+.columna-foto img {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* botón de sesión más chico */
+.fila-nombre-sesion {
+    display: block;
+}
+
+.btn-sesion-comentario {
+    display: block;
+    width: fit-content;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    background: #fff3e0;
+    color: #bf360c;
+    border: 1px solid #ffb74d;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.btn-sesion-comentario:hover {
+    background: #ffe0b2;
+}
+
+.mensaje-sesion {
+    color: #2e7d32;
+    font-size: 13px;
+    margin: 4px 0 10px 0;
+    min-height: 16px;
+}
