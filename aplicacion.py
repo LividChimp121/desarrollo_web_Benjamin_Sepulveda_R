@@ -578,8 +578,17 @@ def validar_comentario(nombre, texto):
 
 
 @app.route("/")
-def inicio():
-    return cargar_inicio()
+def inicio(): #Se modifico para poder abrir el formulario de ingreso o registro desde la URL, por ejemplo con /?abrir=ingreso o /?abrir=registro. 
+    #Pero validando que esto que fue lo ultimo que hice en esta tarea, no se pueda usar para meter código raro, y que solo acepte los valores que de verdad usa el index para abrir las ventanas, que son ingreso y registro. Si el valor no es ninguno de esos, o si tiene código raro, no se abre ninguna ventana.
+    abrir = request.args.get("abrir", "")
+
+    # nos cuidamos de cosas raras como ya hacemos en otras rutas
+    if tiene_codigo_raro(abrir):
+        abrir = ""
+    # solo aceptamos los valores que de verdad usa el index
+    if abrir not in ["", "ingreso", "registro"]:
+        abrir = ""
+    return cargar_inicio(abrir=abrir)
 
 
 @app.route("/ingreso")

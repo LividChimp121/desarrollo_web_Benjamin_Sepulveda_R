@@ -62,8 +62,8 @@
                 Ver miembros
             </button>
             <button type="button" class="btn-minecraft" onclick="window.location.href='/comentarios'">
-                Ver comentarios
-            </button>
+            Ver comentarios
+        </button>
             <button type="button" class="btn-minecraft" onclick="window.location.href='/graficos?volver=inicio'">
                 Estadísticas
             </button>
@@ -73,30 +73,46 @@
     <div class="panel-actividades-horizontal">
         <h2>Últimas actividades registradas</h2>
 
-        <!-- Solo muestra las últimas actividades registradas, si no hay, no mostraría nada a priori-->
+        <!-- Solo muestra las últimas actividades registradas -->
         <div class="lista-actividades-horizontal">
+
             {% if ultimas_actividades|length > 0 %}
+
                 {% for actividad in ultimas_actividades %}
-                    <div class="item-dinamico-inicio">
-                        <p>
-                            <strong>{{ actividad.nombre }}</strong>
-                        </p>
 
-                        <p>
-                            {{ actividad.miembro.nombre }} {{ actividad.miembro.apellido }}
-                        </p>
+                    <a href="{{ url_for('detalle_actividad', actividad_id=actividad.id) }}"
+                       style="text-decoration: none; color: inherit;">
 
-                        <p class="texto-pequeno-inicio">
-                            {{ actividad.dias }} — {{ actividad.lugar }}
-                        </p>
-                        <p class="texto-pequeno-inicio">
-                            Ver actividad y comentarios
-                        </p>
-                    </div>
+                        <div class="item-dinamico-inicio">
+
+                            <p>
+                                <strong>{{ actividad.nombre }}</strong>
+                            </p>
+
+                            <p>
+                                {{ actividad.miembro.nombre }} {{ actividad.miembro.apellido }}
+                            </p>
+
+                            <p class="texto-pequeno-inicio">
+                                {{ actividad.dias }} — {{ actividad.lugar }}
+                            </p>
+
+                            <p class="texto-pequeno-inicio">
+                                Ver actividad y comentarios
+                            </p>
+
+                        </div>
+
+                    </a>
+
                 {% endfor %}
+
             {% else %}
+
                 <p>No hay actividades registradas todavía.</p>
+
             {% endif %}
+
         </div>
     </div>
 
