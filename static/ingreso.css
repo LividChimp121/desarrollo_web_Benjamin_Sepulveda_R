@@ -84,6 +84,9 @@ contenedor */
     border-radius: 18px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
     border: 3px solid #dcedc8;
+
+    height: auto;
+    overflow-y: auto;
 }
 
 /* Título del panel */
