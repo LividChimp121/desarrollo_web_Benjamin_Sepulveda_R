@@ -1,45 +1,226 @@
-# CC5002 - Tarea 2
+# CC5002 - Tarea 3
 
 Para ingresar/logear se hizo uno rapido :D
 
 Tipo: estudiante
 Correo: [usua@rio.com](mailto:usua@rio.com)
 Contraseña: Usuario123
-
-De igual manera puedes crear una cuenta y logear desde allí.
-No se permiten correos repetidos.
-
-
-Recordar hablar que solo aceptare fotos, sacando la opcion de videos por la validación :D
-Se decidió guardar físicamente los archivos en static/archivos y almacenar solo la ruta en la tabla foto para simplificar el manejo de archivos y mantener la base de datos más liviana.
 ---
 
-La lógica que se terminó implementando fue que para registrar actividades primero se debe iniciar sesión (en la tarea se pide que esté el botón en el inicio, pero como no lo encuentro correcto y primero debes logear, aparece eso de si quieres registrar actividades logeate). Esto se entendió así porque en la portada aparece “Registrar miembro y actividades”, entonces se consideró más coherente que las actividades quedaran asociadas al usuario autenticado y no permitir registrar actividades “sueltas”, ya que eso complicaba después toda la relación entre miembros y actividades.
+Para esta tarea se siguió trabajando sobre la base de la Tarea 2, pero ahora agregando principalmente comentarios dinámicos, gráficos conectados a Flask (que ya habiamos trabajado algo en ellos) y una vista más completa para las actividades.
 
-Se uso varios ciclos for para ir tomando los datos desde la base de datos :D
+La idea general fue mantener la estructura ya construida anteriormente, pero agregando nuevas funcionalidades reales conectadas a la base de datos y utilizando `fetch`, `JSON`, rutas Flask y gráficos dinámicos.
 
-También al comienzo las actividades quedaban asociadas siempre al primer usuario de la base de datos porque se estaba usando `Miembro.query.first()`. Eso visualmente parecía funcionar, pero realmente estaba mal porque daba igual quién iniciara sesión. Después se cambió la lógica para trabajar usando `session["usuario_id"]`, de manera que cada actividad queda asociada al miembro que efectivamente inició sesión, como tambien, que al "salir" se cerrara completamente, inclusive si tratabas de entrar dando para atras a la pagina!
+---
 
-Tambien Se hizo las mismas validaciones entre flask y html en caso que html se bypaseara. A la vez, se incorporaron dos cosas más, que no se ingresará codigo malicioso entre otro tipo de maldad simplemente verificando los tipicas ortografias para iniciar código, como por ejemplo <> o {{}}. Es simple pero valido para no vulnerar.
+# Comentarios
 
-El login busca tipo de cargo, mismo correo y contraseña para validarlo. El olvidar contraseña no lo implementé por simplicidad :D
+Se agregó una sección de comentarios para cada actividad.
 
-Sé incorporó la lógica de regiones y comunas usando la estructura entregada en los SQL de apoyo. La idea fue complementar los formularios originales sin cambiar demasiado la estructura que ya existía desde la tarea 1.
+Ahora, cuando un usuario entra al detalle de una actividad, puede:
 
-En las imágenes primero se consideró guardar archivos directamente en la base de datos, pero después se decidió guardar solamente la ruta/nombre del archivo y almacenar físicamente las imágenes dentro de `static/archivos`, porque simplificaba bastante el sistema y era más fácil mantener la lógica de Flask. Observando tamaño del archivo y ya no se valida entregar videos por simplicidad de la validación!
+* ver comentarios existentes,
+* agregar un comentario nuevo,
+* y actualizar los comentarios sin recargar la página usando `fetch()`.
 
-Se crea una base de datos con datos falsos entre comillas de usuarios. Esto porque solia borrar varias veces las bases de datos para probar cosas que, luego como quedaban feas, las borraba (un usuario tipo ajdklsji@.com). Siempre se inicia con la base de datos normal, si ésta se borra, al menos tendrá tarjetas predefinidas!
+Cada comentario guarda:
+
+* nombre del comentarista,
+* texto,
+* fecha,
+* actividad asociada.
+
+Los comentarios funcionan como comentarios públicos asociados a una actividad.
+
+En un principio se pensó hacer que solo usuarios logeados pudieran comentar, porque igual es raro que cualquier persona pueda entrar y comentar libremente. Sin embargo, por cómo estaba planteada la tarea y por la lógica de “comunidad abierta”, finalmente se decidió dejar comentarios públicos.
+
+De todas formas, sí se agregó una pequeña lógica opcional de “comentario destacado”:
+
+* cualquier persona puede comentar normalmente,
+* pero si el usuario tiene sesión iniciada, puede usar el botón:
+  `Usar sesión iniciada para distintivo ⭐`
+* en ese caso el comentario se publica usando automáticamente el nombre de la sesión y aparece con una estrella visual.
+
+La idea era representar comentarios hechos por miembros reales del sistema sin bloquear completamente los comentarios públicos.
+
+Además:
+
+* si el usuario intenta usar el distintivo sin tener sesión iniciada,
+* el sistema lo redirige automáticamente al login.
 
 
-En el listado de miembros se implementó que al hacer click sobre una fila se pueda acceder al detalle del miembro y ver sus actividades asociadas. Además, si una actividad tiene imágenes asociadas, ahora también se pueden visualizar desde esa vista. La idea fue complementar el filtrado y navegación usando información obtenida directamente desde la base de datos, con la misma lógica de busqueda que la tarea 1. Ahora bien, hay actividades que no tienen imagenes que son la de los usuarios de plantilla que dije arriba: me dio lata ponerles una imagen perdón :C
-Pero luego como siempre se pide foto, en actividades nuevas habrán fotos! :D (además que se pueden acceder todasc las actividades por usuario al pincharlo)
+# Validaciones de comentarios
 
-La portada también se modificó para mostrar información dinámica obtenida desde SQLAlchemy. Se trabajó pensando en que el listado de miembros y actividades debía actualizarse automáticamente según la base de datos y no quedar fijo en HTML como estaba originalmente.
+Como los comentarios quedaron abiertos al público, se tuvo cuidado con las validaciones.
 
-En los gráficos primero se utilizó `localStorage` porque era más rápido mientras todavía no estaba implementada toda la lógica backend. Después se decidió renovar esa parte para que los datos provinieran desde consultas reales usando SQLAlchemy, pensando en dejar toda la aplicación funcionando realmente conectada a la base de datos.
+Se valida tanto en Javascript como en Flask:
 
-También se decidió reutilizar CSS entre páginas, especialmente `ingreso.css`, para mantener una estructura visual consistente y no duplicar estilos innecesariamente.
+* que el nombre no venga vacío,
+* que tenga mínimo 3 caracteres,
+* máximo 80,
+* que el comentario tenga al menos 5 caracteres,
+* y que no se intenten ingresar cosas raras como:
 
-En general se intentó mantener el código relativamente simple. Varias veces se probaron soluciones más complejas, pero normalmente terminaban agregando demasiadas líneas o rompiendo partes que ya funcionaban. Por eso se prefirió modificar solamente lo necesario y mantener una estructura entendible considerando la entrevista individual de la tarea.
+```text
+<script>
+{{ }}
+{% %}
+<
+>
+```
 
-Además voy a adjuntar en sql mi actual base de datos en caso de :D (como copia)
+Se implementó una función simple llamada `tiene_codigo_raro()` para detectar texto sospechoso antes de guardar datos en MySQL.
+
+La idea no era construir un sistema de seguridad profesional, sino evitar inyecciones básicas y mostrar preocupación por validaciones backend además del frontend.
+
+# Vista general de comentarios
+
+También se agregó una página general de comentarios.
+
+Ahora existen dos formas de ver comentarios:
+
+* entrando al detalle de una actividad,
+* o entrando a `/comentarios`.
+
+Desde esa vista general:
+
+* se pueden revisar todos los comentarios del sistema,
+* ver a qué actividad pertenecen,
+* y entrar directamente al detalle correspondiente.
+
+Esto no era estrictamente obligatorio, pero se agregó porque dejar todos los comentarios escondidos dentro de las actividades se sentía poco natural.
+
+# Vista detalle de actividad
+
+Ahora cada actividad tiene su propia página.
+
+Antes las actividades solo podían verse desde la lista de miembros, pero ahora existe:
+
+```text
+/actividad/<id>
+```
+
+En esta vista se muestran:
+
+* datos completos de la actividad,
+* imagen asociada,
+* comentarios,
+* formulario de comentarios.
+
+Además, desde la portada se puede entrar directamente a las últimas actividades registradas sin tener que pasar obligatoriamente por miembros.
+
+# Gráficos
+
+Se implementaron los gráficos pedidos utilizando:
+
+* Flask,
+* `fetch`,
+* rutas JSON,
+* `jsonify()`,
+* Chart.js.
+
+Los gráficos principales son:
+
+* miembros registrados por día,
+* actividades por tipo,
+* actividades por comuna.
+
+Cada gráfico obtiene sus datos desde rutas Flask que consultan la base de datos y devuelven JSON.
+
+Luego Javascript utiliza `fetch()` para pedir esos datos y Chart.js para dibujar los gráficos dinámicamente en el navegador.
+
+También se mantuvieron algunos gráficos adicionales que ya existían anteriormente, pero ahora adaptados para usar datos reales desde Flask y no datos escritos manualmente en el HTML.
+
+# Tipo de actividad
+
+Se modificó el formulario de actividades para separar:
+
+* nombre de actividad,
+* tipo de actividad.
+
+Antes el sistema solo guardaba nombres como:
+
+* Fútbol,
+* Ajedrez,
+* Parapente.
+
+Pero eso no sirve para un gráfico agrupado por categorías.
+
+Entonces ahora:
+
+* nombre: “Fútbol”
+* tipo: “deporte”
+
+o:
+
+* nombre: “Ajedrez”
+* tipo: “recreación”
+
+Esto permite que el gráfico “actividades por tipo” tenga sentido real.
+
+Además, el tipo ahora se selecciona mediante `<select>` y no escribiendo texto libre, para mantener consistencia en los datos.
+
+# Consideración sobre grandes cantidades de datos
+
+El gráfico de miembros registrados por día actualmente muestra cada fecha individualmente en el eje X, tal como lo pide el enunciado.
+
+Sin embargo, se consideró que si el sistema creciera mucho, por ejemplo:
+
+* registros diarios durante un año,
+* o cientos de usuarios,
+
+el gráfico podría volverse difícil de leer.
+
+Una mejora futura sería:
+
+* agrupar por semanas,
+* meses,
+* o rangos de tiempo dinámicos dependiendo de la cantidad de datos.
+
+Por ahora se mantuvo por día porque es exactamente lo solicitado en la tarea.
+
+# Manejo de sesión
+
+Se siguió usando `session` de Flask para:
+
+* mantener usuarios logeados,
+* restringir acceso a `/ingreso`,
+* registrar actividades,
+* y distinguir comentarios con distintivo.
+
+También se agregó lógica para:
+
+* evitar que páginas privadas queden guardadas en caché,
+* manejar correctamente botones de volver,
+* y detectar automáticamente si el usuario tiene sesión activa.
+
+# Validaciones frontend y backend
+
+Se mantuvo la lógica de validar tanto en Javascript como en Flask.
+
+La razón es que:
+
+* Javascript puede saltarse fácilmente,
+* pero Flask siempre debe revisar los datos antes de guardarlos.
+
+Por eso prácticamente todos los formularios tienen:
+
+* validaciones visuales en frontend,
+* y validaciones reales en backend.
+
+# Decisiones generales
+
+Se intentó mantener el proyecto lo más entendible posible y sin sobrecomplicar demasiado la estructura.
+
+Muchas cosas podrían hacerse usando librerías más avanzadas o separando más el proyecto, pero la idea fue mantener una lógica parecida a la de las tareas anteriores para:
+
+* poder entender realmente el código,
+* explicarlo fácilmente,
+* y mantener coherencia con el trabajo ya construido.
+
+También se prefirió priorizar:
+
+* funcionamiento real,
+* integración completa con Flask y MySQL,
+* validaciones,
+* y navegación consistente entre páginas.
