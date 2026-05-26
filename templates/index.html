@@ -61,7 +61,9 @@
             <button type="button" class="btn-minecraft" onclick="window.location.href='/miembros?volver=inicio'">
                 Ver miembros
             </button>
-
+            <button type="button" class="btn-minecraft" onclick="window.location.href='/comentarios'">
+                Ver comentarios
+            </button>
             <button type="button" class="btn-minecraft" onclick="window.location.href='/graficos?volver=inicio'">
                 Estadísticas
             </button>
@@ -86,6 +88,9 @@
 
                         <p class="texto-pequeno-inicio">
                             {{ actividad.dias }} — {{ actividad.lugar }}
+                        </p>
+                        <p class="texto-pequeno-inicio">
+                            Ver actividad y comentarios
                         </p>
                     </div>
                 {% endfor %}

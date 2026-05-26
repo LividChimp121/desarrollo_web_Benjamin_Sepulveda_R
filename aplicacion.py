@@ -78,7 +78,6 @@ class Foto(db.Model):
 # Cada comentario pertenece a una actividad.
 class Comentario(db.Model):
     #recordemos que _tablename_ es el nombre de la tabla en la base de datos, y las columnas son los campos que tiene cada comentario: id, nombre de quien comenta, texto del comentario, fecha del comentario, y el id de la actividad a la que pertenece el comentario.
-    __tablename__ = "comentario"
     id = db.Column(db.Integer, primary_key=True)
     # Nombre de quien comenta
     nombre = db.Column(db.String(80), nullable=False)
@@ -615,9 +614,17 @@ def miembros():
         "miembros.html",
         miembros=miembros,
         actividades=actividades,
-        volver_url=volver_url
-    )
+        volver_url=volver_url)
 
+
+@app.route("/datos/sesion-comentario")
+def datos_sesion_comentario():
+    if "usuario_id" not in session:
+        return jsonify({"ok": False})
+    miembro = Miembro.query.get(session["usuario_id"])
+    if miembro is None:
+        return jsonify({"ok": False})
+    return jsonify({"ok": True, "nombre": miembro.nombre + " " + miembro.apellido})
 
 @app.route("/graficos")
 def graficos():
@@ -1072,6 +1079,12 @@ def agregar_comentario():
             "fecha": nuevo_comentario.fecha
         }})
 
+@app.route("/comentarios")
+def comentarios():
+    comentarios = Comentario.query.order_by(Comentario.id.desc()).all()
+    return render_template("comentarios.html", comentarios=comentarios)
+
+
 # Aqui vienen las rutas para los gráficos. Estas rutas no devuelven HTML, sino datos en formato JSON que luego el JavaScript de la página de gráficos usa para mostrar los gráficos correspondientes. 
 # Cada ruta hace una consulta a la base de datos, procesa los datos para contar lo que necesitamos, y luego devuelve un JSON con las etiquetas y valores para cada gráfico.
 # Datos para gráfico de barras: miembros registrados por día.
@@ -1240,13 +1253,12 @@ def datos_actividades_por_dia():
 # y Flask detecta que ya no existe una sesión iniciada.
 @app.after_request
 def evitar_cache(response):
-
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
-
     return response
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+

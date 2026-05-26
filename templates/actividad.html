@@ -4,212 +4,25 @@
     <meta charset="UTF-8">
     <title>Actividad - Panoramas DCC</title>
 
-    <!-- Mismo CSS general del proyecto (ingreso.css), igual que en miembros.html -->
     <link rel="stylesheet" href="{{ url_for('static', filename='ingreso.css') }}">
-
-    <!-- ============================================================
-         Estilos SOLO para esta página de actividad.
-         Los pongo acá adentro para no modificar ingreso.css ni romper
-         las otras páginas. Mantengo nombres simples y descriptivos,
-         igual estilo que el proyecto: clases en español.
-         ============================================================ -->
-    <style>
-
-        /* Contenedor principal: hace que la página de actividad
-           ocupe un ancho cómodo y quede centrada en la ventana.
-           Antes la tarjeta quedaba muy angosta y vacía a los lados. */
-        .contenedor-actividad {
-            max-width: 1100px;       /* tope máximo para que no se estire en monitores grandes */
-            margin: 30px auto;       /* centramos horizontalmente con margen automático */
-            padding: 0 20px;         /* aire a los lados */
-        }
-
-        /* Tarjeta grande que contiene TODO el detalle de la actividad.
-           Igual estilo redondeado que las tarjetas de miembros.html */
-        .tarjeta-actividad {
-            background: #fff7e6;     /* mismo tono crema del resto del proyecto */
-            border-radius: 14px;
-            padding: 30px 35px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-        }
-
-        /* Título grande de la actividad (Patinaje, Voleibol, etc.) */
-        .titulo-actividad {
-            color: #d84315;
-            font-size: 32px;
-            margin: 0 0 20px 0;
-        }
-
-        /* Layout en dos columnas para INFO + FOTO en pantallas grandes.
-           Si la pantalla es chica, se acomoda en una sola columna
-           gracias al wrap del flex. */
-        .fila-info-foto {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 25px;
-            margin-bottom: 25px;
-        }
-
-        .columna-info {
-            flex: 1 1 320px;         /* mínimo 320px, después crece */
-        }
-
-        .columna-info p {
-            margin: 8px 0;
-            font-size: 17px;
-        }
-
-        /* Caja de la foto a la derecha, con un tamaño más razonable
-           que la imagen miniatura que se veía antes. */
-        .columna-foto {
-            flex: 1 1 320px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-        }
-
-        .columna-foto img {
-            width: 100%;
-            max-width: 420px;
-            height: auto;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Cada "sección" (formulario, comentarios) lleva una línea
-           separadora arriba para diferenciar bloques visualmente. */
-        .seccion-actividad {
-            border-top: 2px solid #ddd;
-            padding-top: 20px;
-            margin-top: 25px;
-        }
-
-        .seccion-actividad h3 {
-            margin-top: 0;
-            color: #2e7d32;
-        }
-
-        /* Formulario de comentario: que los inputs ocupen el ancho
-           completo y se vean cómodos al escribir. */
-        #formulario-comentario label {
-            display: block;
-            font-weight: bold;
-            margin: 10px 0 4px 0;
-        }
-
-        #formulario-comentario input[type="text"],
-        #formulario-comentario textarea,
-        #nombre-comentario,
-        #texto-comentario {
-            width: 100%;
-            box-sizing: border-box;  /* el padding cuenta dentro del ancho */
-            padding: 10px;
-            font-size: 15px;
-            border: 1px solid #bbb;
-            border-radius: 8px;
-            font-family: inherit;    /* que el textarea no use fuente del sistema rara */
-        }
-
-        #texto-comentario {
-            resize: vertical;        /* solo permite estirar para abajo */
-            min-height: 110px;
-        }
-
-        /* El div del mensaje de error/éxito ocupa todo el ancho. */
-        #mensaje-comentario {
-            margin: 12px 0;
-        }
-
-        /* Lista de comentarios: ahora cada uno es una tarjeta
-           independiente con su propio fondo y separación. */
-        #lista-comentarios {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .tarjeta-comentario {
-            background: #ffffff;
-            border-left: 5px solid #43a047;   /* franja verde tipo "destacado" */
-            border-radius: 8px;
-            padding: 12px 16px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-        }
-
-        .tarjeta-comentario .cabecera-comentario {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin-bottom: 6px;
-            color: #333;
-        }
-
-        .tarjeta-comentario .nombre-comentario {
-            font-weight: bold;
-            color: #2e7d32;
-        }
-
-        .tarjeta-comentario .fecha-comentario {
-            color: #777;
-            font-size: 13px;
-        }
-
-        .tarjeta-comentario .texto-comentario-mostrado {
-            margin: 0;
-            line-height: 1.4;
-            color: #222;
-        }
-
-        /* Mensaje cuando todavía no hay comentarios: que se note
-           que es una nota y no un comentario vacío. */
-        .aviso-sin-comentarios {
-            background: #fff3e0;
-            padding: 12px;
-            border-radius: 8px;
-            color: #6d4c41;
-            text-align: center;
-        }
-
-        /* Fila de botones del final: lado a lado y con aire arriba. */
-        .botones-finales {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 25px;
-        }
-
-    </style>
 </head>
+
 <body>
 
-<!-- Cabecera igual que en miembros.html para mantener consistencia. -->
 <header class="header">
     <h1 class="titulo-dinamico">Panoramas DCC</h1>
     <p class="subtitulo-header">Detalle de actividad</p>
 </header>
 
-<!-- ============================================================
-     CONTENEDOR PRINCIPAL
-     Usamos las nuevas clases para que la página sea ancha y
-     ordenada, en vez de la tarjeta angosta que se veía antes.
-     ============================================================ -->
 <main class="contenedor-actividad">
 
     <div class="tarjeta-actividad">
 
-        <!-- Título grande de la actividad -->
         <h2 class="titulo-actividad">{{ actividad.nombre }}</h2>
 
-        <!-- ====================================================
-             FILA SUPERIOR: INFORMACIÓN + FOTO LADO A LADO
-             En pantallas chicas se acomodan una abajo de la otra
-             gracias al flex-wrap. En pantallas grandes se ven
-             en dos columnas, dando más sensación de "vista principal".
-             ==================================================== -->
+        <!-- datos principales de la actividad -->
         <div class="fila-info-foto">
 
-            <!-- Columna izquierda: datos -->
             <div class="columna-info">
                 <p><strong>Días:</strong> {{ actividad.dias }}</p>
                 <p><strong>Hora:</strong> {{ actividad.hora_inicio }} - {{ actividad.hora_fin }}</p>
@@ -234,8 +47,7 @@
                 </p>
             </div>
 
-            <!-- Columna derecha: foto. Si la actividad no tiene foto,
-                 no mostramos la columna para que no quede un hueco raro. -->
+            <!-- mostramos foto si existe -->
             {% if actividad.fotos|length > 0 %}
                 <div class="columna-foto">
                     <img src="/{{ actividad.fotos[0].ruta_archivo }}" alt="Foto actividad">
@@ -244,68 +56,78 @@
 
         </div>
 
-
-        <!-- ====================================================
-             SECCIÓN: FORMULARIO PARA AGREGAR COMENTARIO
-             OJO: NO se cambian ids, ni names, ni el onsubmit,
-             ni el onclick del botón. Solo se mejora la apariencia.
-             ==================================================== -->
+        <!-- formulario para comentar -->
         <div class="seccion-actividad">
             <h3>Agregar comentario</h3>
 
             <form id="formulario-comentario" onsubmit="return false;">
 
-                <!-- Campo oculto con el id de la actividad. -->
+                <!-- id actividad para guardar el comentario correcto -->
                 <input type="hidden" id="actividad-id" value="{{ actividad.id }}">
+
+                <!-- si vale si, el comentario se guarda con estrella -->
+                <input type="hidden" id="comentario-destacado" value="no">
 
                 <label for="nombre-comentario">
                     Nombre <span class="obligatorio">*</span>
                 </label>
-                <input type="text" id="nombre-comentario" maxlength="80"
-                       placeholder="Tu nombre">
+
+                <input type="text"
+                       id="nombre-comentario"
+                       maxlength="80"
+                       placeholder="Tu nombre o pseudónimo">
+
+                <p class="texto-ayuda">
+                    Puedes escribir tu nombre o usar tu sesión iniciada.
+                </p>
+
+                <button type="button"
+                        class="btn-minecraft btn-secundario boton-sesion-comentario"
+                        onclick="usarSesionComentario()">
+                    Usar sesión iniciada ⭐
+                </button>
+
+                <p id="mensaje-sesion-comentario"></p>
 
                 <label for="texto-comentario">
                     Comentario <span class="obligatorio">*</span>
                 </label>
-                <textarea id="texto-comentario" rows="4" cols="50" maxlength="300"
-                          placeholder="Escribe tu comentario (mínimo 5 caracteres)"></textarea>
 
-                <!-- Div donde mostramos errores o mensaje de éxito. -->
+                <textarea id="texto-comentario"
+                          rows="4"
+                          cols="50"
+                          maxlength="300"
+                          placeholder="Escribe tu comentario"></textarea>
+
                 <div id="mensaje-comentario" class="mensaje-formulario"></div>
 
-                <button type="button" class="btn-minecraft"
+                <button type="button"
+                        class="btn-minecraft"
                         onclick="enviarComentario()">
                     Agregar comentario
                 </button>
+
             </form>
         </div>
 
-
-        <!-- ====================================================
-             SECCIÓN: LISTADO DE COMENTARIOS
-             Se rellena con JavaScript al cargar la página y se
-             refresca cada vez que se agrega un comentario nuevo.
-             El id sigue siendo "lista-comentarios" para que el JS
-             encuentre el contenedor sin cambios.
-             ==================================================== -->
+        <!-- acá se cargan los comentarios con fetch -->
         <div class="seccion-actividad">
             <h3>Comentarios</h3>
+
             <div id="lista-comentarios">
                 <p class="aviso-sin-comentarios">Cargando comentarios...</p>
             </div>
         </div>
 
-
-        <!-- ====================================================
-             BOTONES PARA VOLVER
-             ==================================================== -->
         <div class="botones-finales">
-            <button class="btn-minecraft" type="button"
+            <button class="btn-minecraft"
+                    type="button"
                     onclick="window.location.href='/miembros'">
                 Volver a miembros
             </button>
 
-            <button class="btn-minecraft btn-secundario" type="button"
+            <button class="btn-minecraft btn-secundario"
+                    type="button"
                     onclick="window.location.href='/'">
                 Volver al inicio
             </button>
@@ -315,92 +137,58 @@
 
 </main>
 
-
-<!-- ============================================================
-     SCRIPTS: TODO LO DE COMENTARIOS CON FETCH (AJAX)
-     Esta parte NO se modifica: misma lógica, mismas funciones,
-     mismos ids. Solo cambiamos la forma en que se DIBUJAN los
-     comentarios para que cada uno sea una tarjeta separada.
-     ============================================================ -->
 <script>
-
-// ----------------------------------------------------------------
-// Cuando la página termina de cargarse, pedimos al servidor los
-// comentarios ya existentes para esta actividad.
-// ----------------------------------------------------------------
+// cargamos comentarios al entrar
 window.onload = function() {
     cargarComentarios();
 };
 
-
-// ----------------------------------------------------------------
-// VALIDACIONES en cliente.
-// Las hacemos a mano, sin librerías, igual que en Tarea 1 y 2.
-// Devuelven "" si todo está bien, o un texto con el error.
-// ----------------------------------------------------------------
+// revisamos largo del nombre
 function validarNombreComentario(nombre) {
     if (nombre.length < 3) {
         return "El nombre debe tener al menos 3 caracteres.";
     }
+
     if (nombre.length > 80) {
         return "El nombre debe tener máximo 80 caracteres.";
     }
+
     return "";
 }
 
+// revisamos largo del comentario
 function validarTextoComentario(texto) {
     if (texto.length < 5) {
         return "El comentario debe tener al menos 5 caracteres.";
     }
+
     if (texto.length > 300) {
         return "El comentario es demasiado largo.";
     }
+
     return "";
 }
 
-
-// ----------------------------------------------------------------
-// FUNCIÓN QUE PIDE LOS COMENTARIOS AL SERVIDOR
-// Llamada al cargar la página y después de agregar uno nuevo.
-// Usa fetch + .then(): es la forma simple que vimos en clases.
-// ----------------------------------------------------------------
+// pedimos los comentarios al backend
 function cargarComentarios() {
-
-    // Sacamos el id de la actividad desde el campo oculto.
     let actividadId = document.getElementById("actividad-id").value;
 
-    // fetch hace una llamada GET a la URL indicada.
-    // Devuelve una "promesa", por eso encadenamos .then(...).
     fetch("/listar-comentarios/" + actividadId)
         .then(function(respuesta) {
-            // La primera promesa nos da la respuesta cruda.
-            // Acá la convertimos a JSON con response.json(), que también
-            // devuelve una promesa.
             return respuesta.json();
         })
         .then(function(comentarios) {
-            // Ahora "comentarios" es la lista de objetos
-            // [{id, nombre, texto, fecha}, ...]
             mostrarComentarios(comentarios);
         });
 }
 
-
-// ----------------------------------------------------------------
-// FUNCIÓN QUE TOMA LA LISTA DE COMENTARIOS Y LA DIBUJA EN PANTALLA
-// Recorre la lista y arma una tarjeta por cada comentario.
-// Importante: usamos textContent (no innerHTML) para que cualquier
-// "<script>" que alguien intente meter aparezca como texto y no
-// como código. Esto es seguridad básica del lado cliente.
-// ----------------------------------------------------------------
+// dibujamos comentarios en pantalla
 function mostrarComentarios(comentarios) {
-
     let contenedor = document.getElementById("lista-comentarios");
 
-    // Vaciamos el div antes de redibujarlo.
+    // limpiamos lo anterior
     contenedor.innerHTML = "";
 
-    // Si no hay comentarios, mostramos un aviso especial.
     if (comentarios.length === 0) {
         let aviso = document.createElement("p");
         aviso.className = "aviso-sin-comentarios";
@@ -409,21 +197,24 @@ function mostrarComentarios(comentarios) {
         return;
     }
 
-    // Recorremos la lista y armamos una TARJETA por cada comentario.
     for (let i = 0; i < comentarios.length; i++) {
-
         let c = comentarios[i];
 
-        // Tarjeta contenedora del comentario.
         let tarjeta = document.createElement("div");
         tarjeta.className = "tarjeta-comentario";
 
-        // Cabecera (nombre del comentarista + fecha).
+        // si tiene estrella, lo mostramos distinto
+        if (c.nombre.startsWith("⭐ ")) {
+            tarjeta.className = "tarjeta-comentario tarjeta-comentario-especial";
+        }
+
         let cabecera = document.createElement("div");
         cabecera.className = "cabecera-comentario";
 
         let spanNombre = document.createElement("span");
         spanNombre.className = "nombre-comentario";
+
+        // textContent evita ejecutar html raro
         spanNombre.textContent = c.nombre;
 
         let spanFecha = document.createElement("span");
@@ -433,12 +224,12 @@ function mostrarComentarios(comentarios) {
         cabecera.appendChild(spanNombre);
         cabecera.appendChild(spanFecha);
 
-        // Texto del comentario.
         let texto = document.createElement("p");
         texto.className = "texto-comentario-mostrado";
+
+        // también acá evitamos html raro
         texto.textContent = c.texto;
 
-        // Armamos la tarjeta y la metemos en el contenedor.
         tarjeta.appendChild(cabecera);
         tarjeta.appendChild(texto);
 
@@ -446,24 +237,37 @@ function mostrarComentarios(comentarios) {
     }
 }
 
+// si no hay sesión, manda al inicio; si hay, rellena el nombre
+function usarSesionComentario() {
+    fetch("/datos/sesion-comentario")
+        .then(function(respuesta) {
+            return respuesta.json();
+        })
+        .then(function(datos) {
+            if (datos.ok === false) {
+                window.location.href = "/";
+                return;
+            }
 
-// ----------------------------------------------------------------
-// FUNCIÓN QUE ENVÍA EL FORMULARIO DE COMENTARIO AL SERVIDOR
-// 1) Saca los valores del formulario.
-// 2) Valida en cliente.
-// 3) Si está OK, hace POST con fetch.
-// 4) Cuando vuelve la respuesta, muestra mensaje y recarga la lista.
-// ----------------------------------------------------------------
+            document.getElementById("nombre-comentario").value = datos.nombre;
+            document.getElementById("comentario-destacado").value = "si";
+
+            document.getElementById("mensaje-sesion-comentario").textContent =
+                "Sesión detectada. El comentario saldrá marcado con estrella.";
+        });
+}
+
+// mandamos el comentario al backend
 function enviarComentario() {
-
     let nombre = document.getElementById("nombre-comentario").value.trim();
     let texto = document.getElementById("texto-comentario").value.trim();
     let actividadId = document.getElementById("actividad-id").value;
+    let destacado = document.getElementById("comentario-destacado").value;
 
     let divMensaje = document.getElementById("mensaje-comentario");
 
-    // Validamos.
     let errorNombre = validarNombreComentario(nombre);
+
     if (errorNombre !== "") {
         divMensaje.className = "mensaje-formulario error";
         divMensaje.style.display = "block";
@@ -472,6 +276,7 @@ function enviarComentario() {
     }
 
     let errorTexto = validarTextoComentario(texto);
+
     if (errorTexto !== "") {
         divMensaje.className = "mensaje-formulario error";
         divMensaje.style.display = "block";
@@ -479,15 +284,16 @@ function enviarComentario() {
         return;
     }
 
-    // Armamos los datos del formulario.
-    // FormData es la forma simple de mandar campos como si fuera
-    // un <form> normal. Flask los lee con request.form, como siempre.
+    // si usó sesión, se guarda con estrella
+    if (destacado === "si") {
+        nombre = "⭐ " + nombre;
+    }
+
     let datos = new FormData();
     datos.append("nombre", nombre);
     datos.append("texto", texto);
     datos.append("actividad_id", actividadId);
 
-    // Llamada asíncrona POST a Flask.
     fetch("/agregar-comentario", {
         method: "POST",
         body: datos
@@ -496,9 +302,6 @@ function enviarComentario() {
         return respuesta.json();
     })
     .then(function(resultado) {
-
-        // Si el servidor responde ok=false, mostramos su mensaje
-        // y dejamos el formulario visible para que corrijan.
         if (resultado.ok === false) {
             divMensaje.className = "mensaje-formulario error";
             divMensaje.style.display = "block";
@@ -506,15 +309,16 @@ function enviarComentario() {
             return;
         }
 
-        // Si fue OK: mensaje de éxito, limpiamos el formulario y
-        // refrescamos la lista llamando otra vez al servidor.
         divMensaje.className = "mensaje-formulario exito";
         divMensaje.style.display = "block";
         divMensaje.textContent = "Comentario agregado correctamente.";
 
         document.getElementById("nombre-comentario").value = "";
         document.getElementById("texto-comentario").value = "";
+        document.getElementById("comentario-destacado").value = "no";
+        document.getElementById("mensaje-sesion-comentario").textContent = "";
 
+        // actualizamos sin recargar
         cargarComentarios();
     });
 }

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Comentarios - Panoramas DCC</title>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+
+<header class="header">
+    <h1>Panoramas DCC</h1>
+    <p class="texto-titulo-presentacion">Comentarios de actividades</p>
+</header>
+
+<section class="contenedor-comentarios">
+
+    <div class="panel-lista-comentarios">
+
+        <h2>Todos los comentarios</h2>
+        <p class="descripcion-panel">
+            Aquí se muestran los comentarios que se han realizado en las actividades.
+        </p>
+
+        {% if comentarios|length > 0 %}
+
+            <div class="grilla-comentarios">
+
+                {% for comentario in comentarios %}
+                    <div class="tarjeta-comentario-global">
+
+                        <p class="encabezado">
+                            <strong>{{ comentario.nombre }}</strong>
+                            comentó en
+                            <strong>{{ comentario.actividad.nombre }}</strong>
+                        </p>
+
+                        <span class="tipo">{{ comentario.actividad.tipo }}</span>
+
+                        <p class="texto">{{ comentario.texto }}</p>
+
+                        <p class="fecha">{{ comentario.fecha }}</p>
+
+                        <p class="enlace-ver">
+                            <a href="{{ url_for('detalle_actividad', actividad_id=comentario.actividad.id) }}">
+                                Ver actividad y comentar →
+                            </a>
+                        </p>
+
+                    </div>
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+            <p class="aviso-vacio">No hay comentarios todavía.</p>
+        {% endif %}
+
+        <div class="fila-volver">
+            <button type="button" class="btn-minecraft"
+                    onclick="window.location.href='/'">
+                Volver al inicio
+            </button>
+        </div>
+
+    </div>
+
+</section>
+
+</body>
+</html>

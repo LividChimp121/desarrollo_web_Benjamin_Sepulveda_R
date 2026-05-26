@@ -310,3 +310,122 @@ pero o sino el display o menu en profesores se escapaba de la ventana, quedando 
         width: 85%;
     }
 }
+
+/* Estilos para la página de lista de comentarios (Tarea 3) */
+/* Contenedor principal ancho y centrado. */
+.contenedor-comentarios {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+/* Panel grande que envuelve toda la lista. */
+.panel-lista-comentarios {
+    background: #fff7e6;
+    border-radius: 14px;
+    padding: 28px 32px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.panel-lista-comentarios h2 {
+    color: #d84315;
+    margin: 0 0 8px 0;
+}
+
+.panel-lista-comentarios .descripcion-panel {
+    color: #6d4c41;
+    margin: 0 0 22px 0;
+}
+
+/* Grilla de tarjetas: se ajusta sola al ancho de pantalla. */
+.grilla-comentarios {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+/* Tarjeta individual de comentario. */
+.tarjeta-comentario-global {
+    background: #ffffff;
+    border-left: 5px solid #43a047;
+    border-radius: 10px;
+    padding: 14px 18px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Encabezado de la tarjeta (nombre del comentarista + actividad). */
+.tarjeta-comentario-global .encabezado {
+    font-size: 15px;
+    color: #2e7d32;
+    margin: 0;
+}
+
+.tarjeta-comentario-global .encabezado strong {
+    color: #1b5e20;
+}
+
+/* Chip pequeño con el tipo de actividad. */
+.tarjeta-comentario-global .tipo {
+    display: inline-block;
+    background: #fff3e0;
+    color: #bf360c;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    text-transform: capitalize;
+    width: fit-content;
+}
+
+/* Texto del comentario. */
+.tarjeta-comentario-global .texto {
+    margin: 0;
+    color: #222;
+    line-height: 1.45;
+}
+
+/* Fecha del comentario en chiquito. */
+.tarjeta-comentario-global .fecha {
+    color: #888;
+    font-size: 12px;
+    margin: 0;
+}
+
+/* Enlace al detalle de la actividad, estilo "ver más". */
+.tarjeta-comentario-global .enlace-ver {
+    margin: 6px 0 0 0;
+}
+
+.tarjeta-comentario-global .enlace-ver a {
+    display: inline-block;
+    color: #2e7d32;
+    font-weight: bold;
+    text-decoration: none;
+    border-bottom: 1px dashed #2e7d32;
+    padding-bottom: 1px;
+}
+
+.tarjeta-comentario-global .enlace-ver a:hover {
+    color: #1b5e20;
+    border-bottom-style: solid;
+}
+
+/* Aviso cuando todavía no hay comentarios. */
+.aviso-vacio {
+    background: #fff3e0;
+    padding: 18px;
+    border-radius: 10px;
+    text-align: center;
+    color: #6d4c41;
+    margin-bottom: 20px;
+}
+
+/* Fila del botón "volver al inicio", centrado. */
+.fila-volver {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
