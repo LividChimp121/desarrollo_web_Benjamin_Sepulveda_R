@@ -1029,7 +1029,9 @@ def detalle_actividad(actividad_id):
     actividad = Actividad.query.get(actividad_id)
     if actividad is None:
         abort(404)
-    return render_template("actividad.html", actividad=actividad)
+    # Revisamos si existe sesión iniciada.
+    usuario_logeado = "usuario_id" in session
+    return render_template("actividad.html", actividad=actividad, usuario_logeado=usuario_logeado)
 
 # Devuelve los comentarios de una actividad en formato JSON.
 @app.route("/listar-comentarios/<int:actividad_id>")
