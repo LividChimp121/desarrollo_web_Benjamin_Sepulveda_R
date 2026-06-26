@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.46, for macos15 (arm64)
 --
--- Host: localhost    Database: tarea2
+-- Host: 127.0.0.1    Database: tarea_web_4
 -- ------------------------------------------------------
 -- Server version	8.0.46
 
@@ -173,6 +173,32 @@ INSERT INTO `miembro` VALUES (1,'Usuario','usua@rio.com','+56900000000','2026-05
 UNLOCK TABLES;
 
 --
+-- Table structure for table `nota`
+--
+
+DROP TABLE IF EXISTS `nota`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `nota` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `actividad_id` int NOT NULL,
+  `nota` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_nota_actividad1_idx` (`actividad_id`),
+  CONSTRAINT `fk_nota_actividad1` FOREIGN KEY (`actividad_id`) REFERENCES `actividad` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `nota`
+--
+
+LOCK TABLES `nota` WRITE;
+/*!40000 ALTER TABLE `nota` DISABLE KEYS */;
+/*!40000 ALTER TABLE `nota` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `region`
 --
 
@@ -205,4 +231,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-26  0:01:38
+-- Dump completed on 2026-06-26 11:50:52
