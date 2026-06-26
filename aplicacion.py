@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.secret_key = "clave_simple_panorama_dcc"
 
 # Ahora Flask se conecta a MySQL usando SQLAlchemy. La URI tiene este formato pedido:
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://cc5002:programacionweb@localhost:3306/tarea2"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://cc5002:programacionweb@localhost:3306/tarea_web_4"
 
 #conectamos Flask con SQLAlchemy para poder usar la base de datos desde Python.
 db = SQLAlchemy(app)
@@ -65,6 +65,7 @@ class Actividad(db.Model):
     # Una actividad puede tener muchos comentarios. Parte de la tarea 3 (nuevos)
     # Esto permite usar actividad.comentarios si lo necesitamos.
     comentarios = db.relationship("Comentario", backref="actividad")
+    notas = db.relationship("Nota", backref="actividad")
 
 
 #para guardar las fotos que suben los usuarios a cada actividad, con una relación de uno a muchos (una actividad puede tener varias fotos, pero cada foto pertenece a una sola actividad).
@@ -88,7 +89,6 @@ class Comentario(db.Model):
         db.ForeignKey("actividad.id"),
         nullable=False)
 
-
 #Devuelve la fecha y hora actual en formato MySQL. Esto es útil para registrar la fecha de registro de un nuevo miembro o la fecha de creación de una nueva actividad.
 def obtener_fecha_actual():
     #Aqui no me sirvio datetimenow() directamente porque MySQL no acepta el formato que devuelve, así que tuve que formatearlo con strftime para que quede como 2026-05-02 00:00:00.
@@ -98,6 +98,11 @@ class Comuna(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(200), nullable=False)
     region_id = db.Column(db.Integer, nullable=False)
+
+class Nota(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    actividad_id = db.Column(db.Integer, db.ForeignKey("actividad.id"), nullable=False)
+    nota = db.Column(db.Integer, nullable=False)
 
 def obtener_comuna_id(comuna):
     comuna_encontrada = Comuna.query.filter_by(nombre=comuna).first() #busca en la tabla comuna la comuna que tenga el nombre igual al que se le pasó a la función,
