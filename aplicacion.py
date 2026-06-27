@@ -102,7 +102,7 @@ class Comuna(db.Model):
 class Nota(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     actividad_id = db.Column(db.Integer, db.ForeignKey("actividad.id"), nullable=False)
-    nota = db.Column(db.Integer, nullable=False)
+    nota = db.Column(db.Float, nullable=False)
 
 def obtener_comuna_id(comuna):
     comuna_encontrada = Comuna.query.filter_by(nombre=comuna).first() #busca en la tabla comuna la comuna que tenga el nombre igual al que se le pasó a la función,
@@ -1100,10 +1100,38 @@ def comentarios():
 
     comentarios = Comentario.query.order_by(Comentario.id.desc()).all()
 
+    notas = Nota.query.all()
+    promedios_notas = {}
+
+    for nota in notas:
+        actividad_id = nota.actividad_id
+
+        if actividad_id not in promedios_notas:
+            promedios_notas[actividad_id] = {
+                "suma": 0,
+                "cantidad": 0,
+                "promedio": 0
+            }
+
+        promedios_notas[actividad_id]["suma"] = promedios_notas[actividad_id]["suma"] + nota.nota
+        promedios_notas[actividad_id]["cantidad"] = promedios_notas[actividad_id]["cantidad"] + 1
+
+    for actividad_id in promedios_notas:
+        suma = promedios_notas[actividad_id]["suma"]
+        cantidad = promedios_notas[actividad_id]["cantidad"]
+
+        promedios_notas[actividad_id]["promedio"] = round(suma / cantidad, 1)
+
     # Revisamos si existe sesión iniciada para decidir
     # a dónde debe volver el usuario.
     usuario_logeado = "usuario_id" in session
-    return render_template("comentarios.html", comentarios=comentarios, usuario_logeado=usuario_logeado)
+
+    return render_template(
+        "comentarios.html",
+        comentarios=comentarios,
+        promedios_notas=promedios_notas,
+        usuario_logeado=usuario_logeado
+    )
 
 # Aqui parten las rutas de los gráficos, todas devuelven JSON con jsonify
 # para que el javascript las pille con fetch y arme el gráfico.

@@ -37,6 +37,22 @@
 
                         <span class="tipo">{{ comentario.actividad.tipo }}</span>
 
+                        {% set datos_nota = promedios_notas.get(comentario.actividad.id) %}
+
+                        {% if datos_nota %}
+                            <p class="nota-actividad">
+                                Nota promedio:
+                                <strong>{{ datos_nota.promedio }}</strong>
+                                ({{ datos_nota.cantidad }} evaluación(es))
+                            </p>
+                        {% else %}
+                            <p class="nota-actividad">
+                                Nota promedio:
+                                <strong>-</strong>
+                                (sin evaluaciones)
+                            </p>
+                        {% endif %}
+
                         <p class="texto">{{ comentario.texto }}</p>
 
                         <p class="fecha">{{ comentario.fecha }}</p>

@@ -32,6 +32,10 @@
         <button class="btn-minecraft boton-principal-actividad" onclick="window.location.href='/miembros?volver=ingreso'">
             Revisar Actividades
         </button>
+
+        <button class="btn-minecraft boton-principal-actividad" type="button" onclick="window.location.href='http://localhost:8080/buscar?usuarioId={{ session['usuario_id'] }}'">
+            Calificar actividades
+        </button>
         <button class="btn-minecraft boton-principal-actividad" type="button" onclick="window.location.href='/comentarios'">
             Ver comentarios
         </button>

@@ -1,0 +1,11 @@
+com/example/myproject/ActividadRepository.class
+com/example/myproject/Foto.class
+com/example/myproject/FotoRepository.class
+com/example/myproject/Miembro.class
+com/example/myproject/ActividadApiController.class
+com/example/myproject/Nota.class
+com/example/myproject/NotaRepository.class
+com/example/myproject/BuscadorController.class
+com/example/myproject/MiembroRepository.class
+com/example/myproject/Actividad.class
+com/example/myproject/Tarea4SpringApplication.class

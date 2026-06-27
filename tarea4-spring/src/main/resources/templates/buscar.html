@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Califica tus actividades</title>
+    <link rel="stylesheet" href="/tarea4.css">
+</head>
+<body>
+
+    <header class="header">
+        <h1 class="titulo-dinamico">Califica tus actividades</h1>
+        <p class="subtitulo-header">Evalúa tu experiencia en las actividades del DCC</p>
+    </header>
+
+    <main class="contenedor-buscador">
+
+        <section class="panel-imagen-califica">
+            <img id="imagen-actividad" src="/Califica.png" alt="Imagen de la actividad seleccionada">
+        </section>
+
+        <section class="panel-buscador">
+            <h2>Busca una actividad</h2>
+
+            <p>
+                Escribe al menos 3 caracteres. Puedes buscar por nombre de actividad,
+                descripción o comuna.
+            </p>
+
+            <form class="formulario-busqueda">
+                <label for="busqueda">Actividad o comuna</label>
+                <input
+                    type="text"
+                    id="busqueda"
+                    name="busqueda"
+                    placeholder="Ej: vol, aje, Maipú"
+                    autocomplete="off"
+                >
+            </form>
+
+            <p id="mensaje" class="mensaje-buscador"></p>
+
+            <div id="resultados" class="resultados-buscador"></div>
+
+            <a class="enlace-volver" href="http://127.0.0.1:5000/ingreso">
+                Volver a la aplicación principal
+            </a>
+        </section>
+
+    </main>
+
+    <script src="/buscador.js"></script>
+</body>
+</html>

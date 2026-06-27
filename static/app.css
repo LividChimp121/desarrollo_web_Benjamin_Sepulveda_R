@@ -434,3 +434,220 @@ pero o sino el display o menu en profesores se escapaba de la ventana, quedando 
     border-left: 6px solid #fbc02d;
     background-color: #fffde7;
 }
+
+/* ajuste para que el inicio no quede tan abierto en pantalla normal */
+.inicio-con-dinamicos {
+    max-width: 1150px;
+    margin: 0 auto;
+    gap: 25px;
+}
+
+/* bajo un poco el tamaño de la imagen porque al 100% empujaba todo */
+.inicio-con-dinamicos .imagen-principal {
+    width: 35%;
+    max-width: 450px;
+    min-width: 300px;
+}
+
+/* dejo los paneles con tamaño fijo para que no bailen tanto */
+.panel-dinamico-inicio {
+    width: 280px;
+}
+
+.panel-bienvenida {
+    width: 310px;
+}
+
+/* este panel va abajo y centrado */
+.panel-actividades-horizontal {
+    width: 95%;
+    max-width: 1000px;
+}
+
+
+/* ajuste simple para que las actividades no ocupen tanto espacio */
+.lista-actividades-horizontal {
+    gap: 10px;
+}
+
+.lista-actividades-horizontal .item-dinamico-inicio {
+    width: 160px;
+    padding: 8px;
+}
+
+.lista-actividades-horizontal .item-dinamico-inicio p {
+    font-size: 14px;
+    margin: 3px 0;
+}
+
+.lista-actividades-horizontal .texto-pequeno-inicio {
+    font-size: 12px;
+}
+
+.panel-actividades-horizontal {
+    max-width: 900px;
+    padding: 15px;
+}
+
+.panel-actividades-horizontal h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+
+/* arreglo del inicio para que al 100% no quede tan separado */
+.inicio.inicio-con-dinamicos {
+    display: grid;
+    grid-template-columns: 260px 360px 300px;
+    gap: 18px 25px;
+    justify-content: center;
+    align-items: start;
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 25px 20px;
+}
+
+/* imagen principal más controlada */
+.inicio-con-dinamicos .imagen-principal {
+    width: 360px;
+    max-width: 360px;
+    min-width: 0;
+}
+
+/* paneles de arriba */
+.panel-dinamico-inicio {
+    width: 260px;
+}
+
+.panel-bienvenida {
+    width: 300px;
+}
+
+/* actividades abajo, ocupando las 3 columnas */
+.panel-actividades-horizontal {
+    grid-column: 1 / 4;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 14px;
+}
+
+/* tarjetas más compactas */
+.lista-actividades-horizontal {
+    gap: 10px;
+}
+
+.lista-actividades-horizontal .item-dinamico-inicio {
+    width: 150px;
+    padding: 8px;
+}
+
+.lista-actividades-horizontal .item-dinamico-inicio p {
+    font-size: 13px;
+    margin: 2px 0;
+}
+
+/* por si la pantalla es más chica */
+@media (max-width: 1000px) {
+    .inicio.inicio-con-dinamicos {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .inicio-con-dinamicos .imagen-principal,
+    .panel-dinamico-inicio,
+    .panel-bienvenida,
+    .panel-actividades-horizontal {
+        width: 85%;
+        max-width: 500px;
+    }
+}
+
+
+/* arreglo final inicio: que el fondo use todo el ancho */
+.inicio.inicio-con-dinamicos {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 32px 40px;
+    display: grid;
+    grid-template-columns: 300px 430px 320px;
+    gap: 26px;
+    justify-content: center;
+    align-items: start;
+}
+
+/* dejo la imagen un poco más grande, pero controlada */
+.inicio-con-dinamicos .imagen-principal {
+    width: 430px;
+    max-width: 430px;
+    min-width: 0;
+    height: auto;
+}
+
+/* tamaños de los paneles de arriba */
+.panel-dinamico-inicio {
+    width: 300px;
+}
+
+.panel-bienvenida {
+    width: 320px;
+}
+
+/* actividades abajo ocupando la fila completa */
+.panel-actividades-horizontal {
+    grid-column: 1 / 4;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* para que las tarjetas entren mejor */
+.lista-actividades-horizontal .item-dinamico-inicio {
+    width: 155px;
+    padding: 8px;
+}
+
+.lista-actividades-horizontal .item-dinamico-inicio p {
+    font-size: 13px;
+    margin: 2px 0;
+}
+
+
+/* arreglo para que la imagen no se monte sobre los paneles */
+.inicio.inicio-con-dinamicos {
+    grid-template-columns: 300px 380px 320px;
+    column-gap: 30px;
+}
+
+.inicio-con-dinamicos .imagen-principal {
+    width: 100%;
+    max-width: 380px;
+    min-width: 0;
+    box-sizing: border-box;
+    display: block;
+    align-self: start;
+}
+
+.panel-dinamico-inicio,
+.panel-bienvenida {
+    box-sizing: border-box;
+}
+
+
+/* nota promedio en comentarios */
+.nota-actividad {
+    margin: 8px 0;
+    padding: 7px 10px;
+    border-radius: 10px;
+    background-color: #fff3cf;
+    border: 2px solid #d99b32;
+    font-size: 14px;
+}
+
+.nota-actividad strong {
+    font-size: 16px;
+}
+
