@@ -1,126 +1,276 @@
-# CC5002 - Tarea 3
+# CC5002 - Tarea 4
 
 Para ingresar/logear se hizo uno rapido :D
 
 Tipo: estudiante
 Correo: [usua@rio.com](mailto:usua@rio.com)
 Contraseña: Usuario123
----
-
-Esta tarea la hice arriba de lo que ya tenía de la Tarea 2. Lo nuevo grande
-son los comentarios dinámicos, los gráficos conectados a Flask con `fetch`
-y JSON (que ya habiamos jugado algo con esto antes) y una vista de detalle
-para cada actividad. Traté de no mover mucho lo que ya estaba y solo ir
-sumando lo nuevo encima.
 
 ---
 
-# Comentarios
+Esta tarea la hice arriba de lo que ya tenía de la Tarea 3. La idea fue no
+rehacer toda la aplicación en Spring Boot, porque lo conversado en clases fue
+que no había que migrar todo, sino implementar en Spring Boot lo nuevo de la
+Tarea 4.
 
-Cada actividad ahora tiene su sección de comentarios. Cuando entras al
-detalle podés ver los que ya están, agregar uno nuevo y que aparezca
-al tiro sin recargar la página, usando `fetch()`.
+Por eso mantuve la aplicación principal en Flask y agregué una mini aplicación
+Spring Boot dentro de la carpeta `tarea4-spring`, conectada a la misma base de
+datos MySQL. La aplicación Flask sigue funcionando como antes, y desde la vista
+de ingreso se puede entrar al buscador/evaluador hecho en Spring Boot.
 
-Cada comentario guarda nombre, texto, fecha y la actividad a la que
-pertenece.
+---
 
-Al principio pensé en dejar que solo los usuarios logeados pudieran
-comentar, porque sí me hacía un poco de ruido que cualquiera entrara
-y comentara, pero como la idea de la tarea apuntaba más a "comunidad
-abierta", al final los dejé públicos.
+# Cómo correr la aplicación
 
-Igual le di una vuelta extra: si el usuario tiene sesión iniciada,
-puede apretar el botón `Usar sesión iniciada para distintivo ⭐` y el
-comentario queda con su nombre real y con una estrella al lado, así
-se distinguen de los anónimos. Si aprieta el botón sin tener sesión,
-lo redirijo al login.
+Hay que correr las dos aplicaciones al mismo tiempo.
 
-# Validaciones de comentarios
+## Flask
 
-Como los dejé públicos, me preocupé un poco más con esto. Valido en
-JS y también en Flask: que el nombre no venga vacío, mínimo 3 y máximo
-80 caracteres, que el comentario tenga al menos 5, y que no metan cosas
-raras tipo `<script>`, `{{ }}`, `{% %}`, `<` o `>`.
+Desde la carpeta principal:
 
-Para lo último seguí utilizando una función super simple llamada `tiene_codigo_raro()`
-que revisa si el texto trae alguno de esos pedazos. No pretende ser
-seguridad seria, solo evitar lo más obvio antes de mandar el texto a
-MySQL.
+```bash
+cd "/Users/benjas/Documents/App Web 04"
+source ".venv/bin/activate"
+python aplicacion.py
+```
 
-# Vista general de comentarios
+La aplicación principal queda en:
 
-Aparte del detalle de cada actividad, agregué una página `/comentarios`
-que lista todos los del sistema, muestra a qué actividad pertenece cada
-uno y deja entrar al detalle. No estaba en el enunciado, pero me daba
-la impresión rara que los comentarios quedaran escondidos solo dentro
-de cada actividad.
+```text
+http://127.0.0.1:5000/
+```
 
-# Vista detalle de actividad
+## Spring Boot
 
-Antes a una actividad solo se podía llegar pasando por miembros. Ahora
-hay una URL `/actividad/<id>` que muestra los datos completos, la imagen,
-los comentarios y el formulario. También conecté las "últimas actividades"
-del inicio para entrar directo al detalle desde la portada.
+Desde la carpeta de Spring:
 
-# Gráficos
+```bash
+cd "/Users/benjas/Documents/App Web 04/tarea4-spring"
+mvn spring-boot:run
+```
 
-Los gráficos los armé como pide el enunciado: Flask devuelve los datos
-en JSON, JS los pide con `fetch` y Chart.js los dibuja. Los tres
-obligatorios son miembros registrados por día (línea), actividades por
-tipo (torta) y actividades por comuna (barras). Cada uno tiene su ruta
-`/datos/...` en Flask que arma el JSON.
+La parte nueva de la Tarea 4 queda en:
 
-Aparte mantuve algunos gráficos extras que ya tenía de la Tarea 2,
-pero adaptados para pedirle los datos a Flask en vez de tenerlos
-escritos a mano en el HTML como antes.
+```text
+http://localhost:8080/buscar
+```
 
-# Tipo de actividad
+---
 
-Antes el formulario guardaba solo el nombre de la actividad (Fútbol,
-Ajedrez, Parapente). El tema es que para el gráfico de "actividades por
-tipo" eso no servía, porque no es lo mismo "Ajedrez" que "deporte".
-Entonces ahora hay dos campos: nombre (ej. "Fútbol") y tipo (ej.
-"deporte" o "recreación"). El tipo lo dejé como `<select>` en vez de
-texto libre para que la gente no escriba "deportes" / "Deportes" /
-"deporte " y se desordene la torta.
+# Base de datos
 
-# Sobre el gráfico de miembros por día
+La base de datos usada para esta tarea es:
 
-Hoy pone cada fecha individual en el eje X, tal cual lo pide el
-enunciado. Sé que si el sistema creciera mucho (un año de registros,
-cientos de usuarios) quedaría ilegible y habría que agrupar por
-semanas o meses, pero con los datos actuales se ve bien y la tarea
-pide "por día", así que lo dejé así nomás.
+```text
+tarea_web_4
+```
 
-# Manejo de sesión
+Decidí usar una base separada para no romper las tareas anteriores y para poder
+probar la Tarea 4 con más tranquilidad.
 
-Sigo usando `session` de Flask igual que antes para mantener al usuario
-logeado, restringir `/ingreso`, registrar actividades y ahora también
-para el distintivo de comentarios. También quedó puesto el
-`@app.after_request` de cache que había investigado en la Tarea 2
-porque tenía un bug con el botón "atrás" después de cerrar sesión.
+Además de las tablas que ya venían de las tareas anteriores, agregué una tabla
+nueva llamada `nota`, que guarda las evaluaciones de las actividades.
 
-# Validaciones frontend y backend
+La tabla tiene, principalmente:
 
-Como en las tareas anteriores, todo lo importante lo valido en los dos
-lados: JS para darle feedback al usuario al tiro, Flask por si alguien
-se salta el JS. Es un poco repetitivo escribir lo mismo dos veces pero
-me quedo más tranquilo así.
+```text
+id
+actividad_id
+nota
+```
+
+y después agregué también iniciales para dejar identificado de forma simple
+quién evaluó.
+
+---
+
+# Decisión principal de implementación
+
+La decisión más importante fue separar lo anterior de lo nuevo:
+
+* Flask mantiene la aplicación principal.
+* Spring Boot implementa el buscador y la evaluación de actividades.
+* Ambas aplicaciones usan la misma base MySQL.
+* Flask manda al usuario hacia Spring Boot desde la página de ingreso.
+* Spring Boot permite volver a la página de ingreso de Flask.
+
+Hice esto porque la tarea pedía usar Spring Boot, JPA y llamadas asíncronas,
+pero no necesariamente rehacer todo lo que ya estaba listo en Flask.
+
+---
+
+# Buscador de actividades
+
+En Spring Boot agregué una página `/buscar` con un único input de búsqueda.
+
+Cuando el usuario escribe al menos 3 caracteres, se hace una llamada con
+`fetch()` a un endpoint de Spring Boot:
+
+```text
+/api/actividades/buscar?q=...
+```
+
+La búsqueda revisa:
+
+* nombre de la actividad,
+* descripción,
+* comuna del miembro asociado.
+
+Los resultados muestran:
+
+* miembro,
+* días,
+* tipo,
+* comuna,
+* nombre,
+* descripción,
+* nota promedio,
+* cantidad de evaluaciones.
+
+También dejé destacado en negrita el texto que coincide con la búsqueda, para
+que se note qué fue lo que calzó.
+
+---
+
+# Selección de actividad
+
+Al principio los resultados se mostraban como tarjetas completas, pero después
+lo cambié para que se pareciera más a un buscador real.
+
+Ahora se muestra primero una lista compacta de resultados. Cuando el usuario
+selecciona una actividad, recién ahí se abre el detalle completo de esa
+actividad.
+
+Además, en el panel izquierdo se muestra una imagen. Si la actividad tiene foto
+guardada en Flask, Spring Boot arma la ruta hacia esa foto usando la aplicación
+Flask. Si no tiene foto, se muestra una imagen base de calificación.
+
+---
+
+# Evaluación de actividades
+
+En el detalle de cada actividad agregué un botón `Evaluar`.
+
+Al apretarlo, el usuario ingresa una nota entre 1 y 7. Esa nota se valida en el
+frontend y también en Spring Boot.
+
+Si la nota es válida, se envía con `fetch()` usando POST a:
+
+```text
+/api/actividades/{id}/notas
+```
+
+Spring Boot guarda la nota en la tabla `nota`, recalcula el promedio y devuelve
+el nuevo promedio junto con la cantidad de evaluaciones.
+
+La página actualiza la nota promedio y el contador sin recargar.
+
+---
+
+# Iniciales del usuario que evalúa
+
+Como la evaluación se hace en Spring Boot pero la sesión real del usuario está
+en Flask, tuve que buscar una forma simple de conectar ambas cosas.
+
+La solución fue que, al entrar desde la página de ingreso de Flask, el botón
+manda el `usuarioId` en la URL hacia Spring Boot. Con ese id, Spring puede buscar
+al miembro en la base de datos y obtener sus iniciales.
+
+Así la nota queda guardada con iniciales, sin pedirle al usuario que las escriba
+a mano.
+
+No quise intentar compartir la sesión completa entre Flask y Spring Boot porque
+para esta tarea habría sido más enredado de lo necesario.
+
+---
+
+# Promedio de notas en comentarios
+
+Aprovechando que las notas quedan guardadas en la misma base de datos, también
+actualicé la vista de comentarios de Flask.
+
+Ahora en `/comentarios`, cada comentario muestra la nota promedio de la actividad
+a la que pertenece. Si la actividad todavía no tiene evaluaciones, aparece con
+nota `-`.
+
+Esto ayuda a conectar visualmente lo nuevo de la Tarea 4 con lo que ya existía
+de la Tarea 3.
+
+---
+
+# Validaciones
+
+La nota se valida en el frontend y en el backend.
+
+En el frontend se revisa que sea un número entero entre 1 y 7 antes de mandarla
+a Spring Boot.
+
+En el backend se vuelve a validar porque no se puede confiar solo en JavaScript.
+Si la nota no es válida, Spring devuelve un error y no guarda nada en la base.
+
+También se valida que la actividad exista antes de guardar una nota asociada.
+
+---
+
+# JPA y modelos
+
+En Spring Boot usé JPA para mapear las tablas principales que necesitaba:
+
+* `Actividad`
+* `Miembro`
+* `Foto`
+* `Nota`
+
+También creé repositorios para consultar actividades, fotos, notas y miembros.
+
+La búsqueda de actividades se hace con un repositorio que revisa nombre,
+descripción y comuna usando una consulta con `LIKE`.
+
+---
+
+# Sobre los días de la actividad
+
+Al principio Spring estaba leyendo un campo llamado `dia`, pero en la aplicación
+Flask realmente se trabaja con `dias`, porque una actividad puede tener más de
+un día.
+
+Por eso corregí el modelo de Spring para leer la columna `dias` y mostrar todos
+los días de la actividad, no solo el primero.
+
+---
+
+# Diseño
+
+Intenté que la pantalla de evaluación no se viera como algo pegado a la fuerza.
+Por eso agregué una vista con un panel de imagen y un panel de búsqueda.
+
+También agregué un botón en la aplicación Flask para entrar a la parte de
+calificación solamente después de haber ingresado a la app. No lo dejé en el
+inicio público porque la idea era que estuviera dentro del flujo de usuario
+logueado.
+
+---
 
 # Decisiones generales
 
-Traté de no complicarme y mantener el código en la misma línea de la
-Tarea 2: todo dentro de `aplicacion.py`, validaciones explícitas en vez
-de librerías, y sin meter framework extra aparte de Chart.js. 
+Traté de mantener el estilo del proyecto original: código simple, validaciones
+explícitas y sin meter demasiadas capas extras.
+
+La Tarea 4 quedó como una integración entre Flask y Spring Boot. Flask sigue
+siendo la app principal y Spring Boot se encarga de lo nuevo pedido: buscar y
+evaluar actividades usando JPA y `fetch`.
+
+No es una migración completa a Spring Boot, sino una extensión de la aplicación
+existente.
 
 ---
 
 # Notas finales
 
-- Quedó dando vueltas `templates/graficos.T2.Copia.html`, que es una
-  copia vieja del template de gráficos de la Tarea 2 que usé de respaldo
-  mientras armaba la nueva versión con Chart.js. No se usa en ninguna
-  ruta, lo dejo por si lo quieren revisar pero se puede borrar tranquilo.
-- Dejé los SQL del proyecto cargados en `sql/` por si acaso, para tener
-  respaldo de la base.
-- Pueden haber inconsistencias con los datos bases que deje desde inclusive la tarea 1, pero no me preocupe mucho más porque es simplemente borrarlos y ya, preocupandome más de que datos nuevos y todo lo que entre a la base de datos sea consistente en adelante.
+* Para que se vean las fotos reales de las actividades en Spring Boot, conviene
+  tener Flask corriendo también, porque las imágenes están servidas desde
+  `http://127.0.0.1:5000/static/...`.
+* La carpeta `tarea4-spring` contiene todo lo nuevo de Spring Boot.
+* Los SQL quedaron guardados en `sql/` como respaldo.
+* Pueden quedar datos antiguos de tareas anteriores, pero la lógica nueva usa la
+  misma base y las notas nuevas quedan guardadas correctamente.
