@@ -2,6 +2,7 @@ package com.example.myproject;
 
 import jakarta.persistence.*;
 
+// Tabla donde guardamos las evaluaciones.
 @Entity
 @Table(name = "nota")
 public class Nota {
@@ -13,7 +14,7 @@ public class Nota {
     @Column(name = "actividad_id")
     private Integer actividadId;
 
-    private Double nota;
+    private Integer nota;
 
     @Column(name = "miembro_id")
     private Integer miembroId;
@@ -23,7 +24,7 @@ public class Nota {
     public Nota() {
     }
 
-    public Nota(Integer actividadId, Double nota, Integer miembroId, String iniciales) {
+    public Nota(Integer actividadId, Integer nota, Integer miembroId, String iniciales) {
         this.actividadId = actividadId;
         this.nota = nota;
         this.miembroId = miembroId;
@@ -38,7 +39,7 @@ public class Nota {
         return actividadId;
     }
 
-    public Double getNota() {
+    public Integer getNota() {
         return nota;
     }
 
