@@ -83,6 +83,12 @@ window.onload = function() {
         </label>
         <input type="text" id="nombre-actividad" name="nombre-actividad" placeholder="Ej: Ajedrez, Básquetbol, Patinaje">
         <!-- El id lo usa Javascript y el name lo usará Flask para tomar el dato -->
+
+        <label for="descripcion-actividad">
+            Descripción de la actividad <span class="obligatorio">*</span>
+        </label>
+        <input type="text" id="descripcion-actividad" name="descripcion-actividad" placeholder="Ej: Grupo para jugar ajedrez los viernes en el DCC">
+
          <label for="tipo-actividad">
             Tipo de actividad <span class="obligatorio">*</span>
         </label>
@@ -287,6 +293,7 @@ function validarLinkActividad(link) {
 //Usamos funciones anteriores y validamos
 function validarActividad() {
     let nombre = document.getElementById("nombre-actividad").value.trim();
+    let descripcion = document.getElementById("descripcion-actividad").value.trim();
     let tipoActividad = document.getElementById("tipo-actividad").value;
     let horaInicio = document.getElementById("hora-inicio").value.trim();
     let horaFin = document.getElementById("hora-fin").value.trim();
@@ -304,6 +311,10 @@ function validarActividad() {
     if (!validarNombreActividad(nombre)) {
         listaErrores.push("Debes escribir el nombre de la actividad con al menos 3 caracteres.");
     }
+    if (descripcion.length < 5) {
+        listaErrores.push("Debes escribir una descripción de al menos 5 caracteres.");
+    }
+
     if (tipoActividad === "") {listaErrores.push("Debe seleccionar un tipo de actividad.");}
 
     if (!validarDiasActividad()) {
@@ -401,6 +412,7 @@ function salir() {
 function limpiarFormularioActividad() {
     document.getElementById("nombre-actividad").value = "";
     document.getElementById("tipo-actividad").value = "";
+    document.getElementById("descripcion-actividad").value = "";
     document.getElementById("hora-inicio").value = "";
     document.getElementById("hora-fin").value = "";
     document.getElementById("lugar-actividad").value = "";

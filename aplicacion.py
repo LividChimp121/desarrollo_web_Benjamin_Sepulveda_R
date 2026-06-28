@@ -897,6 +897,7 @@ def registrar_actividad():
         )
 
     nombre = request.form["nombre-actividad"]
+    descripcion = request.form["descripcion-actividad"]
     tipo = request.form["tipo-actividad"]
     dias = request.form.getlist("dias")
     hora_inicio = request.form["hora-inicio"]
@@ -912,6 +913,9 @@ def registrar_actividad():
     # La idea es hacer validaciones parecidas a las de JS, pero ahora en el servidor en caso que se logre bypasear.
 
     if tiene_codigo_raro(nombre):
+        return redirect(url_for("ingreso"))
+
+    if tiene_codigo_raro(descripcion):
         return redirect(url_for("ingreso"))
 
     if tiene_codigo_raro(lugar):
@@ -933,6 +937,12 @@ def registrar_actividad():
         return redirect(url_for("ingreso"))
 
     if len(nombre.strip()) > 100:
+        return redirect(url_for("ingreso"))
+
+    if len(descripcion.strip()) < 5:
+        return redirect(url_for("ingreso"))
+
+    if len(descripcion.strip()) > 500:
         return redirect(url_for("ingreso"))
 
     if len(dias) == 0:
@@ -989,7 +999,7 @@ def registrar_actividad():
         duracion=duracion,
         tipo=tipo,
         lugar=lugar.strip(),
-        descripcion=nombre.strip(),
+        descripcion=descripcion.strip(),
         acompanado=acompanado.strip(),
         entretencion=entretencion.strip(),
         miembro_id=session["usuario_id"]
