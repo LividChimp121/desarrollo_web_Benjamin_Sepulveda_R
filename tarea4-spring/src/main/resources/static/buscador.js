@@ -226,20 +226,11 @@ resultados.addEventListener("click", function (evento) {
         const notaIngresada = prompt("Ingresa una nota entre 1 y 7:");
         if (notaIngresada === null) {return;}
 
-        // Permitimos coma porque normalmente uno escribe 6,7.
-        // Para mandarlo a Spring lo dejamos con punto: 6.7.
-        const notaLimpia = notaIngresada.trim().replace(",", ".");
+        const notaLimpia = notaIngresada.trim();
 
-        // En la nota no usamos codigo raro porque no es texto libre:
-        // tiene que cumplir este formato numerico.
-        if (!/^[1-7](\.[0-9])?$/.test(notaLimpia)) {
-            alert("La nota debe estar entre 1 y 7. Puedes usar decimal, por ejemplo 6,7.");
-            return;
-        }
-
-        const notaNumero = Number(notaLimpia);
-        if (notaNumero < 1 || notaNumero > 7) {
-            alert("La nota debe estar entre 1 y 7.");
+        // La tarea pide aceptar solo notas enteras entre 1 y 7.
+        if (!/^[1-7]$/.test(notaLimpia)) {
+            alert("La nota debe ser un entero entre 1 y 7.");
             return;
         }
 
