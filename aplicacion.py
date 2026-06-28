@@ -102,7 +102,7 @@ class Comuna(db.Model):
 class Nota(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     actividad_id = db.Column(db.Integer, db.ForeignKey("actividad.id"), nullable=False)
-    nota = db.Column(db.Float, nullable=False)
+    nota = db.Column(db.Integer, nullable=False)
 
 def obtener_comuna_id(comuna):
     comuna_encontrada = Comuna.query.filter_by(nombre=comuna).first() #busca en la tabla comuna la comuna que tenga el nombre igual al que se le pasó a la función,

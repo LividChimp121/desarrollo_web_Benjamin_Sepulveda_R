@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.46, for macos15 (arm64)
 --
--- Host: 127.0.0.1    Database: tarea_web_4
+-- Host: localhost    Database: tarea_web_4
 -- ------------------------------------------------------
 -- Server version	8.0.46
 
@@ -28,8 +28,8 @@ CREATE TABLE `actividad` (
   `dia` enum('lunes','martes','miércoles','jueves','viernes','sábado','domingo') NOT NULL,
   `hora_inicio` varchar(5) NOT NULL,
   `duracion` varchar(5) NOT NULL,
-  `tipo` enum('arte','deporte','tecnología','social','recreación','otra') NOT NULL,
-  `nombre` varchar(45) NOT NULL,
+  `tipo` varchar(50) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
   `descripcion` text,
   `dias` varchar(200) DEFAULT NULL,
   `hora_fin` varchar(20) DEFAULT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE `actividad` (
   PRIMARY KEY (`id`),
   KEY `fk_actividad_miembro1_idx` (`miembro_id`),
   CONSTRAINT `fk_actividad_miembro1` FOREIGN KEY (`miembro_id`) REFERENCES `miembro` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +48,7 @@ CREATE TABLE `actividad` (
 
 LOCK TABLES `actividad` WRITE;
 /*!40000 ALTER TABLE `actividad` DISABLE KEYS */;
-INSERT INTO `actividad` VALUES (1,1,'lunes','15:00','01:00','deporte','Fútbol','Actividad deportiva en la cancha del DCC','lunes','16:00','Cancha DCC','Con amigos','Muy entretenida'),(2,2,'lunes','18:00','02:00','recreación','Ajedrez','Partidas de ajedrez con estudiantes','lunes miercoles','20:00','Sala de estudio DCC','Con amigos de la generación','Muy entretenida'),(3,3,'martes','17:00','02:00','deporte','Voleibol','Voleibol en cancha Beauchef','martes jueves','19:00','Cancha Beauchef','',''),(4,4,'sábado','10:00','02:00','deporte','Patinaje','Patinaje recreativo en el parque','sabado domingo','12:00','Parque O\'Higgins','','Entretenida'),(5,5,'lunes','19:00','02:00','deporte','Basquetbol','Basquetbol en el gimnasio','lunes viernes','21:00','Gimnasio Beauchef','Con compañeros del DCC',''),(6,6,'miércoles','16:00','02:00','recreación','Ajedrez','Ajedrez en biblioteca','miercoles','18:00','Biblioteca Central','',''),(7,7,'martes','18:30','01:30','deporte','Voleibol','Voleibol en multicancha DCC','martes sabado','20:00','Multicancha DCC','Con su familia','Muy entretenida'),(8,8,'lunes','18:30','02:30','otra','Hacer churrasquitos','Hacer churrasquitos','Lunes Jueves','21:00','Casino','Profe San Martín','Muy entretenida'),(9,8,'miércoles','00:00','14:00','otra','Patinaje','Patinaje','Miércoles','14:00','Parque Ohiggins','','');
+INSERT INTO `actividad` VALUES (1,1,'lunes','15:00','01:00','deporte','Fútbol','Actividad deportiva en la cancha del DCC','lunes','16:00','Cancha DCC','Con amigos','Muy entretenida'),(2,2,'lunes','18:00','02:00','recreación','Ajedrez','Partidas de ajedrez con estudiantes','lunes miercoles','20:00','Sala de estudio DCC','Con amigos de la generación','Muy entretenida'),(3,3,'martes','17:00','02:00','deporte','Voleibol','Voleibol en cancha Beauchef','martes jueves','19:00','Cancha Beauchef','',''),(4,4,'sábado','10:00','02:00','deporte','Patinaje','Patinaje recreativo en el parque','sabado domingo','12:00','Parque O\'Higgins','','Entretenida'),(5,5,'lunes','19:00','02:00','deporte','Basquetbol','Basquetbol en el gimnasio','lunes viernes','21:00','Gimnasio Beauchef','Con compañeros del DCC',''),(6,6,'miércoles','16:00','02:00','recreación','Ajedrez','Ajedrez en biblioteca','miercoles','18:00','Biblioteca Central','',''),(7,7,'martes','18:30','01:30','deporte','Voleibol','Voleibol en multicancha DCC','martes sabado','20:00','Multicancha DCC','Con su familia','Muy entretenida'),(8,8,'lunes','18:30','02:30','otra','Hacer churrasquitos','Hacer churrasquitos','Lunes Jueves','21:00','Casino','Profe San Martín','Muy entretenida'),(9,8,'miércoles','00:00','14:00','otra','Patinaje','Patinaje','Miércoles','14:00','Parque Ohiggins','',''),(10,1,'martes','06:00','02:15','deportiva','Gimnasio/GYM','Gimnasio/GYM','Martes Jueves Sábado','08:15','Gimnasio FCFM: Domeyko','Con un amigo F.S','Muy entretenida'),(11,1,'sábado','14:20','01:10','recreativa','Mote con Huesillo','Comer motes con huesillo en el mejor lugar del mundo','Sábado Domingo','15:30','El rey del Mote con Huesillo','','');
 /*!40000 ALTER TABLE `actividad` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -68,7 +68,7 @@ CREATE TABLE `comentario` (
   PRIMARY KEY (`id`),
   KEY `fk_comentario_actividad1_idx` (`actividad_id`),
   CONSTRAINT `fk_comentario_actividad1` FOREIGN KEY (`actividad_id`) REFERENCES `actividad` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +77,7 @@ CREATE TABLE `comentario` (
 
 LOCK TABLES `comentario` WRITE;
 /*!40000 ALTER TABLE `comentario` DISABLE KEYS */;
-INSERT INTO `comentario` VALUES (1,'123','32121321','2026-05-25 15:59:48',1),(2,'Matias Marin','Partido facilon','2026-05-25 19:34:31',1),(3,'El presidente Luco','Hay barros luco? :D','2026-05-25 22:34:55',8),(4,'Chesumare','Intenta la apertura chesumaristica (atributo al maestro de ajedrez chileno)','2026-05-25 23:18:48',2),(5,'Karokan','Mejor la karokan :D','2026-05-25 23:19:03',2),(6,'San Martin','Hola profesor, cuando le damos su voleibol. \r\n\r\nslds Basso','2026-05-25 23:20:06',3),(7,'Shark Tank','Falta partido contra Industrias','2026-05-26 00:30:29',1),(8,'Marck de Marco','Me encantaria aprender a Patinar!','2026-05-26 02:01:15',4),(9,'⭐ Marck de Marco','Quien le gustaria?','2026-05-26 02:01:53',4),(10,'Eduardo','Podrían extender el horario?','2026-05-26 02:27:15',6);
+INSERT INTO `comentario` VALUES (1,'123','32121321','2026-05-25 15:59:48',1),(2,'Matias Marin','Partido facilon','2026-05-25 19:34:31',1),(3,'El presidente Luco','Hay barros luco? :D','2026-05-25 22:34:55',8),(4,'Chesumare','Intenta la apertura chesumaristica (atributo al maestro de ajedrez chileno)','2026-05-25 23:18:48',2),(5,'Karokan','Mejor la karokan :D','2026-05-25 23:19:03',2),(6,'San Martin','Hola profesor, cuando le damos su voleibol. \r\n\r\nslds Basso','2026-05-25 23:20:06',3),(7,'Shark Tank','Falta partido contra Industrias','2026-05-26 00:30:29',1),(8,'Marck de Marco','Me encantaria aprender a Patinar!','2026-05-26 02:01:15',4),(9,'⭐ Marck de Marco','Quien le gustaria?','2026-05-26 02:01:53',4),(10,'Eduardo','Podrían extender el horario?','2026-05-26 02:27:15',6),(11,'⭐ Princesa','Estuvo espectacular, van todos al mismo ritmo y hablando de la vida en sí, asi que se pasa el rato!','2026-06-27 01:06:27',10),(12,'⭐ El rey del mote','Espectacular, que buenisima actividad','2026-06-28 02:33:56',11);
 /*!40000 ALTER TABLE `comentario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -123,7 +123,7 @@ CREATE TABLE `foto` (
   PRIMARY KEY (`id`),
   KEY `fk_foto_actividad1_idx` (`actividad_id`),
   CONSTRAINT `fk_foto_actividad1` FOREIGN KEY (`actividad_id`) REFERENCES `actividad` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,7 +132,7 @@ CREATE TABLE `foto` (
 
 LOCK TABLES `foto` WRITE;
 /*!40000 ALTER TABLE `foto` DISABLE KEYS */;
-INSERT INTO `foto` VALUES (1,'static/archivos/DccActividades.png','DccActividades.png',8),(2,'static/archivos/patinaje.png','patinaje.png',9);
+INSERT INTO `foto` VALUES (1,'static/archivos/DccActividades.png','DccActividades.png',8),(2,'static/archivos/patinaje.png','patinaje.png',9),(3,'static/archivos/GYM.png','GYM.png',10),(4,'static/archivos/mote_con_huesillo.png','mote_con_huesillo.png',11);
 /*!40000 ALTER TABLE `foto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -183,10 +183,12 @@ CREATE TABLE `nota` (
   `id` int NOT NULL AUTO_INCREMENT,
   `actividad_id` int NOT NULL,
   `nota` int NOT NULL,
+  `iniciales` varchar(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `miembro_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_nota_actividad1_idx` (`actividad_id`),
   CONSTRAINT `fk_nota_actividad1` FOREIGN KEY (`actividad_id`) REFERENCES `actividad` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -195,6 +197,7 @@ CREATE TABLE `nota` (
 
 LOCK TABLES `nota` WRITE;
 /*!40000 ALTER TABLE `nota` DISABLE KEYS */;
+INSERT INTO `nota` VALUES (1,10,7,'UP',1),(2,8,5,'UP',1),(3,10,5,'UP',1),(4,11,7,'U.P.',1);
 /*!40000 ALTER TABLE `nota` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -231,4 +234,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-26 11:50:52
+-- Dump completed on 2026-06-27 22:52:10
