@@ -1,3 +1,11 @@
+/* 
+   Estos estilos vienen de la linea visual que ya usamos en las tareas anteriores.
+   Como ahora esta parte corre en Spring Boot, tuvimos que traer el CSS a la nueva carpeta
+   de Spring: src/main/resources/static/tarea4.css.
+   La idea es que el buscador y la evaluacion no se vean como otra pagina aparte,
+   sino como una continuacion de la aplicacion original hecha en Flask.
+*/
+
 body {
     margin: 0;
     font-family: Georgia, serif;
@@ -262,7 +270,7 @@ body.modo-resultados .contenedor-buscador {
     align-items: flex-start;
 }
 
-/* historial simple de evaluaciones */
+/* Historial simple de evaluaciones */
 .caja-historial {
     margin-top: 15px;
     padding: 12px;
@@ -295,11 +303,7 @@ body.modo-resultados .contenedor-buscador {
     font-style: italic;
 }
 
-#boton-historial {
-    margin-left: 8px;
-}
-
-/* botón historial con el mismo estilo de la página */
+/* Boton historial con el mismo estilo de la pagina */
 #boton-historial {
     background-color: #f6c46b;
     color: #7a3b12;
@@ -318,4 +322,3 @@ body.modo-resultados .contenedor-buscador {
     transform: translateY(2px);
     border-bottom-width: 4px;
 }
-
